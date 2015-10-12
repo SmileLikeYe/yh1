@@ -41,7 +41,10 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope) {
+.controller('PlaylistCtrl', function($scope, $stateParams) {
+})
+
+.controller('HomePageCtrl',function($scope){
   $scope.playlists = [
     { title: 'Reggae', id: 1 },
     { title: 'Chill', id: 2 },
@@ -61,7 +64,5 @@ angular.module('starter.controllers', [])
      });*/
        $scope.$broadcast('scroll.refreshComplete');
   };
-})
-
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+	
 });

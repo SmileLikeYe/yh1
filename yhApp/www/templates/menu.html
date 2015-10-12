@@ -14,24 +14,25 @@
 
   <ion-side-menu side="left">
     <ion-header-bar class="bar-light">
-      <h1 class="title">Left</h1>
+      <h1 class="title"><!-- TODO:侧边栏的标题  --></h1>
     </ion-header-bar>
     <ion-content>
       <ion-list>
+        <!-- TODO:页面模板做好后把url和controller对应起来  -->
         <ion-item menu-close ng-click="login()">
-          Login
+          用户管理
         </ion-item>
         <ion-item menu-close href="#/app/search">
-          Search
+          任务管理
         </ion-item>
         <ion-item menu-close href="#/app/browse">
-          Browse
+          照片管理
         </ion-item>
-        <ion-item menu-close href="#/app/playlists">
-          Playlists
+        <ion-item menu-close href="#/app/homepage">
+          积分管理
         </ion-item>
-        <ion-item menu-close href="#/app/playlists">
-          退出
+        <ion-item menu-close href="#/app/homepage">
+          收货地址
         </ion-item>
       </ion-list>
     </ion-content>

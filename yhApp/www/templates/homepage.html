@@ -1,0 +1,34 @@
+<ion-view view-title="主页">
+  <ion-content>
+  <ion-refresher
+    pulling-text="下拉刷新..."
+    on-refresh="doRefresh()">
+  </ion-refresher>
+  <!-- 主页的模板 -->
+  <!-- TODO:给div添加css -->
+  <!-- TODO:给按钮添加onclick事件 -->
+  <!-- TODO:替换placeholder -->
+  <!-- TODO:真tm丑-->
+	<div class="card">
+	  <div class="item item-text-wrap">
+	    This is a basic Card which contains an item that has wrapping text.
+	  </div>
+	</div>
+  <div ><p align="left"><button class="button button-energized" on-click="">抢</button>some placeholder</p></div>
+  <hr/>
+  <div>
+  	<p align="right">
+  		some placeholder<button class="button button-calm" on-click="">拍</button>
+  	</p>
+  </div>
+  <hr/>
+  <div>
+  	<Button class="button" on-click="">赚</button>
+  </div>
+    <!--<ion-list>
+      <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
+        {{playlist.title}}
+      </ion-item>
+    </ion-list>-->
+  </ion-content>
+</ion-view>
