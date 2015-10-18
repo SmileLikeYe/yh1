@@ -1,1 +1,26 @@
 /* Empty. Add your own CSS if you like */
+div#homepage {
+	border:2px solid;
+	border-radius:25px;
+	/*
+	padding-top: 100px;
+	padding-bottom: 100px;
+	border: 1px dotted #000;
+	*/
+}
+
+div#hpbleft {
+	padding-left:40px;
+	border: 1px dotted #000;
+}
+
+div#hpbright {
+	padding-right:40px;
+	border: 1px dotted #000;
+}
+
+div#hpblock {
+	padding-top:50px;
+	padding-bottom:50px;
+	border: 1px dotted #000;
+}
