@@ -32,20 +32,22 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'AppCtrl'
   })
 
-  .state('app.search', {
-    url: '/search',
+  .state('app.questpage', {
+    url: '/quest',
     views: {
       'menuContent': {
-        templateUrl: 'templates/search.html'
+        templateUrl: 'templates/questpage.html',
+          controller: ''//TODO:Write controllers
       }
     }
   })
 
-  .state('app.browse', {
-      url: '/browse',
+  .state('app.picmanage', {
+      url: '/picmanage',
       views: {
         'menuContent': {
-          templateUrl: 'templates/browse.html'
+          templateUrl: 'templates/picmanagepage.html',
+          controller: ''//TODO:Write controllers
         }
       }
     })
@@ -58,7 +60,24 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-
+    .state('app.address', {
+      url: '/address',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/addresspage.html',
+          controller: ''//TODO:Write controllers
+        }
+      }
+    })
+    .state('app.register', {
+      url: '/register',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/register.html',
+          controller: ''//TODO:Write controllers
+        }
+      }
+    })
   .state('app.single', {
     url: '/playlists/:playlistId',
     views: {

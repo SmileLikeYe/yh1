@@ -24,3 +24,13 @@ div#hpblock {
 	padding-bottom:50px;
 	border: 1px dotted #000;
 }
+
+span.asterisk {
+	font-weight:bold;
+	color:#ff9955;
+}
+span.hint {
+	font-weight:bold;
+	color:#ff9955;
+	align:center;
+}
