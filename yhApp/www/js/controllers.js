@@ -2,64 +2,32 @@ angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
-// Create the login modal that we will use later
 $ionicModal.fromTemplateUrl('templates/cashNotification.html', {
     scope: $scope
   }).then(function(modal) {
     $scope.cashNotificationModal = modal;
   });
-
-  // Triggered in the login modal to close it
   $scope.closeCashNotification = function() {
     $scope.cashNotificationModal.hide();
   };
-
-  // Open the login modal
   $scope.showCashNotification = function() {
     $scope.cashNotificationModal.show();
   };
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogi = function() {
-    console.log('cash notification', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-};
-
-
-// Create the login modal that we will use later
+//创建任务弹窗
 $ionicModal.fromTemplateUrl('templates/questNotification.html', {
     scope: $scope
   }).then(function(modal) {
     $scope.questNotificationModal = modal;
   });
-
-  // Triggered in the login modal to close it
   $scope.closeQuestNotification = function() {
     $scope.questNotificationModal.hide();
   };
-
-  // Open the login modal
   $scope.showQuestNotification = function() {
     $scope.questNotificationModal.show();
   };
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogi = function() {
-    console.log('quest notification', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-};
-
-// Form data for the login modal
+//准备数据
 $scope.loginData = {};
 $scope.regData={};
 $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -75,8 +43,7 @@ $scope.closeLogin = function() {
 $scope.login = function() {
 	$scope.modal.show();
 };
-
-
+//创建注册页面
 $ionicModal.fromTemplateUrl('templates/register.html', {
 	scope: $scope
 }).then(function(modal) {
@@ -120,14 +87,25 @@ $scope.sendVCode = function() {
 	
 };
 })
-
-
-
-
-
-
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+//图片管理-控制器
+.controller('piclistCtrl', function($scope,$location) {
+ $scope.shouldShowDelete = false;
+ $scope.shouldShowReorder = false;
+ $scope.listCanSwipe = true;
+ $scope.showInfo = function($scope){
+	window.location.href="#/app/picinfo";
+	console.log(window.location.href);
+};
+  $scope.pics = [
+    { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
+    { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
+    { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
+  ];
+  
 })
+
+
+
 
 .controller('HomePageCtrl',function($scope){
 $scope.playlists = [

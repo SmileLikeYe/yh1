@@ -1,5 +1,33 @@
 <ion-view view-title="照片管理">
-  <ion-content>
-    <h1>照片管理页</h1>
-  </ion-content>
+	<ion-content>
+	<ion-list show-delete="shouldShowDelete" show-reorder="shouldShowReorder" can-swipe="listCanSwipe">
+	<ion-item ng-repeat="pic in pics"
+		class="item-thumbnail-left">
+
+		<img ng-src="{{pic.img}}" />
+		<h1>{{pic.title}}</h1>
+		<p><span>{{pic.date}}</span></p>
+		<ion-slide-box>
+			<ion-slide>
+				<div class="box">
+					<img ng-src="{{pic.img}}" class="photoview"></img>
+				</div>
+			</ion-slide>
+			<ion-slide>
+				<div class="box blue">
+					<h1 align='center'>BLUE</h1>
+				</div>
+			</ion-slide>
+		</ion-slide-box>
+		
+		<ion-delete-button class="ion-minus-circled"
+											 ng-click="items.splice($index, 1)">
+		</ion-delete-button>
+		<ion-reorder-button class="ion-navicon"
+												on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
+		</ion-reorder-button>
+
+	</ion-item>
+</ion-list>
+	</ion-content>
 </ion-view>
