@@ -86,7 +86,17 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'PlaylistCtrl'
       }
     }
+  })
+  .state('app.credit', {
+    url: '/creditpage',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/creditpage.html',
+        controller: ''
+      }
+    }
   });
+  
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/homepage');
 });
