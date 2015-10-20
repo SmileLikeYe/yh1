@@ -3,9 +3,10 @@ angular.module('starter.controllers', [])
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
 // Create the login modal that we will use later
-$ionicModal.fromTemplateUrl('templates/cashNotification.html', {
+$ionicModal.fromTemplateUrl('templates/cashNotification.html', 
+{
     scope: $scope
-  }).then(function(modal) {
+}).then(function(modal) {
     $scope.cashNotificationModal = modal;
   });
 
@@ -121,15 +122,10 @@ $scope.sendVCode = function() {
 };
 })
 
-
-
-
-
-
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
 
-.controller('HomePageCtrl',function($scope){
+.controller('HomePageCtrl',function($scope) {
 $scope.playlists = [
 	{ title: 'Reggae', id: 1 },
 	{ title: 'Chill', id: 2 },
@@ -143,11 +139,25 @@ $scope.doRefresh = function() {
 	   // Stop the ion-refresher from spinning
 	   $scope.$broadcast('scroll.refreshComplete');
 	 });*/
-	   $scope.$broadcast('scroll.refreshComplete');
+	$scope.$broadcast('scroll.refreshComplete');
 };
-	$scope.click = function(){
-		
-	};
-	
+$scope.click = function(){};
+$scope.getPhoto= function(){
+	console.log("sdfds");
+	navigator.camera.getPicture(onSuccess, onFail, { 
+		quality: 50,
+    	destinationType: Camera.DestinationType.FILE_URI 
+    });
+
+	function onSuccess(imageURI) {
+    	var image = document.getElementById('myImage');
+    	image.src = imageURI;
+	}
+
+	function onFail(message) {
+    	alert('Failed because: ' + message);
+	}
+
+};
 });
 
