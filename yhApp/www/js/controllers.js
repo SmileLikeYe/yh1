@@ -62,7 +62,7 @@ $scope.closeRegister = function() {
 //注册
 	$scope.doRegister = function(){
 		//TODO 在此检查注册信息
-		
+
 			$scope.regData.hint="";
 		if(1){
 			$scope.regData.hint="尚未实现";
@@ -83,7 +83,7 @@ $scope.doLogin = function() {
 //发送验证码
 $scope.sendVCode = function() {
 	console.log('should send VCode');
-	
+
 };
 })
 //图片管理-控制器
@@ -100,7 +100,7 @@ $scope.sendVCode = function() {
     { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
     { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
   ];
-  
+
 })
 
 
@@ -111,6 +111,12 @@ $scope.playlists = [
 	{ title: 'Reggae', id: 1 },
 	{ title: 'Chill', id: 2 },
 ];
+$scope.moreTasks = function() {
+  window.location.href="#/app/quest";
+};
+$scope.creditDetails = function(){
+  window.location.href="#/app/creditpage";
+};
 $scope.doRefresh = function() {
 	/*$http.get('/new-items')
 	 .success(function(newItems) {
@@ -125,9 +131,9 @@ $scope.doRefresh = function() {
 $scope.click = function(){};
 $scope.getPhoto= function(){
 	console.log("sdfds");
-	navigator.camera.getPicture(onSuccess, onFail, { 
+	navigator.camera.getPicture(onSuccess, onFail, {
 		quality: 50,
-    	destinationType: Camera.DestinationType.FILE_URI 
+    	destinationType: Camera.DestinationType.FILE_URI
     });
 
 	function onSuccess(imageURI) {
@@ -139,6 +145,6 @@ $scope.getPhoto= function(){
     	alert('Failed because: ' + message);
 	}
 
-};	
+};
 });
 

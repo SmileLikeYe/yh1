@@ -1,5 +1,5 @@
 <ion-view view-title="主页">
-  <ion-content>
+  <ion-content class="back_color">
   <!--  <ion-refresher
 	pulling-text="下拉刷新..."
 	on-refresh="doRefresh()">
@@ -14,27 +14,34 @@
 				<button class="btn_primary snatch" ng-click="showQuestNotification ()">抢</button>
         <div class="text_group">
           <div class="text_box">
-            <p class="snatch_text snatch_text_color"><span class="snatch_title snatch_title_color">1</span>耐克拍照</p>
-            <p ng-hide="true" class="snatch_text snatch_text_color">2015-11-20</p>
-            <p ng-hide="true" class="snatch_text snatch_text_color">8/10</p>
+            <p ng-click="sTextClick=!sTextClick" class="snatch_text_color"><i class="icon-pushpin icon"></i>耐克拍照</p>
+            <p ng-show="sTextClick" class="snatch_info snatch_text_color">2015-11-20</p>
+            <p ng-show="sTextClick" class="snatch_info snatch_text_color">8/10</p>
           </div>
           <div class="text_box">
-            <p class="snatch_text snatch_text_color"><span class="snatch_title snatch_title_color">2</span>爱拍拍照</p>
-            <p ng-hide="true" class="snatch_text snatch_text_color">2015-11-20</p>
-            <p ng-hide="true" class="snatch_text snatch_text_color">7/10</p>
+            <p class="snatch_text_color"><i class="icon-pushpin icon"></i>爱拍拍照</p>
+            <p ng-hide="true" class="snatch_info snatch_text_color">2015-11-20</p>
+            <p ng-hide="true" class="snatch_info snatch_text_color">7/10</p>
           </div>
+        </div>
+        <div ng-click="moreTasks()" class="details">
+          <span class="number">5</span>
+          <i class="icon-angle-right icon more"></i>
         </div>
 		</div>
 		<div  class = "contain_box">
-      <div class="camera"></div>
+      <i class="icon-camera-retro camera"></i>
       <button class="btn_primary take" ng-click="getPhoto()">拍</button>
 		</div>
 	  <div class="contain_box">
 			<button class="btn_primary earn" ng-click="showCashNotification()">赚</button>
-		  <div class="score_box">
-        <div class="package"></div>
-        <p class="text_earn">可兑换积分：27</p>
-        <p class="text_earn">不可兑换积分：18</p>
+		  <div class="text_group">
+        <p class="text_earn">&nbsp;&nbsp;可兑换积分<span class="count">27</span></p>
+        <p class="text_earn">不可兑换积分<span class="count">18</span></p>
+      </div>
+      <div ng-click="creditDetails()" class="details_credit">
+        <span class="detail_c">详情</span>
+        <i class="icon-angle-right icon more_credit"></i>
       </div>
 	  </div>
 </div>

@@ -6,9 +6,7 @@
   text-align: center;
 }
 .icon{
-  width: 25px;
-  height: 25px;
-  display: inline-block;
+  font-size: 20px;
 }
 .status{
   margin-top: 10px;
@@ -35,4 +33,7 @@
 }
 .completed{
   color: #387ef5;
+}
+.text_box{
+  margin-right: 15px;
 }
