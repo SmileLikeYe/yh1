@@ -1,16 +1,47 @@
 <ion-view view-title="照片管理">
-  <ion-content class="back_color">
-    <ion-item class="album" menu-close href="#/app/quest">
-      <img class="cover" src="img/ios7-png/user-female-circle-vector.png">
-      <span class="album_name">耐克拍照</span>
-      <p class="album_num">300张</p>
-      <img class="arrow arrow_first" src="img/ios7-png/forward-vector.png">
-    </ion-item>
-    <ion-item class="album" menu-close href="">
-      <img class="cover" src="img/ios7-png/user-male-circle-vector.png">
-      <span class="album_name">爱拍拍照</span>
-      <p class="album_num">125张</p>
-      <img class="arrow arrow_first" src="img/ios7-png/forward-vector.png">
-    </ion-item>
-  </ion-content>
+  <!--<ion-content class="back_color">-->
+    <!--<ion-item class="album" menu-close href="#/app/quest">-->
+      <!--<img class="cover" src="img/ios7-png/user-female-circle-vector.png">-->
+      <!--<span class="album_name">耐克拍照</span>-->
+      <!--<p class="album_num">300张</p>-->
+      <!--<img class="arrow arrow_first" src="img/ios7-png/forward-vector.png">-->
+    <!--</ion-item>-->
+    <!--<ion-item class="album" menu-close href="">-->
+      <!--<img class="cover" src="img/ios7-png/user-male-circle-vector.png">-->
+      <!--<span class="album_name">爱拍拍照</span>-->
+      <!--<p class="album_num">125张</p>-->
+      <!--<img class="arrow arrow_first" src="img/ios7-png/forward-vector.png">-->
+    <!--</ion-item>-->
+  <!--</ion-content>-->
+	<ion-content class="back_color">
+	<ion-list show-delete="shouldShowDelete" show-reorder="shouldShowReorder" can-swipe="listCanSwipe">
+	<ion-item ng-repeat="pic in pics"
+		class="item-thumbnail-left">
+
+		<img ng-src="{{pic.img}}" />
+		<h1>{{pic.title}}</h1>
+		<p><span>{{pic.date}}</span></p>
+		<ion-slide-box>
+			<ion-slide>
+				<div class="box">
+					<img ng-src="{{pic.img}}" class="photoview"></img>
+				</div>
+			</ion-slide>
+			<ion-slide>
+				<div class="box blue">
+					<h1 align='center'>BLUE</h1>
+				</div>
+			</ion-slide>
+		</ion-slide-box>
+
+		<ion-delete-button class="ion-minus-circled"
+											 ng-click="items.splice($index, 1)">
+		</ion-delete-button>
+		<ion-reorder-button class="ion-navicon"
+												on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
+		</ion-reorder-button>
+
+	</ion-item>
+</ion-list>
+	</ion-content>
 </ion-view>

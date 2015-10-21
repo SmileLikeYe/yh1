@@ -47,7 +47,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       views: {
         'menuContent': {
           templateUrl: 'templates/picmanagepage.html',
-          controller: ''//TODO:Write controllers
+          controller: 'piclistCtrl'//TODO:Write controllers
         }
       }
     })
@@ -69,12 +69,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-    .state('app.register', {
-      url: '/register',
+    .state('app.picinfo', {
+      url: '/picinfo',
       views: {
         'menuContent': {
-          templateUrl: 'templates/register.html',
-          controller: ''//TODO:Write controllers
+          templateUrl: 'templates/picinfo.html',
+          controller: 'picinfoCtrl'
         }
       }
     })

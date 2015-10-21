@@ -2,16 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5e4b3b2b-4601-4dbc-a58b-950dbbd65030" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/addresspage.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/addresspage.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/yhApp/www/img/thumb.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/yhApp/www/templates/picinfo.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/js/app.js" afterPath="$PROJECT_DIR$/yhApp/www/js/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/homepage.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/homepage.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/index.html" afterPath="$PROJECT_DIR$/yhApp/www/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/menu.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/menu.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/js/controllers.js" afterPath="$PROJECT_DIR$/yhApp/www/js/controllers.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/questNotification.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/questNotification.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/questpage.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/questpage.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/register.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/register.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/css/style.css" afterPath="$PROJECT_DIR$/yhApp/www/css/style.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="yh1.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,8 +54,18 @@
           <file leaf-file-name="picmanagepage.html" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-2.4489796">
-                  <caret line="8" column="46" selection-start-line="8" selection-start-column="46" selection-end-line="8" selection-end-column="46" />
+                <state vertical-scroll-proportion="-13.77551">
+                  <caret line="45" column="16" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="style.css" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/yhApp/www/css/style.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.033632286">
+                  <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -74,10 +81,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="questNotification.html" pinned="false" current-in-tab="true">
+          <file leaf-file-name="questNotification.html" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/yhApp/www/templates/questNotification.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.7109005">
+                <state vertical-scroll-proportion="-6.122449">
                   <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
                   <folding />
                 </state>
@@ -129,7 +136,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/yhApp/www/css/style.css" />
         <option value="$PROJECT_DIR$/yhApp/www/templates/homepage.html" />
         <option value="$PROJECT_DIR$/yhApp/www/css/homepage.css" />
         <option value="$PROJECT_DIR$/yhApp/www/templates/questpage.html" />
@@ -142,9 +148,10 @@
         <option value="$PROJECT_DIR$/yhApp/www/templates/register.html" />
         <option value="$PROJECT_DIR$/yhApp/www/index.html" />
         <option value="$PROJECT_DIR$/yhApp/www/css/picmanagepage.css" />
-        <option value="$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html" />
         <option value="$PROJECT_DIR$/yhApp/www/js/app.js" />
         <option value="$PROJECT_DIR$/yhApp/www/templates/questNotification.html" />
+        <option value="$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html" />
+        <option value="$PROJECT_DIR$/yhApp/www/css/style.css" />
       </list>
     </option>
   </component>
@@ -468,11 +475,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/yhApp/www/img/ios7-png/upload-vector.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/yhApp/www/img/ios7-png/upload-cloud-vector.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -764,18 +766,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html">
+    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/questNotification.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.4489796">
-          <caret line="8" column="46" selection-start-line="8" selection-start-column="46" selection-end-line="8" selection-end-column="46" />
+        <state vertical-scroll-proportion="-6.122449">
+          <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/questNotification.html">
+    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7109005">
-          <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
+        <state vertical-scroll-proportion="-13.77551">
+          <caret line="45" column="16" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yhApp/www/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.033632286">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
