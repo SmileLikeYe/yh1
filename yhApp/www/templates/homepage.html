@@ -10,75 +10,35 @@
   <!-- TODO:替换placeholder -->
   <!-- TODO:真tm丑-->
 <div id="homepage">
-	  <div class="row row-33" id="hpblock">
-		<div class = "col col-25" id="hpbleft">
-			<p align="center">
-				<button class="button button-block button-energized"  type="button" ng-click="showQuestNotification ()">抢</button>
-			</p>
+	  <div class="contain_box">
+				<button class="btn_primary snatch" ng-click="showQuestNotification ()">抢</button>
+        <div class="text_group">
+          <div class="text_box">
+            <p class="snatch_text snatch_text_color"><span class="snatch_title snatch_title_color">1</span>耐克拍照</p>
+            <p ng-hide="true" class="snatch_text snatch_text_color">2015-11-20</p>
+            <p ng-hide="true" class="snatch_text snatch_text_color">8/10</p>
+          </div>
+          <div class="text_box">
+            <p class="snatch_text snatch_text_color"><span class="snatch_title snatch_title_color">2</span>爱拍拍照</p>
+            <p ng-hide="true" class="snatch_text snatch_text_color">2015-11-20</p>
+            <p ng-hide="true" class="snatch_text snatch_text_color">7/10</p>
+          </div>
+        </div>
 		</div>
-		<div  class = "col">
-				<table align="left">
-					<tr>
-						<td>任务1：耐克拍照 </td>
-					</tr>						
-					<tr>
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2015.11.20 </td>
-					</tr>
-					<tr>
-				      	<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8/10</td>
-					</tr>
-				</table>
-				<table align="right">
-					<tr>
-						<td>任务2：爱拍拍照 </td>
-					</tr>						
-					<tr>
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2015.11.20 </td>
-					</tr>
-					<tr>
-				      	<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7/10</td>
-					</tr>
-				</table>
+		<div  class = "contain_box">
+      <div class="camera"></div>
+      <button class="btn_primary take" ng-click="getPhoto()">拍</button>
 		</div>
+	  <div class="contain_box">
+			<button class="btn_primary earn" ng-click="showCashNotification()">赚</button>
+		  <div class="score_box">
+        <div class="package"></div>
+        <p class="text_earn">可兑换积分：27</p>
+        <p class="text_earn">不可兑换积分：18</p>
+      </div>
 	  </div>
-	  <div class="row row-33" id="hpblock">
-		<div class = "col col-75">
-			<p align="center">
-				some placeholder
-			</p>
-		</div>
-		<div class="col" id="hpbright" >
-		<p align="center" >
-			<button class="button  button-block button-calm" ng-click="getPhoto()">拍</button>
-		</p>
-		</div>
-	  </div>
-	  
-	  <div class="row" id="hpblock">
-		  <div id="hpbleft">
-			<p align="left">
-			<Button class="button" ng-click="showCashNotification()">赚</button>
-			</p>
-		  </div>
-		  <div align="center">
-		  	<table align="center">
-					<tr>
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;可兑换积分</td>
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;不可兑换积分</td>
-					</tr>						
-					<tr>
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;70 
-						</td>
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20
-						</td>
-					</tr>
-					
-		  </div>
-	  </div>
-	  
-	  
 </div>
-	  
+
 <!--
 
 		<div class="card">

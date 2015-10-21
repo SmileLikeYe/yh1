@@ -1,0 +1,28 @@
+.address_box{
+  padding: 15px;
+  background-color: #ffffff;
+  margin: 10px;
+  border-radius: 4px;
+}
+.person,.telephone{
+  font-size: 14px;
+  color: #666666;
+}
+.telephone{
+  margin-left: 20px;
+}
+.address_text{
+  font-size: 12px;
+  color: #666666;
+}
+.add_address{
+  margin: 10px 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 50px;
+  height: 47px;
+  color: #ffffff;
+  background-color: #387ef5;
+}

@@ -1,0 +1,17 @@
+.gap{
+  width: 100%;
+  height: 20px;
+  background-color: #f4f4f4;
+}
+.item{
+  border: 1px solid #dddddd;
+  border-bottom: none;
+}
+.button-positive{
+  border: none;
+}
+.btn-send{
+  padding: 0 16px 0 10px;
+  font-size: 14px;
+  margin-right: 16px;
+}

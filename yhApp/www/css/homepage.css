@@ -1,0 +1,80 @@
+#homepage{
+  padding: 0;
+  width: 90%;
+  margin: 0 auto;
+}
+.contain_box{
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  margin: 20px;
+  padding: 20px;
+  width: 90%;
+  position: relative;
+}
+.btn_primary{
+  width: 80px;
+  height: 80px;
+  border-radius: 1000px;
+  border: none;
+  color: white;
+  font-size: 20px;
+  display: inline-block;
+}
+.text_group{
+  margin: 10px 15px;
+  max-width: 120px;
+  position: absolute;
+  top: 10px;
+  right: 0;
+}
+.snatch{
+  background-color: #387ef5;
+}
+.take{
+  background-color: #c9deb2;
+}
+.earn{
+  background-color: #f1b133;
+}
+.snatch_title{
+  color: #387ef5;
+  font-size: 14px;
+  font-weight: 600;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.text_box{
+  display: inline-block;
+  position: relative;
+}
+.snatch_title{
+  padding-left: 5px;
+  width: 22px;
+  height: 22px;
+  border-radius: 1000px;
+}
+.snatch_text{
+  margin-left: 30px;
+}
+.camera{
+  width: 130px;
+  height: 40px;
+  display: inline-block;
+}
+.score_box{
+  max-width: 120px;
+  display: inline-block;
+  margin-left: 20px;
+}
+.text_earn{
+  font-size: 14px;
+  color: #f1b133;
+}
+.snatch_text_color{
+  color: #387ef5;
+}
+.snatch_title_color{
+  border: 2px solid #387ef5;
+}
+

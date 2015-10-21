@@ -16,33 +16,34 @@
     <ion-header-bar class="bar-light">
       <h1 class="title"><!-- TODO:侧边栏的标题  --></h1>
     </ion-header-bar>
-    <ion-content>
+    <ion-content class="back_color">
       <ion-list>
         <!-- TODO:页面模板做好后把url和controller对应起来  -->
         <ion-item menu-close ng-click="login()">
-          <img align="left" src="img/ios7-png/idea-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用户管理
-          <img align="right" src="img/ios7-png/forward-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
+          <img class="sculpture" src="img/ios7-png/user-male-circle-vector.png">
+          <span class="username">18456454433</span>
+          <img class="arrow arrow_first" src="img/ios7-png/forward-vector.png">
         </ion-item>
+        <div class="gap"></div>
         <ion-item menu-close href="#/app/quest">
-          <img align="left" src="img/ios7-png/idea-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;任务管理
-          <img align="right" src="img/ios7-png/forward-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
+          <img class="arrow" src="img/ios7-png/alarm-clock-vector.png">
+          <span class="management">任务管理</span>
+          <img class="arrow arrow_other" src="img/ios7-png/forward-vector.png">
         </ion-item>
         <ion-item menu-close href="#/app/picmanage">
-          <img align="left" src="img/ios7-png/idea-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;照片管理
-          <img align="right" src="img/ios7-png/forward-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
+          <img class="arrow" src="img/ios7-png/photo-vector.png">
+          <span class="management">照片管理</span>
+          <img class="arrow arrow_other" src="img/ios7-png/forward-vector.png">
         </ion-item>
         <ion-item menu-close href="#/app/creditpage">
-          <img align="left" src="img/ios7-png/idea-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;积分管理
-          <img align="right" src="img/ios7-png/forward-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
+          <img class="arrow" src="img/ios7-png/price-tag-pound-vector.png">
+          <span class="management">积分管理</span>
+          <img class="arrow arrow_other" src="img/ios7-png/forward-vector.png">
         </ion-item>
         <ion-item menu-close href="#/app/address">
-          <img align="left" src="img/ios7-png/idea-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收货地址
-          <img align="right" src="img/ios7-png/forward-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'> 
+          <img class="arrow" src="img/ios7-png/flag-vector.png">
+          <span class="management">收货地址</span>
+          <img class="arrow arrow_other" src="img/ios7-png/forward-vector.png">
         </ion-item>
       </ion-list>
     </ion-content>
