@@ -105,10 +105,6 @@ $scope.sendVCode = function() {
     { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
     { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
   ];
-
-<<<<<<< HEAD
-=======
->>>>>>> origin/UI
 })
 
 
@@ -140,9 +136,6 @@ $scope.click = function(){
 	$scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
 };
 $scope.getPhoto= function(){
-<<<<<<< HEAD
-=======
->>>>>>> origin/UI
 	navigator.camera.getPicture(onSuccess, onFail, {
 		quality: 50,
     	destinationType: Camera.DestinationType.FILE_URI
@@ -160,9 +153,5 @@ $scope.getPhoto= function(){
 	}
 
 };
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/UI
 });
 
