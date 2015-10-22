@@ -1,36 +1,15 @@
 <ion-view view-title="积分管理">
   <ion-content>
-  <p align="center">可兑换积分</p>
-    <table width="100%">
-      <tr>
-        <td  width="20%" align="center">
-        <img src="img/ios7-png/price-tag-usd-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'>
-        </td>
-        <td width="60%">
-          70
-        </tb>
-        <td  width="20%" align="center">
-        <img src="img/ios7-png/money-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'>
-        </td>
-      </tr>
-    </table>
-
-  <p align="center">不可兑换积分</p>
-    <table width="100%">
-      <tr>
-        <td  width="20%" align="center">
-          <img src="img/ios7-png/price-tag-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'>
-        </td>
-        <td width="60%">
-          20
-        </tb>
-        <td  width="20%" align="center">
-          <img src="img/ios7-png/money-vector.png" onload='if (this.width>20 || this.height>20) if (this.width/this.height>80/80) this.width=20; else this.height=20;'>
-        </td>
-      </tr>
-    </table>
-
-    
-
+  <p class="credit_title">积分详情</p>
+  <div class="credit_avail credit_contain">
+    <i class="icon-envelope avail credit_icon"></i>
+    <p class="avail credit_detail">可兑换积分</p>
+    <p class="avail credit_count">27</p>
+  </div>
+    <div class="credit_unavail credit_contain">
+      <i class="icon-envelope unavail credit_icon"></i>
+      <p class="unavail credit_detail">不可兑换积分</p>
+      <p class="unavail credit_count">18</p>
+    </div>
   </ion-content>
 </ion-view>
