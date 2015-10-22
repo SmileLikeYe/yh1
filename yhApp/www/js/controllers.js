@@ -130,7 +130,6 @@ $scope.doRefresh = function() {
 };
 $scope.click = function(){};
 $scope.getPhoto= function(){
-	console.log("sdfds");
 	navigator.camera.getPicture(onSuccess, onFail, {
 		quality: 50,
     	destinationType: Camera.DestinationType.FILE_URI
