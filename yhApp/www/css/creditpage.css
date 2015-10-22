@@ -1,0 +1,44 @@
+.credit_title{
+  text-align: center;
+  font-size: 20px;
+  color: #666666;
+  margin: 30px;
+}
+.credit_contain{
+  height: 120px;
+  margin: 40px;
+  padding: 20px 10px;
+  position: relative;
+  border-radius: 10px;
+}
+.credit_avail{
+  border: 2px solid #f5405a;
+}
+.credit_unavail{
+  border: 2px solid #666666;
+}
+.avail{
+  color: #f5405a;
+}
+.unavail{
+  color: #666666;
+}
+.credit_icon{
+  font-size: 65px;
+  position: absolute;
+  top: 20%;
+  left: 10%;
+}
+.credit_detail{
+  position: absolute;
+  top: 30px;
+  left: 48%;
+  font-size: 16px;
+}
+.credit_count{
+  position: absolute;
+  top: 65px;
+  left: 56%;
+  font-size: 22px;
+  font-weight: 600;
+}
