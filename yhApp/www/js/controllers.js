@@ -27,6 +27,51 @@ $ionicModal.fromTemplateUrl('templates/questNotification.html', {
     $scope.questNotificationModal.show();
   };
 
+//创建序列号弹窗
+$ionicModal.fromTemplateUrl('templates/serialNumber.html',{
+  scope: $scope
+  }).then(function(modal) {
+    $scope.serialNumberModal = modal;
+  });
+  $scope.closeSerialNumber = function() {
+    $scope.serialNumberModal.hide();
+  };
+  $scope.showSerialNumber = function() {
+    $scope.serialNumberModal.show();
+  };
+  $scope.submitNumber = function() {
+    $scope.serialNumberModal.hide();
+  };
+
+//创建不可兑换积分说明弹窗
+$ionicModal.fromTemplateUrl('templates/unavailcredit.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.unavailCreditModal = modal;
+});
+  $scope.closeUnavailCredit = function() {
+    $scope.unavailCreditModal.hide();
+  };
+  $scope.showUnavailCredit = function() {
+    $scope.unavailCreditModal.show();
+  };
+
+//创建新建及编辑地址弹窗
+$inonicModal.fromTemplateUrl('templates/addressmodify.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.addressModifyModal = modal;
+});
+  $scope.closeAddressModify = function() {
+    $scope.addressModifyModal.hide();
+  };
+  $scope.showAddressModify = function() {
+    $scope.addressModifyModal.show();
+  };
+  $scope.submitAddressModify = function() {
+    $scope.addressModifyModal.hide();
+  };
+
 //准备数据
 $scope.loginData = {};
 $scope.regData={};
@@ -95,6 +140,9 @@ $scope.sendVCode = function() {
 	window.location.href="#/app/picinfo";
 	console.log(window.location.href);
 };
+ $scope.gotoAlbum = function() {
+   window.location.href="#/app/picmanage";
+ };
   $scope.pics = [
     { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
     { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
@@ -147,4 +195,3 @@ $scope.getPhoto= function(){
 
 };
 });
-

@@ -2,6 +2,7 @@
   <ion-content>
     <ion-list show-delete="shouldShowDelete" show-reorder="shouldShowReorder" can-swipe="listCanSwipe">
       <div class="title_bar">
+        <i ng-click="gotoAlbum()" class="icon-angle-left returntask phone"></i>
         <i class="icon-user portrait phone"></i>
         <span class="phone">13456476878的相册</span>
         <i class="icon-camera takephoto phone"></i>
@@ -19,6 +20,7 @@
               <div class="box">
                 <img ng-src="{{pic.img}}" class="photoview">
               </div>
+              <button class="btn-retake btn-operation" on-reorder="reorderItem(pic, $fromIndex, $toIndex)"><i class="icon-exchange delete phone" ></i>重拍</button>
             </ion-slide>
             <ion-slide>
               <div class="box blue">
@@ -27,11 +29,7 @@
             </ion-slide>
           </ion-slide-box>
         </div>
-        <div class="operation">
-          <button class="btn-delete btn-operation" ng-click="items.splice($index, 1)"><i class="icon-trash delete phone" ></i>删除</button>
-          <button class="btn-retake btn-operation" on-reorder="reorderItem(pic, $fromIndex, $toIndex)"><i class="icon-exchange delete phone" ></i>重拍</button>
         </div>
-      </div>
     </ion-list>
   </ion-content>
 </ion-view>
