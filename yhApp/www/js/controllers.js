@@ -28,6 +28,11 @@ $ionicModal.fromTemplateUrl('templates/questNotification.html', {
   };
 
 //准备数据
+$scope.pics = [
+    { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
+    { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
+    { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
+ ];
 $scope.loginData = {};
 $scope.regData={};
 $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -95,12 +100,6 @@ $scope.sendVCode = function() {
 	window.location.href="#/app/picinfo";
 	console.log(window.location.href);
 };
-  $scope.pics = [
-    { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
-    { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
-    { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
-  ];
-
 })
 
 
@@ -128,7 +127,9 @@ $scope.doRefresh = function() {
 	 });*/
 	   $scope.$broadcast('scroll.refreshComplete');
 };
-$scope.click = function(){};
+$scope.click = function(){
+	$scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
+};
 $scope.getPhoto= function(){
 	navigator.camera.getPicture(onSuccess, onFail, {
 		quality: 50,
@@ -138,12 +139,34 @@ $scope.getPhoto= function(){
 	function onSuccess(imageURI) {
     	var image = document.getElementById('myImage');
     	image.src = imageURI;
+    	addPhoto(imageURI);
+
 	}
 
 	function onFail(message) {
     	alert('Failed because: ' + message);
 	}
 
+};
+function addPhoto(imageURI){
+	$scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:imageURI });
+};
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+    return currentdate;
 };
 });
 
