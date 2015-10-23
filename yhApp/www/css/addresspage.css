@@ -24,3 +24,9 @@
   color: #ffffff;
   background-color: #387ef5;
 }
+.heart_pos{
+  position: absolute;
+  top: 22%;
+  right: 6%;
+  font-size: 20px;
+}

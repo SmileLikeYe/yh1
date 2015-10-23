@@ -1,0 +1,26 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive">
+    <h1 class="title font-color">新增地址</h1>
+    <div class="buttons">
+      <a class="button" ng-click="closeAddressAdd()">取消</a>
+    </div>
+  </ion-header-bar>
+  <ion-content class="back_color">
+    <form ng-submit="submitAddressAdd()">
+      <div class="list">
+        <label class="item item-input">
+          <input type="text" class="font-color address_info" placeholder="    请输入收货人姓名" required />
+        </label>
+        <label class="item item-input">
+          <input type="text" class="font-color address_info" placeholder="    请输入收货人手机号码" required />
+        </label>
+        <label class="item item-input">
+          <input type="text" class="font-color address_info" placeholder="    请输入收货地址" required />
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit">完成</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>

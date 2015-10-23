@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $timeout) {
 
 $ionicModal.fromTemplateUrl('templates/cashNotification.html', {
     scope: $scope
@@ -56,7 +56,20 @@ $ionicModal.fromTemplateUrl('templates/unavailcredit.html',{
     $scope.unavailCreditModal.show();
   };
 
-//创建新建及编辑地址弹窗
+//创建新手规则说明弹窗
+$ionicModal.fromTemplateUrl('templates/rule.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.ruleModal = modal;
+});
+  $scope.closeRule = function() {
+    $scope.ruleModal.hide();
+  };
+  $scope.showRule = function() {
+    $scope.ruleModal.show();
+  };
+
+//创建编辑地址弹窗
 $ionicModal.fromTemplateUrl('templates/addressmodify.html',{
   scope: $scope
 }).then(function(modal){
@@ -71,6 +84,34 @@ $ionicModal.fromTemplateUrl('templates/addressmodify.html',{
   $scope.submitAddressModify = function() {
     $scope.addressModifyModal.hide();
   };
+
+//创建新建地址弹窗
+$ionicModal.fromTemplateUrl('templates/addressadd.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.addressAddModal = modal;
+});
+  $scope.closeAddressAdd = function() {
+    $scope.addressAddModal.hide();
+  };
+  $scope.showAddressAdd = function() {
+    $scope.addressAddModal.show();
+  };
+  $scope.submitAddressAdd = function() {
+    $scope.addressAddModal.hide();
+  };
+
+//选择任务小弹窗
+$scope.showTaskPopup = function() {
+  var pop = $ionicPopup.show({
+    templateUrl: 'templates/selectTask.html',
+    title: '请选择任务',
+    scope: $scope
+  });
+    $scope.closeTaskPopup = function() {
+      pop.close();
+  };
+};
 
 //准备数据
 $scope.loginData = {};
@@ -194,4 +235,5 @@ $scope.getPhoto= function(){
 	}
 
 };
+    $scope.selected = false;
 });
