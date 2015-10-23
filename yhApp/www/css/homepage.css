@@ -85,7 +85,6 @@
 .count{
   margin: 2px;
   font-size: 16px;
-  color: #666666;
   font-weight: 400;
   line-height: 0.3;
 }
@@ -151,7 +150,6 @@
   top: 50px;
   left: 20%;
   font-size: 20px;
-  color: #666666;
 }
 .right{
   text-align: right;

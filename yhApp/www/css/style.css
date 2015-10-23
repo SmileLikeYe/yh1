@@ -7,7 +7,9 @@ span.hint {
 img.edit {
 	padding-left: 40px
 }
-
+.font-color{
+  color: #666666;
+}
 
 [class~='blue'] {
 background-color:#0000FF;

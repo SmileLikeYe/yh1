@@ -57,7 +57,7 @@ $ionicModal.fromTemplateUrl('templates/unavailcredit.html',{
   };
 
 //创建新建及编辑地址弹窗
-$inonicModal.fromTemplateUrl('templates/addressmodify.html',{
+$ionicModal.fromTemplateUrl('templates/addressmodify.html',{
   scope: $scope
 }).then(function(modal){
   $scope.addressModifyModal = modal;
