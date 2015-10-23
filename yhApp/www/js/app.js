@@ -6,7 +6,9 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$ionicLoading) {
+
+  AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -78,16 +80,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-  .state('app.single', {
-    url: '/playlists/:playlistId',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
-      }
-    }
-  })
-
+    
   .state('app.credit', {
     url: '/creditpage',
     views: {

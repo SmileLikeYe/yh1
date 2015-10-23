@@ -110,11 +110,7 @@ $scope.sendVCode = function() {
 
 
 
-.controller('HomePageCtrl',function($scope){
-$scope.playlists = [
-	{ title: 'Reggae', id: 1 },
-	{ title: 'Chill', id: 2 },
-];
+.controller('HomePageCtrl',function($scope, $ionicLoading, $ionicPopup, $timeout){
 $scope.moreTasks = function() {
   window.location.href="#/app/quest";
 };
@@ -152,11 +148,21 @@ $scope.getPhoto= function(){
     	alert('Failed because: ' + message);
 	}
 
-
-
 };
-
 $scope.getPosition= function(){
+
+  
+  var TestObject = AV.Object.extend('TestObject');
+  var testObject = new TestObject();
+  testObject.save({
+    foo: 'bar',
+    username: 'ddd'
+  }, {
+    success: function(object) {
+      alert('LeanCloud works!');
+    }
+  });
+
   navigator.geolocation.getCurrentPosition(onSuccess,onFail, {
     enableHighAccuracy: false,
     timeout: 60*1000,
@@ -172,6 +178,20 @@ $scope.getPosition= function(){
           'Heading: '           + position.coords.heading           + '\n' +
           'Speed: '             + position.coords.speed             + '\n' +
           'Timestamp: '         + position.timestamp                + '\n');
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");
+    // var point = new BMap.Point(116.331398,39.897445);
+    var point = new BMap.Point(position.coords.longitude, position.coords.latitude);
+    var gc = new BMap.Geocoder();
+    gc.getLocation(point, function(rs){
+       var addComp = rs.addressComponents;
+       // var location = addComp.province + ", " + addComp.city +
+       //  ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber
+       // alert(location);
+       alert(addComp.province + ", " + addComp.city +
+         ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+       $scope.myLocation = location;
+    });
   }
 
   function onFail(message) {
@@ -180,5 +200,91 @@ $scope.getPosition= function(){
   }
 
 };
+
+$scope.showLoading = function() {
+
+   $ionicLoading.show({
+        
+  content: 'fd',
+
+  // The animation to use
+  animation: 'fade-in',
+
+  // Will a dark overlay or backdrop cover the entire view
+  showBackdrop: true,
+
+  // The maximum width of the loading indicator
+  // Text will be wrapped if longer than maxWidth
+  maxWidth: 200,
+
+  // The delay in showing the indicator
+  showDelay: 100
+      })
+
+};
+$scope.hideLoading = function(){
+    $ionicLoading.hide();
+};
+// Triggered on a button click, or some other target
+$scope.showPopup = function() {
+  $scope.data = {}
+
+  // An elaborate, custom popup
+  var myPopup = $ionicPopup.show({
+    templateUrl: 'templates/login.html',
+    title: 'Enter Wi-Fi Password',
+    subTitle: 'Please use normal things',
+    scope: $scope,
+    buttons: [
+      { text: 'Cancel' },
+      {
+        text: '<b>Save</b>',
+        type: 'button-positive',
+        onTap: function(e) {
+          if (!$scope.data.wifi) {
+            //don't allow the user to close unless he enters wifi password
+            e.preventDefault();
+          } else {
+            return $scope.data.wifi;
+          }
+        }
+      }
+    ]
+  });
+  myPopup.then(function(res) {
+    console.log('Tapped!', res);
+  });
+  $timeout(function() {
+     myPopup.close(); //close the popup after 3 seconds for some reason
+  }, 3000);
+ };
+
+ // A confirm dialog
+ $scope.showConfirm = function() {
+   var confirmPopup = $ionicPopup.confirm({
+     title: 'Consume Ice Cream',
+     template: 'Are you sure you want to eat this ice cream?'
+   });
+   confirmPopup.then(function(res) {
+     if(res) {
+       console.log('You are sure');
+     } else {
+       console.log('You are not sure');
+     }
+   });
+ };
+
+ // An alert dialog
+ $scope.showAlert = function() {
+   var alertPopup = $ionicPopup.alert({
+     title: 'Don\'t eat that!',
+     template: 'It might taste good'
+   });
+   alertPopup.then(function(res) {
+     console.log('Thank you for not eating my delicious ice cream cone');
+   });
+ };
+
 });
+
 
