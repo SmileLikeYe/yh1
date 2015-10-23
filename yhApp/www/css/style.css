@@ -50,6 +50,10 @@ img.edit {
   top: 8px;
   right: 8px;
 }
+.button-set{
+  width: 45%;
+  margin: 0 2%;
+}
 [class~='blue'] {
 background-color:#0000FF;
 }

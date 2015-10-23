@@ -82,7 +82,10 @@ $ionicModal.fromTemplateUrl('templates/addressmodify.html',{
     $scope.addressModifyModal.show();
   };
   $scope.submitAddressModify = function() {
-    $scope.addressModifyModal.hide();
+    //$scope.addressModifyModal.hide();
+  };
+  $scope.setDefault = function() {
+      console.log('selected');
   };
 
 //创建新建地址弹窗
@@ -112,7 +115,7 @@ $scope.showTaskPopup = function() {
       pop.close();
   };
 };
-
+$scope.selected = false;
 //准备数据
 $scope.loginData = {};
 $scope.regData={};
@@ -193,8 +196,6 @@ $scope.sendVCode = function() {
 })
 
 
-
-
 .controller('HomePageCtrl',function($scope){
 $scope.playlists = [
 	{ title: 'Reggae', id: 1 },
@@ -235,5 +236,4 @@ $scope.getPhoto= function(){
 	}
 
 };
-    $scope.selected = false;
-});
+})
