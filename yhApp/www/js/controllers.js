@@ -199,18 +199,8 @@ $scope.sendVCode = function() {
   ];
 })
 
-
-<<<<<<< HEAD
-
-
-.controller('HomePageCtrl',function($scope, $ionicLoading, $ionicPopup, $timeout){
-=======
 .controller('HomePageCtrl',function($scope){
-$scope.playlists = [
-	{ title: 'Reggae', id: 1 },
-	{ title: 'Chill', id: 2 },
-];
->>>>>>> origin/UI
+  
 $scope.moreTasks = function() {
   window.location.href="#/app/quest";
 };
