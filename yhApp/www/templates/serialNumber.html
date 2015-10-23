@@ -1,0 +1,20 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive">
+    <h1 class="title">输入序列号</h1>
+    <div class="buttons">
+      <a class="button" ng-click="closeSerialNumber()">取消</a>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <form ng-submit="submitNumber()">
+      <div class="list">
+        <label class="item item-input">
+          <input type="text" placeholder="  请输入序列号"/>
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit">下一步</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>

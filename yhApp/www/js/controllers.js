@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $timeout) {
 
 $ionicModal.fromTemplateUrl('templates/cashNotification.html', {
     scope: $scope
@@ -27,6 +27,95 @@ $ionicModal.fromTemplateUrl('templates/questNotification.html', {
     $scope.questNotificationModal.show();
   };
 
+//创建序列号弹窗
+$ionicModal.fromTemplateUrl('templates/serialNumber.html',{
+  scope: $scope
+  }).then(function(modal) {
+    $scope.serialNumberModal = modal;
+  });
+  $scope.closeSerialNumber = function() {
+    $scope.serialNumberModal.hide();
+  };
+  $scope.showSerialNumber = function() {
+    $scope.serialNumberModal.show();
+  };
+  $scope.submitNumber = function() {
+    $scope.serialNumberModal.hide();
+  };
+
+//创建不可兑换积分说明弹窗
+$ionicModal.fromTemplateUrl('templates/unavailcredit.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.unavailCreditModal = modal;
+});
+  $scope.closeUnavailCredit = function() {
+    $scope.unavailCreditModal.hide();
+  };
+  $scope.showUnavailCredit = function() {
+    $scope.unavailCreditModal.show();
+  };
+
+//创建新手规则说明弹窗
+$ionicModal.fromTemplateUrl('templates/rule.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.ruleModal = modal;
+});
+  $scope.closeRule = function() {
+    $scope.ruleModal.hide();
+  };
+  $scope.showRule = function() {
+    $scope.ruleModal.show();
+  };
+
+//创建编辑地址弹窗
+$ionicModal.fromTemplateUrl('templates/addressmodify.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.addressModifyModal = modal;
+});
+  $scope.closeAddressModify = function() {
+    $scope.addressModifyModal.hide();
+  };
+  $scope.showAddressModify = function() {
+    $scope.addressModifyModal.show();
+  };
+  $scope.submitAddressModify = function() {
+    //$scope.addressModifyModal.hide();
+  };
+  $scope.setDefault = function() {
+      console.log('selected');
+  };
+
+//创建新建地址弹窗
+$ionicModal.fromTemplateUrl('templates/addressadd.html',{
+  scope: $scope
+}).then(function(modal){
+  $scope.addressAddModal = modal;
+});
+  $scope.closeAddressAdd = function() {
+    $scope.addressAddModal.hide();
+  };
+  $scope.showAddressAdd = function() {
+    $scope.addressAddModal.show();
+  };
+  $scope.submitAddressAdd = function() {
+    $scope.addressAddModal.hide();
+  };
+
+//选择任务小弹窗
+$scope.showTaskPopup = function() {
+  var pop = $ionicPopup.show({
+    templateUrl: 'templates/selectTask.html',
+    title: '请选择任务',
+    scope: $scope
+  });
+    $scope.closeTaskPopup = function() {
+      pop.close();
+  };
+};
+$scope.selected = false;
 //准备数据
 $scope.pics = [
     { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
@@ -100,6 +189,9 @@ $scope.sendVCode = function() {
 	window.location.href="#/app/picinfo";
 	console.log(window.location.href);
 };
+ $scope.gotoAlbum = function() {
+   window.location.href="#/app/picmanage";
+ };
   $scope.pics = [
     { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
     { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
@@ -108,9 +200,17 @@ $scope.sendVCode = function() {
 })
 
 
+<<<<<<< HEAD
 
 
 .controller('HomePageCtrl',function($scope, $ionicLoading, $ionicPopup, $timeout){
+=======
+.controller('HomePageCtrl',function($scope){
+$scope.playlists = [
+	{ title: 'Reggae', id: 1 },
+	{ title: 'Chill', id: 2 },
+];
+>>>>>>> origin/UI
 $scope.moreTasks = function() {
   window.location.href="#/app/quest";
 };
@@ -149,142 +249,6 @@ $scope.getPhoto= function(){
 	}
 
 };
-$scope.getPosition= function(){
 
-  
-  var TestObject = AV.Object.extend('TestObject');
-  var testObject = new TestObject();
-  testObject.save({
-    foo: 'bar',
-    username: 'ddd'
-  }, {
-    success: function(object) {
-      alert('LeanCloud works!');
-    }
-  });
-
-  navigator.geolocation.getCurrentPosition(onSuccess,onFail, {
-    enableHighAccuracy: false,
-    timeout: 60*1000,
-    maximumAge: 1000*60*10
-  });
-
-  function onSuccess(position) {
-    alert('Latitude: '          + position.coords.latitude          + '\n' +
-          'Longitude: '         + position.coords.longitude         + '\n' +
-          'Altitude: '          + position.coords.altitude          + '\n' +
-          'Accuracy: '          + position.coords.accuracy          + '\n' +
-          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-          'Heading: '           + position.coords.heading           + '\n' +
-          'Speed: '             + position.coords.speed             + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n');
-    // 百度地图API功能
-    var map = new BMap.Map("allmap");
-    // var point = new BMap.Point(116.331398,39.897445);
-    var point = new BMap.Point(position.coords.longitude, position.coords.latitude);
-    var gc = new BMap.Geocoder();
-    gc.getLocation(point, function(rs){
-       var addComp = rs.addressComponents;
-       // var location = addComp.province + ", " + addComp.city +
-       //  ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber
-       // alert(location);
-       alert(addComp.province + ", " + addComp.city +
-         ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
-       $scope.myLocation = location;
-    });
-  }
-
-  function onFail(message) {
-    alert('code: '    + error.code    + '\n' +
-          'message: ' + error.message + '\n');
-  }
-
-};
-
-$scope.showLoading = function() {
-
-   $ionicLoading.show({
-        
-  content: 'fd',
-
-  // The animation to use
-  animation: 'fade-in',
-
-  // Will a dark overlay or backdrop cover the entire view
-  showBackdrop: true,
-
-  // The maximum width of the loading indicator
-  // Text will be wrapped if longer than maxWidth
-  maxWidth: 200,
-
-  // The delay in showing the indicator
-  showDelay: 100
-      })
-
-};
-$scope.hideLoading = function(){
-    $ionicLoading.hide();
-};
-// Triggered on a button click, or some other target
-$scope.showPopup = function() {
-  $scope.data = {}
-
-  // An elaborate, custom popup
-  var myPopup = $ionicPopup.show({
-    templateUrl: 'templates/login.html',
-    title: 'Enter Wi-Fi Password',
-    subTitle: 'Please use normal things',
-    scope: $scope,
-    buttons: [
-      { text: 'Cancel' },
-      {
-        text: '<b>Save</b>',
-        type: 'button-positive',
-        onTap: function(e) {
-          if (!$scope.data.wifi) {
-            //don't allow the user to close unless he enters wifi password
-            e.preventDefault();
-          } else {
-            return $scope.data.wifi;
-          }
-        }
-      }
-    ]
-  });
-  myPopup.then(function(res) {
-    console.log('Tapped!', res);
-  });
-  $timeout(function() {
-     myPopup.close(); //close the popup after 3 seconds for some reason
-  }, 3000);
- };
-
- // A confirm dialog
- $scope.showConfirm = function() {
-   var confirmPopup = $ionicPopup.confirm({
-     title: 'Consume Ice Cream',
-     template: 'Are you sure you want to eat this ice cream?'
-   });
-   confirmPopup.then(function(res) {
-     if(res) {
-       console.log('You are sure');
-     } else {
-       console.log('You are not sure');
-     }
-   });
- };
-
- // An alert dialog
- $scope.showAlert = function() {
-   var alertPopup = $ionicPopup.alert({
-     title: 'Don\'t eat that!',
-     template: 'It might taste good'
-   });
-   alertPopup.then(function(res) {
-     console.log('Thank you for not eating my delicious ice cream cone');
-   });
- };
-
-});
-
+})
 

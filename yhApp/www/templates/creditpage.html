@@ -1,12 +1,12 @@
 <ion-view view-title="积分管理">
   <ion-content>
-  <p class="credit_title">积分详情</p>
-  <div class="credit_avail credit_contain">
+  <p class="credit_title font-color">积分详情</p>
+  <div ng-click="showCashNotification()" class="credit_avail credit_contain">
     <i class="icon-envelope avail credit_icon"></i>
     <p class="avail credit_detail">可兑换积分</p>
     <p class="avail credit_count">27</p>
   </div>
-    <div class="credit_unavail credit_contain">
+    <div ng-click="showUnavailCredit()" class="credit_unavail credit_contain">
       <i class="icon-envelope unavail credit_icon"></i>
       <p class="unavail credit_detail">不可兑换积分</p>
       <p class="unavail credit_count">18</p>

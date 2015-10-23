@@ -8,6 +8,14 @@
 .icon{
   font-size: 20px;
 }
+.icon_bigger{
+  font-size: 30px;
+}
+.icon_pos{
+  position: absolute;
+  top: 40px;
+  left: 10%;
+}
 .status{
   margin-top: 10px;
   display: inline-block;
@@ -17,23 +25,60 @@
 .process{
   color: #f1b133;
 }
-.content{
-  padding: 30px;
-  margin: 0 20px;
-  background-color: #f6f6f6;
-  border-radius: 10px;
-}
-.process_title_color{
-  color: #f1b133;
-  border: 2px solid #f1b133;
-}
-.com_title_color{
-  color: #387ef5;
-  border: 2px solid #387ef5;
-}
 .completed{
   color: #387ef5;
 }
-.text_box{
-  margin-right: 15px;
+.task_wraper{
+  margin: 0 20px;
+  border-radius: 10px;
+  padding-top: 10px;
+  position: relative;
+}
+.wraper_process{
+  border: 2px solid #f1b133;
+}
+.wraper_completed{
+  border: 2px solid #387ef5;
+}
+.load_bar{
+  width: 80%;
+  margin: 0 auto;
+  height: 20px;
+  border-radius: 40px;
+  overflow: hidden;
+}
+.process_bar{
+  width: 50%;
+  height: 100%;
+  display: inline-block;
+
+}
+.right_loadbar{
+  width: 20%;
+  background-color: #C0C0C0;
+}
+.left_loadbar_p{
+  width: 80%;
+  background-color: #f1b133;
+}
+.left_loadbar_c{
+  width: 80%;
+  background-color: #387ef5;
+}
+.next_word{
+  border-radius: 10px;
+  padding-top: 10px;
+  max-width: 60%;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 14px;
+  word-wrap:break-word;
+}
+.quest{
+  max-width: 60%;
+}
+.btn-rule{
+  position: absolute;
+  top: 20px;
+  right: 5%;
 }

@@ -22,15 +22,18 @@
 .text_group{
   margin: 10px 15px;
   max-width: 120px;
+  max-height: 85px;
+  overflow: hidden;
   position: absolute;
-  top: 10px;
-  left: 105px;
+  top: 15px;
+  left: 36%;
 }
 .snatch{
   background-color: #387ef5;
 }
 .take{
   background-color: #c9deb2;
+  float: right;
 }
 .earn{
   background-color: #f1b133;
@@ -50,9 +53,9 @@
   margin: 0 10px 0 10px;
 }
 .camera{
-  margin: 0 40px 0 10px;
-  font-size: 70px;
+  font-size: 20px;
   color: #c9deb2;
+  margin: 10px;
 }
 .text_earn{
   font-size: 14px;
@@ -69,37 +72,85 @@
 .more{
   color: #387ef5;
   position: absolute;
-  bottom: 2px;
+  bottom: 1px;
   left: 5px;
 }
 .details{
   width: 20px;
   height: 20px;
   position: absolute;
-  bottom: 10px;
-  right: 30px;
+  bottom: 8px;
+  right: 16px;
 }
 .count{
   margin: 2px;
   font-size: 16px;
-  color: #666666;
   font-weight: 400;
   line-height: 0.3;
 }
 .details_credit{
-  width: 30px;
+  width: 80px;
   height: 20px;
   position: absolute;
-  bottom: 10px;
-  right: 40px;
+  bottom: 2px;
+  right: -12px;
 }
 .more_credit{
   color: #f1b133;
   position: absolute;
-  bottom: 2px;
-  left: 25px;
+  bottom: 5px;
+  right: 16px;
 }
 .detail_c{
   font-size: 14px;
   color: #f1b133;
+  position: absolute;
+  bottom: 5px;
+  right: 40px;
+}
+.home_link{
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  color: #ffffff;
+  font-size: 12px;
+  text-decoration: underline;
+}
+.serial_num{
+  width: 100px;
+  height: 25px;
+  border-top-right-radius: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #387ef5;
+}
+.timer_group{
+  width: 50%;
+  height: 85px;
+  overflow: hidden;
+  text-align: center;
+  position: absolute;
+  top: 20px;
+  left: 6%;
+}
+.full_height{
+  height: 120px;
+}
+.timer_message{
+  text-align: center;
+  width: 90%;
+  color: #c9deb2;
+  position: absolute;
+  top: 0;
+  left: 6%;
+}
+.timer{
+  position: absolute;
+  top: 50px;
+  left: 20%;
+  font-size: 20px;
+}
+.right{
+  text-align: right;
 }
