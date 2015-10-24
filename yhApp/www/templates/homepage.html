@@ -17,37 +17,41 @@
         </div>
         <div class="text_group">
           <div class="text_box">
-            <p ng-click="sTextClick=!sTextClick" class="snatch_text_color"><i class="icon-pushpin icon"></i>耐克拍照</p>
-            <p ng-show="sTextClick" class="snatch_info snatch_text_color">2015-11-20</p>
-            <p ng-show="sTextClick" class="snatch_info snatch_text_color">8/10</p>
+            <p ng-click="sTextClick=!sTextClick" class="snatch_text"><i class="icon-pushpin icon"></i>耐克拍照</p>
+            <p ng-show="sTextClick" class="snatch_info snatch_text">2015-11-20</p>
+            <p ng-show="sTextClick" class="snatch_info snatch_text">8/10</p>
           </div>
           <div class="text_box">
-            <p class="snatch_text_color"><i class="icon-pushpin icon"></i>爱拍拍照</p>
-            <p ng-hide="true" class="snatch_info snatch_text_color">2015-11-20</p>
-            <p ng-hide="true" class="snatch_info snatch_text_color">7/10</p>
+            <p class="snatch_text"><i class="icon-pushpin icon"></i>爱拍拍照</p>
+            <p ng-hide="true" class="snatch_info snatch_text">2015-11-20</p>
+            <p ng-hide="true" class="snatch_info snatch_text">7/10</p>
           </div>
         </div>
         <div ng-click="moreTasks()" class="details">
-          <span class="number">5</span>
-          <i class="icon-angle-right icon more"></i>
+          <span class="number snatch_text">5</span>
+          <i class="icon-angle-right icon more snatch_text"></i>
         </div>
 		</div>
 		<div  class = "contain_box full_height">
       <div class="timer_group">
-        <span class="timer_message"><i class="icon-camera-retro camera"></i>距离您下次拍照时间</span>
+        <span class="timer_message"><i class="icon-camera-retro camera take_text"></i>距离您下次拍照时间</span>
         <p class="timer font-color">1&nbsp;:&nbsp;23&nbsp;:&nbsp;24</p>
       </div>
       <button class="btn_primary take" ng-click="showTaskPopup()">拍</button>
+      <div ng-click="goToPic()" class="details_left">
+        <i class="icon-angle-left icon more_left take_text"></i>
+        <span class="go_album take_text">相册</span>
+      </div>
 		</div>
 	  <div class="contain_box">
 			<button class="btn_primary earn" ng-click="showCashNotification()">赚</button>
 		  <div class="text_group right">
-        <p class="text_earn">&nbsp;&nbsp;可兑换积分&nbsp;<span class="count font-color">27</span></p>
-        <p class="text_earn">不可兑换积分&nbsp;<span class="count font-color">18</span></p>
+        <p class="text_earn earn_text">&nbsp;&nbsp;可兑换积分&nbsp;<span class="count font-color">27</span></p>
+        <p class="text_earn earn_text">不可兑换积分&nbsp;<span class="count font-color">18</span></p>
       </div>
       <div ng-click="creditDetails()" class="details_credit">
-        <span class="detail_c">详情</span>
-        <i class="icon-angle-right icon more_credit"></i>
+        <span class="detail_c earn_text">详情</span>
+        <i class="icon-angle-right icon more_credit earn_text"></i>
       </div>
 	  </div>
 </div>

@@ -27,6 +27,10 @@ $ionicModal.fromTemplateUrl('templates/questNotification.html', {
   $scope.showQuestNotification = function() {
     $scope.questNotificationModal.show();
   };
+  $scope.goPurchase = function() {
+      $scope.closeQuestNotification();
+      window.location.href='#/app/purchase';
+  };
 
 //创建序列号弹窗
 $ionicModal.fromTemplateUrl('templates/serialNumber.html',{
@@ -86,7 +90,8 @@ $ionicModal.fromTemplateUrl('templates/addressmodify.html',{
     //$scope.addressModifyModal.hide();
   };
   $scope.setDefault = function() {
-      console.log('selected');
+    $scope.showAddPopup();
+    console.log('confirm show');
   };
 
 //创建新建地址弹窗
@@ -116,6 +121,25 @@ $scope.showTaskPopup = function() {
       pop.close();
   };
 };
+
+$scope.showAddPopup = function() {
+  var confirmPopup = $ionicPopup.confirm({
+    title: '确认修改',
+    template: '确定要修改收货地址吗？',
+    scope: $scope
+  });
+   confirmPopup.then(function(res) {
+     $scope.confirmPopup = res;
+     console.log(res);
+     if(res) {
+       console.log('yes');
+     }
+     else {
+       console.log('no');
+     }
+   });
+};
+
 $scope.selected = false;
 //准备数据
 
@@ -201,8 +225,11 @@ $scope.pics = [
 $scope.moreTasks = function() {
   window.location.href="#/app/quest";
 };
-$scope.creditDetails = function(){
+$scope.creditDetails = function() {
   window.location.href="#/app/creditpage";
+};
+$scope.goToPic = function() {
+  window.location.href="#/app/picmanage";
 };
 $scope.doRefresh = function() {
 	/*$http.get('/new-items')
