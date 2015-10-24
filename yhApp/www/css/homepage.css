@@ -31,12 +31,21 @@
 .snatch{
   background-color: #387ef5;
 }
+.snatch_text{
+  color: #387ef5;
+}
 .take{
   background-color: #c9deb2;
   float: right;
 }
+.take_text{
+  color: #c9deb2;
+}
 .earn{
   background-color: #f1b133;
+}
+.earn_text{
+  color: #f1b133;
 }
 .snatch_info{
   font-size: 10px;
@@ -54,25 +63,31 @@
 }
 .camera{
   font-size: 20px;
-  color: #c9deb2;
   margin: 10px;
 }
 .text_earn{
   font-size: 14px;
-  color: #f1b133;
   margin-top: 10px;
-}
-.snatch_text_color{
-  color: #387ef5;
 }
 .number{
   font-size: 14px;
-  color: #387ef5;
 }
 .more{
-  color: #387ef5;
   position: absolute;
   bottom: 1px;
+  left: 5px;
+}
+.more_left{
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+}
+.details_left{
+  margin-top: 20px;
+  width: 80px;
+  height: 20px;
+  position: absolute;
+  bottom: 7px;
   left: 5px;
 }
 .details{
@@ -88,6 +103,10 @@
   font-weight: 400;
   line-height: 0.3;
 }
+.go_album{
+  margin-left: 24px;
+  font-size: 14px;
+}
 .details_credit{
   width: 80px;
   height: 20px;
@@ -96,14 +115,12 @@
   right: -12px;
 }
 .more_credit{
-  color: #f1b133;
   position: absolute;
   bottom: 5px;
   right: 16px;
 }
 .detail_c{
   font-size: 14px;
-  color: #f1b133;
   position: absolute;
   bottom: 5px;
   right: 40px;
@@ -135,7 +152,7 @@
   left: 6%;
 }
 .full_height{
-  height: 120px;
+  height: 125px;
 }
 .timer_message{
   text-align: center;
