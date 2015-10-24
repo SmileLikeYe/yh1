@@ -1,0 +1,30 @@
+Searching 140 files for "ios7" (regex)
+
+/Users/smile/Desktop/OutSource/yh1/yhApp/www/js/controllers.js:
+  119  //准备数据
+  120  $scope.pics = [
+  121:     { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
+  122      { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
+  123      { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
+  ...
+  194   };
+  195    $scope.pics = [
+  196:     { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
+  197      { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
+  198      { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
+
+/Users/smile/Desktop/OutSource/yh1/yhApp/www/lib/ionic/scss/ionicons/_ionicons-animation.scss:
+   37  .#{$ionicons-prefix}looping,
+   38  .#{$ionicons-prefix}refreshing,
+   39: .#{$ionicons-prefix}ios7-reloading {
+   40    @extend .ion;
+   41    // must spin entire element for android 4.3 and below
+   ..
+   73  }
+   74  
+   75: .#{$ionicons-prefix}ios7-reloading:before { 
+   76:   @extend .#{$ionicons-prefix}ios7-reload:before;
+   77  }
+   78  
+
+5 matches across 2 files

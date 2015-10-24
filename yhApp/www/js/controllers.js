@@ -2,6 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $timeout) {
 
+
 $ionicModal.fromTemplateUrl('templates/cashNotification.html', {
     scope: $scope
   }).then(function(modal) {
@@ -117,11 +118,7 @@ $scope.showTaskPopup = function() {
 };
 $scope.selected = false;
 //准备数据
-$scope.pics = [
-    { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
-    { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
-    { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
- ];
+
 $scope.loginData = {};
 $scope.regData={};
 $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -192,15 +189,15 @@ $scope.sendVCode = function() {
  $scope.gotoAlbum = function() {
    window.location.href="#/app/picmanage";
  };
-  $scope.pics = [
-    { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ios7-png/idea-vector.png" },
-    { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
-    { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
-  ];
+
 })
 
 .controller('HomePageCtrl',function($scope){
-  
+$scope.pics = [
+    { id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
+    { id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
+    { id: 2,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
+ ];
 $scope.moreTasks = function() {
   window.location.href="#/app/quest";
 };
@@ -218,25 +215,98 @@ $scope.doRefresh = function() {
 	 });*/
 	   $scope.$broadcast('scroll.refreshComplete');
 };
-$scope.click = function(){
-	$scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
+$scope.takePhoto = function(){
+  getPhoto();
+  getLocation();
 };
-$scope.getPhoto= function(){
+function getPhoto(){
+  alert("getPhoto()");
+  $scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
 	navigator.camera.getPicture(onSuccess, onFail, {
-		quality: 50,
-    	destinationType: Camera.DestinationType.FILE_URI
+		  quality: 50,
+    	destinationType: Camera.DestinationType.FILE_URI,
+      allowEdit : false,
+      encodingType: Camera.EncodingType.JPEG,
+      cameraDirection: Camera.Direction.FRONT
     });
 
 	function onSuccess(imageURI) {
-    	var image = document.getElementById('myImage');
-    	image.src = imageURI;
-    	addPhoto(imageURI);
-
+    alert("getPhoto onSucess" + imageURI);
+      $scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:imageURI });
 	}
 
 	function onFail(message) {
-    	alert('Failed because: ' + message);
+    	alert('getPhoto Failed because: ' + message);
 	}
+
+};
+
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+    return currentdate;
+};
+
+function getLocation(){
+  alert("getLocation()");
+  navigator.geolocation.getCurrentPosition(onSuccess,onFail, {
+    enableHighAccuracy: false,
+    timeout: 60*1000,
+    maximumAge: 1000*60*10
+  });
+
+  function onSuccess(position) {
+    alert('Latitude: '          + position.coords.latitude          + '\n' +
+          'Longitude: '         + position.coords.longitude         + '\n' +
+          'Altitude: '          + position.coords.altitude          + '\n' +
+          'Accuracy: '          + position.coords.accuracy          + '\n' +
+          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+          'Heading: '           + position.coords.heading           + '\n' +
+          'Speed: '             + position.coords.speed             + '\n' +
+          'Timestamp: '         + position.timestamp                + '\n');
+    // 百度地图API功能
+    // var map = new BMap.Map("allmap");
+    // // var point = new BMap.Point(116.331398,39.897445);
+    // var point = new BMap.Point(position.coords.longitude, position.coords.latitude);
+    // var gc = new BMap.Geocoder();
+    // gc.getLocation(point, function(rs){
+    //    var addComp = rs.addressComponents;
+    //    alert(addComp.province + ", " + addComp.city +
+    //      ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+    //     AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
+    // var PhotoLocation = AV.Object.extend('PhotoLocation');
+    // var photoLocation = new PhotoLocation();
+    // photoLocation.save({
+    //   longitude: position.coords.longitude,
+    //   latitude: position.coords.latitude,
+    //   location: (addComp.province + ", " + addComp.city +
+    //      ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber)
+    // }, {
+    //   success: function(object) {
+    //     alert('LeanCloud works!');
+    //   }
+    // });
+    // });
+
+    
+  }
+
+  function onFail(message) {
+    alert('code: '    + error.code    + '\n' +
+          'message: ' + error.message + '\n');
+  }
 
 };
 
