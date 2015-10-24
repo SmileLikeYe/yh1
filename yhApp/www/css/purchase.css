@@ -1,0 +1,50 @@
+.title_center{
+  text-align: center;
+}
+.purchase_title{
+  font-size: 18px;
+}
+.cloth_contain{
+  width: 152px;
+  height: 230px;
+  margin: 0 auto;
+  border: 1px solid #dddddd;
+  position: relative;
+}
+.cloth_image{
+  width: 150px;
+  height: 150px;
+  border-bottom: 1px solid #dddddd;
+}
+.cloth_description{
+  padding: 0 10px;
+}
+.name_contain{
+  max-height: 38px;
+  overflow: hidden;
+}
+.cloth_name{
+  font-size: 12px;
+}
+.cloth_price{
+  color: orange;
+  font-size: 16px;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}
+.purchase_btn{
+  height: 30px;
+  margin-top: 10px;
+  text-align: center;
+  padding-top: 5px;
+  background-color: orange;
+}
+.purchase_ele{
+  color: #ffffff;
+}
+.purchase{
+  width: 152px;
+  height: 40px;
+  margin: 0 auto;
+}

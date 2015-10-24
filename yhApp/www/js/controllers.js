@@ -26,6 +26,10 @@ $ionicModal.fromTemplateUrl('templates/questNotification.html', {
   $scope.showQuestNotification = function() {
     $scope.questNotificationModal.show();
   };
+  $scope.goPurchase = function() {
+      $scope.closeQuestNotification();
+      window.location.href='#/app/purchase';
+  };
 
 //创建序列号弹窗
 $ionicModal.fromTemplateUrl('templates/serialNumber.html',{

@@ -80,7 +80,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-    
+
   .state('app.credit', {
     url: '/creditpage',
     views: {
@@ -99,7 +99,18 @@ angular.module('starter', ['ionic', 'starter.controllers'])
           controller: 'piclistCtrl'
         }
       }
+    })
+
+  .state('app.purchase',{
+      url: '/purchase',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/purchase.html',
+          controller: ''
+        }
+      }
     });
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/homepage');
 });
