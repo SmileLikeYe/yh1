@@ -1,6 +1,6 @@
 // Ionic Starter App
 // App module
-var yhapp = angular.module('starter', ['ionic', 'starter.controllers'])
+var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 
 .run(function($ionicPlatform,$ionicLoading) {
