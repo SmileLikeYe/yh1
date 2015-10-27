@@ -152,11 +152,12 @@ $ionicModal.fromTemplateUrl('templates/login.html', {
 });
 //关闭登录界面
 $scope.closeLogin = function() {
-	$scope.modal.hide();
+	window.location.href = "#/app/homepage";
 };
 //打开登录界面
 $scope.login = function() {
-	$scope.modal.show();
+  window.location.href = "#/app/login";
+  $scope.btnShow = true;//登陆完之后把此值设为false，切记
 };
 //创建注册页面
 $ionicModal.fromTemplateUrl('templates/register.html', {
@@ -193,6 +194,7 @@ $scope.doLogin = function() {
 	$timeout(function() {
 	  $scope.closeLogin();
 	}, 1000);
+  $scope.btnShow = false;
 };
 
 //发送验证码
@@ -200,6 +202,7 @@ $scope.sendVCode = function() {
 	console.log('should send VCode');
 
 };
+    $scope.btnShow = true;
 })
 //图片管理-控制器
 .controller('piclistCtrl', function($scope,$location) {
@@ -339,3 +342,5 @@ function getLocation(){
 
 })
 
+.controller('loginCtrl',function($scope){
+  })

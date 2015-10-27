@@ -4,6 +4,9 @@ span.hint {
 	color:#ff9955;
 	align:center;
 }
+.title-center{
+  text-align: center;
+}
 img.edit {
 	padding-left: 40px
 }
@@ -63,5 +66,59 @@ background-color:#FFAAAA;
 [class~='yellow'] {
 background-color:#FFFF00;
 }
-
-
+/*login*/
+.background{
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  z-index: 10;
+}
+.bg_blue{
+  background-color: #387ef5;
+}
+.bg_image{
+  width: 100%;
+  height: 100%;
+}
+.start{
+  margin: 15px 40px;
+}
+.white{
+  color: #ffffff;
+}
+.button_start{
+  background-color: #387ef5;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 25px 40px;
+  padding: 10px;
+}
+.start_link{
+  text-align: center;
+  text-decoration: underline;
+}
+.start_text{
+  font-size: 30px;
+  font-weight: 600;
+  margin-top: 10%;
+  text-align: center;
+}
+.start_top{
+  margin-top: 10%;
+}
+/*register*/
+.btn-send{
+  padding: 10px 5px;
+  border-radius: 4px;
+  background-color: #387ef5;
+  color: #ffffff;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+.place{
+  position: relative;
+}
