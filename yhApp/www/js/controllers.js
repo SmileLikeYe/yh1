@@ -155,7 +155,7 @@ $scope.closeLogin = function() {
 };
 //打开登录界面
 $scope.login = function() {
-  window.location.href = "#/app/login";
+  // window.location.href = "#/app/login";
   $scope.btnShow = true;//登陆完之后把此值设为false，切记
 	// if($scope.loginData.logged_in == false){
 	// 	$scope.loginData.username="未登录";

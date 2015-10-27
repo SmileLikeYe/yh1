@@ -1,5 +1,6 @@
 <ion-view>
   <ion-content class="bg_blue">
+  <form>
     <div class="background">
       <p class="start_text white">衣起赚</p>
       <div class="list start_top">
@@ -20,38 +21,6 @@
         <p class="start_link white" ng-click="login()">已有账号？点此登录</p>
       </div>
     </div>
+  </form>
   </ion-content>
 </ion-view>
-<!-- 
-
-=======
-<ion-modal-view>
-<ion-header-bar class="bar-positive">
-	<h1 class="title">用户注册</h1>
-	<div class="buttons">
-		<a class="button" ng-click="closeRegister()">取消</a>
-	</div>
-</ion-header-bar>
-<ion-content class="back_color">
-	<form>
-		<div class="list">
-		<span class="hint" align="center">{{regData.hint}}</span>
-      <label class="item item-input">
-        <input type="text" placeholder="  请输入手机号" pattern="[0-9]{11}" maxlength="11" ng-model="regData.phonenum" required />
-      </label>
-			<label class="item item-input">
-				<input type="password" placeholder="  请输入密码，由数字或大小写字母组成" pattern="[0-9a-zA-Z]{6,10}" ng-model="regData.password" />
-			</label>
-			<label class="item item-input">
-				<input type="text" placeholder="  请输入验证码" ng-model="regData.vcode" />
-				<button class="button button-positive btn-send" ng-click="sendVCode()">发送验证码</button>
-			</label>
-			<label class="item">
-				<button class="button button-block button-positive" ng-click="doRegister()">注册</button>
-			</label>
-		</div>
-	</form>
-</ion-content>
-</ion-modal-view>
->>>>>>> 858b724e830e797e42d21f9373f39fbdfcefff6d
- -->
