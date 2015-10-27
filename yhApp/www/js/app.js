@@ -75,7 +75,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-    
+
   .state('app.credit', {
     url: '/creditpage',
     views: {
@@ -104,27 +104,9 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers'])
           controller: ''
         }
       }
-    })
-
-  .state('app.login',{
-      url: '/login',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/login.html',
-          controller: 'loginCtrl'
-        }
-      }
-    })
-
-  .state('app.register',{
-      url: '/register',
-      views: {
-        'menuContent':{
-          templateUrl: 'templates/register.html',
-          controller: 'loginCtrl'
-        }
-      }
     });
+
+
   // if none of the above states are matched, use this as the fallback
 
   $urlRouterProvider.otherwise('/app/homepage');

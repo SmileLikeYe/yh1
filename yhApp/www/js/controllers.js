@@ -156,13 +156,13 @@ $scope.closeLogin = function() {
 //打开登录界面
 $scope.login = function() {
   // window.location.href = "#/app/login";
-  $scope.btnShow = true;//登陆完之后把此值设为false，切记
 	// if($scope.loginData.logged_in == false){
 	// 	$scope.loginData.username="未登录";
 	// }
 	// $scope.modal.hide();
   if($scope.loginData.logged_in == false){
     $scope.loginData.username="";
+    $scope.closeRegister();
     $scope.modal.show();
   }else{
     //已经登录了,先放个退出吧，以后改成别的功能
@@ -215,7 +215,6 @@ $scope.doLogin = function() {
 	$timeout(function() {
 	  $scope.closeLogin();
 	}, 1000);
-  $scope.btnShow = false;
 };
 
 //发送验证码
@@ -240,7 +239,7 @@ $scope.sendVCode = function() {
 
 })
 //主页控制器
-.controller('HomePageCtrl',function($scope){
+.controller('HomePageCtrl',function($scope,$ionicLoading,$timeout){
 $scope.pics = [
 	{ id: 0,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/ionic.png" },
 	{ id: 1,title:"安踏拍照",description:"11111111111111111",date:"2015年10月20日",img:"img/thumb.jpg" },
@@ -351,7 +350,7 @@ function getLocation(){
 	// });
 	// });
 
-	
+
 	}
 
 	function onFail(message) {
@@ -359,6 +358,16 @@ function getLocation(){
 			'message: ' + error.message + '\n');
 	}
 
+};
+//提醒积分已经放入用户的账户中
+$scope.creditIn = function() {
+  //放积分
+  $ionicLoading.show({
+    template: '积分已放入您的账户！'
+  });
+  $timeout(function() {
+    $ionicLoading.hide(); //由于某种原因3秒后关闭弹出
+  }, 1500);
 };
 
 })
