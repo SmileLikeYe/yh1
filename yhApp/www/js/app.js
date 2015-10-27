@@ -1,21 +1,14 @@
 // Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+// App module
+var yhapp = angular.module('starter', ['ionic', 'starter.controllers'])
 
 .run(function($ionicPlatform,$ionicLoading) {
-
   AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
+    // 移除键盘附加栏
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
-
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
@@ -49,7 +42,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       views: {
         'menuContent': {
           templateUrl: 'templates/picmanagepage.html',
-          controller: 'piclistCtrl'//TODO:Write controllers
+          controller: 'piclistCtrl'
         }
       }
     })
@@ -111,6 +104,10 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     });
 
-  // if none of the above states are matched, use this as the fallback
+  // 默认页面
   $urlRouterProvider.otherwise('/app/homepage');
-});
+})
+
+
+//全局变量
+.value('loginData',{username:'未登录'});
