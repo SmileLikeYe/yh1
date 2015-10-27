@@ -8,7 +8,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 
 .run(function($ionicPlatform,$ionicLoading) {
 
-  AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
+  //AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -107,6 +107,26 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         'menuContent': {
           templateUrl: 'templates/purchase.html',
           controller: ''
+        }
+      }
+    })
+
+  .state('app.login',{
+      url: '/login',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/login.html',
+          controller: 'loginCtrl'
+        }
+      }
+    })
+
+  .state('app.register',{
+      url: '/register',
+      views: {
+        'menuContent':{
+          templateUrl: 'templates/register.html',
+          controller: 'loginCtrl'
         }
       }
     });
