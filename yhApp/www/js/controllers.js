@@ -166,6 +166,7 @@ $scope.login = function() {
     $scope.modal.show();
   }else{
     //已经登录了,先放个退出吧，以后改成别的功能
+    window.location.href="";
     $scope.loginData = {username:'未登录',logged_in:false};
   }
 };
@@ -223,6 +224,17 @@ $scope.sendVCode = function() {
 
 };
     $scope.btnShow = true;
+
+//管理个人资料
+$scope.editInfo = function() {
+  window.location.href="#/app/modifyinfo";
+};
+$scope.returnInfo = function() {
+  window.location.href="#/app/userinfo";
+};
+$scope.submitEdit = function() {
+  window.location.href="#/app/userinfo";
+};
 })
 //图片管理-控制器
 .controller('piclistCtrl', function($scope,$location) {

@@ -12,8 +12,8 @@
 <div id="homepage">
     <div ng-init="packageHide=true" ng-hide="packageHide" class="package_contain">
       <div class="cover"></div>
-      <img ng-click="creditIn()" class="red_package" src="img/red_package.png">
-      <i ng-click="packageHide=true" class="icon-remove font-color gift package_close"></i>
+      <img ng-click="creditIn()" class="red_package animated zoomInDown" src="img/red_package.png">
+      <i ng-click="packageHide=true" class="icon-remove font-color gift package_close animated bounceInRight"></i>
     </div>
     <div class="homepage_process">
       <span class="earn_text inline">任务1</span>
@@ -59,8 +59,7 @@
 	  <div class="contain_box">
 			<button class="btn_primary earn" ng-click="showCashNotification()">赚</button>
 		  <div class="text_group right">
-        <p class="text_earn earn_text">&nbsp;&nbsp;可兑换积分&nbsp;<span class="count font-color">27</span></p>
-        <p class="text_earn earn_text">不可兑换积分&nbsp;<span class="count font-color">18</span></p>
+        <p class="text_earn earn_text">积分&nbsp;<span class="count font-color">18</span></p>
       </div>
       <div ng-click="creditDetails()" class="details_credit">
         <span class="detail_c earn_text">详情</span>

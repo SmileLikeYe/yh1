@@ -104,7 +104,28 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
           controller: ''
         }
       }
+    })
+
+  .state('app.userinfo',{
+      url: '/userinfo',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/userinfoPage.html',
+          controller: ''
+        }
+      }
+    })
+
+  .state('app.modifyinfo',{
+      url: '/modifyinfo',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/modifyInfo.html',
+          controller: ''
+        }
+      }
     });
+
 
 
   // if none of the above states are matched, use this as the fallback
