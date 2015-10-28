@@ -1,21 +1,26 @@
-<ion-view>
-    <ion-content class="bg_blue">
-      <div class="background">
-        <p class="start_text white">衣起赚</p>
-          <div class="list start_top">
-            <label class="item item-input start">
-              <input type="text" placeholder="  请输入手机号" ng-model="loginData.username" required />
-            </label>
-            <label class="item item-input start">
-              <input type="password" placeholder="  请输入密码" ng-model="loginData.password" required />
-            </label>
-            <div class="button_start white" ng-click="doLogin()">
-              <span>登录</span>
-            </div>
-            <p class="start_link white" ng-click="toRegister()">还没有账号？点此注册</p>
-          </div>
-      </div>
-    </ion-content>
-</ion-view>
-
-
+<ion-modal-view>
+	<ion-header-bar class="bar-positive">
+		<h1 class="title">用户登录</h1>
+		<div class="buttons">
+				<a class="button" ng-click="closeLogin()">取消</a>
+		</div>
+	</ion-header-bar>
+	<ion-content class="back_color">
+		<form ng-submit="doLogin()">
+		<div class="list">
+			<label class="item item-input">
+				<input type="text" placeholder="  请输入手机号" ng-model="loginData.username1" required />
+			</label>
+			<label class="item item-input">
+				<input type="password" placeholder="  请输入密码" ng-model="loginData.password" required />
+			</label>
+			<label class="item">
+				<button class="button button-block button-positive" type="submit">登录</button>
+			</label>
+			<label class="item">
+				<button class="button button-block button-positive" type="button" ng-click="toRegister()">注册</button>
+			</label>
+		</div>
+		</form>
+	</ion-content>
+</ion-modal-view>
