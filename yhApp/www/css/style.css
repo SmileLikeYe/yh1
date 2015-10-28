@@ -79,6 +79,7 @@ background-color:#FFFF00;
 .bg_image{
   width: 100%;
   height: 100%;
+  background-image: url('../img/bgimg.png');
 }
 .start{
   margin: 15px 40px;

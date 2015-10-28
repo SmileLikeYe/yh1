@@ -63,3 +63,13 @@
   top: 12px;
   left: 5px;
 }
+.button_confirm{
+  background-color: #387ef5;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 25px 20px;
+  padding: 10px;
+}

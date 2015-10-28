@@ -1,7 +1,5 @@
 #homepage{
-  padding: 0;
-  width: 90%;
-  margin: 0 auto;
+  padding: 5%;
   position: relative;
 }
 .contain_box{
@@ -190,7 +188,7 @@
 }
 .hp_right_loadbar{
   width: 20%;
-  background-color: #C0C0C0;
+  background-color: #ffffff;
 }
 .hp_left_loadbar{
   width: 80%;
@@ -204,9 +202,6 @@
   font-size: 30px;
 }
 /*红包*/
-.package_contain{
-
-}
 .red_package{
   width: 50%;
   height: 36%;

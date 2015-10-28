@@ -124,6 +124,16 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
           controller: ''
         }
       }
+    })
+
+  .state('app.modifypwd',{
+      url: '/modifyPwd',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/modifyPassword.html',
+          controller: ''
+        }
+      }
     });
 
 

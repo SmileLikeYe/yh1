@@ -49,19 +49,6 @@ $ionicModal.fromTemplateUrl('templates/serialNumber.html',{
 	$scope.serialNumberModal.hide();
 	};
 
-//创建不可兑换积分说明弹窗
-$ionicModal.fromTemplateUrl('templates/unavailcredit.html',{
-	scope: $scope
-}).then(function(modal){
-	$scope.unavailCreditModal = modal;
-});
-	$scope.closeUnavailCredit = function() {
-	$scope.unavailCreditModal.hide();
-	};
-	$scope.showUnavailCredit = function() {
-	$scope.unavailCreditModal.show();
-	};
-
 //创建新手规则说明弹窗
 $ionicModal.fromTemplateUrl('templates/rule.html',{
 	scope: $scope
@@ -235,6 +222,9 @@ $scope.returnInfo = function() {
 $scope.submitEdit = function() {
   window.location.href="#/app/userinfo";
 };
+$scope.editPassword = function() {
+  window.location.href="#/app/modifyPwd";
+};
 })
 //图片管理-控制器
 .controller('piclistCtrl', function($scope,$location) {
@@ -375,11 +365,12 @@ function getLocation(){
 $scope.creditIn = function() {
   //放积分
   $ionicLoading.show({
-    template: '积分已放入您的账户！'
+    template: '10积分已放入您的账户！'
   });
   $timeout(function() {
     $ionicLoading.hide(); //由于某种原因3秒后关闭弹出
   }, 1500);
+  $scope.packageHide = true;
 };
 
 })
