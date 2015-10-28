@@ -1,15 +1,26 @@
 <ion-view view-title="积分管理">
   <ion-content>
   <p class="credit_title font-color">积分详情</p>
-  <div ng-click="showCashNotification()" class="credit_avail credit_contain">
-    <i class="icon-envelope avail credit_icon"></i>
-    <p class="avail credit_detail">可兑换积分</p>
-    <p class="avail credit_count">27</p>
+  <div class="credit_group">
+    <div ng-click="showCashNotification()" class="credit_today credit_contain snatch_text">
+      <i class="icon-money credit_icon"></i>
+      <p class="credit_detail font-color">今日赚得</p>
+      <p class="credit_count font-color">27</p>
+    </div>
+    <div class="credit credit_contain earn_text">
+      <i class="icon-envelope credit_icon"></i>
+      <p class="credit_detail_s font-color">积分</p>
+      <p class="credit_count font-color">18</p>
+    </div>
   </div>
-    <div ng-click="showUnavailCredit()" class="credit_unavail credit_contain">
-      <i class="icon-envelope unavail credit_icon"></i>
-      <p class="unavail credit_detail">不可兑换积分</p>
-      <p class="unavail credit_count">18</p>
+    <p class="credit_title font-color">已获得礼包列表</p>
+    <div class="get_package">
+      <i class="icon-gift white package_icon"></i>
+      <p class="package_name white">任务一礼包</p>
+      <p class="package_num white">10积分</p>
+      <div class="white_bottom">
+        <p class="to_detail font-color">点击查看详情</p>
+      </div>
     </div>
   </ion-content>
 </ion-view>

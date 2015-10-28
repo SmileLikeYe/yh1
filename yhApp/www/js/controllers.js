@@ -49,19 +49,6 @@ $ionicModal.fromTemplateUrl('templates/serialNumber.html',{
 	$scope.serialNumberModal.hide();
 	};
 
-//创建不可兑换积分说明弹窗
-$ionicModal.fromTemplateUrl('templates/unavailcredit.html',{
-	scope: $scope
-}).then(function(modal){
-	$scope.unavailCreditModal = modal;
-});
-	$scope.closeUnavailCredit = function() {
-	$scope.unavailCreditModal.hide();
-	};
-	$scope.showUnavailCredit = function() {
-	$scope.unavailCreditModal.show();
-	};
-
 //创建新手规则说明弹窗
 $ionicModal.fromTemplateUrl('templates/rule.html',{
 	scope: $scope
@@ -166,6 +153,7 @@ $scope.login = function() {
     $scope.modal.show();
   }else{
     //已经登录了,先放个退出吧，以后改成别的功能
+    window.location.href="";
     $scope.loginData = {username:'未登录',logged_in:false};
   }
 };
@@ -223,6 +211,20 @@ $scope.sendVCode = function() {
 
 };
     $scope.btnShow = true;
+
+//管理个人资料
+$scope.editInfo = function() {
+  window.location.href="#/app/modifyinfo";
+};
+$scope.returnInfo = function() {
+  window.location.href="#/app/userinfo";
+};
+$scope.submitEdit = function() {
+  window.location.href="#/app/userinfo";
+};
+$scope.editPassword = function() {
+  window.location.href="#/app/modifyPwd";
+};
 })
 //图片管理-控制器
 .controller('piclistCtrl', function($scope,$location) {
@@ -269,11 +271,12 @@ $scope.takePhoto = function() {
 $scope.creditIn = function() {
   //放积分
   $ionicLoading.show({
-    template: '积分已放入您的账户！'
+    template: '10积分已放入您的账户！'
   });
   $timeout(function() {
     $ionicLoading.hide(); //由于某种原因3秒后关闭弹出
   }, 1500);
+  $scope.packageHide = true;
 };
 
 $scope.test = function() {
