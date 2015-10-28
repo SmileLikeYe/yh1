@@ -156,13 +156,13 @@ $scope.closeLogin = function() {
 //打开登录界面
 $scope.login = function() {
   // window.location.href = "#/app/login";
-  $scope.btnShow = true;//登陆完之后把此值设为false，切记
 	// if($scope.loginData.logged_in == false){
 	// 	$scope.loginData.username="未登录";
 	// }
 	// $scope.modal.hide();
   if($scope.loginData.logged_in == false){
     $scope.loginData.username="";
+    $scope.closeRegister();
     $scope.modal.show();
   }else{
     //已经登录了,先放个退出吧，以后改成别的功能
@@ -215,7 +215,6 @@ $scope.doLogin = function() {
 	$timeout(function() {
 	  $scope.closeLogin();
 	}, 1000);
-  $scope.btnShow = false;
 };
 
 //发送验证码
@@ -241,7 +240,7 @@ $scope.sendVCode = function() {
 
 })
 //主页控制器
-.controller('HomePageCtrl',function($scope, Camera, Pictures){//定义本个ctrl的局部数据和方法, 主体是个函数
+.controller('HomePageCtrl',function($scope, Camera, Pictures,$ionicLoading,$timeout){//定义本个ctrl的局部数据和方法, 主体是个函数
 $scope.moreTasks = function() {
 	window.location.href="#/app/quest";
 };
@@ -266,6 +265,111 @@ $scope.takePhoto = function() {
 	Camera.getPhoto();
 	Camera.getLocation();
 };
+$scope.takePhoto = function(){
+	getPhoto();
+	getLocation();
+};
+function getPhoto(){
+	alert("getPhoto()");
+	$scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
+	navigator.camera.getPicture(onSuccess, onFail, {
+			quality: 50,
+		destinationType: Camera.DestinationType.FILE_URI,
+		allowEdit : false,
+		encodingType: Camera.EncodingType.JPEG,
+		cameraDirection: Camera.Direction.FRONT
+	});
+
+	function onSuccess(imageURI) {
+	alert("getPhoto onSucess" + imageURI);
+		$scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:imageURI });
+	}
+
+	function onFail(message) {
+		alert('getPhoto Failed because: ' + message);
+	}
+
+};
+
+function getNowFormatDate() {
+	var date = new Date();
+	var seperator1 = "-";
+	var seperator2 = ":";
+	var month = date.getMonth() + 1;
+	var strDate = date.getDate();
+	if (month >= 1 && month <= 9) {
+		month = "0" + month;
+	}
+	if (strDate >= 0 && strDate <= 9) {
+		strDate = "0" + strDate;
+	}
+	var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+			+ " " + date.getHours() + seperator2 + date.getMinutes()
+			+ seperator2 + date.getSeconds();
+	return currentdate;
+};
+
+function getLocation(){
+	alert("getLocation()");
+	navigator.geolocation.getCurrentPosition(onSuccess,onFail, {
+	enableHighAccuracy: false,
+	timeout: 60*1000,
+	maximumAge: 1000*60*10
+	});
+
+	function onSuccess(position) {
+	alert('Latitude: '		 + position.coords.latitude+ 	'\n' +
+			'Longitude: '	 + position.coords.longitude + 	'\n' +
+			'Altitude: '	 + position.coords.altitude+ 	'\n' +
+			'Accuracy: '	 + position.coords.accuracy+ 	'\n' +
+			'Altitude Accuracy: ' + position.coords.altitudeAccuracy	+ '\n' +
+			'Heading: ' 	 + position.coords.heading + 	'\n' +
+			'Speed: ' 		 + position.coords.speed + 		'\n' +
+			'Timestamp: ' 	 + position.timestamp + 		'\n');
+	// 百度地图API功能
+	// var map = new BMap.Map("allmap");
+	// // var point = new BMap.Point(116.331398,39.897445);
+	// var point = new BMap.Point(position.coords.longitude, position.coords.latitude);
+	// var gc = new BMap.Geocoder();
+	// gc.getLocation(point, function(rs){
+	//		var addComp = rs.addressComponents;
+	//		alert(addComp.province + ", " + addComp.city +
+	//			", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+	//		 AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
+	// var PhotoLocation = AV.Object.extend('PhotoLocation');
+	// var photoLocation = new PhotoLocation();
+	// photoLocation.save({
+	//	 longitude: position.coords.longitude,
+	//	 latitude: position.coords.latitude,
+	//	 location: (addComp.province + ", " + addComp.city +
+	//			", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber)
+	// }, {
+	//	 success: function(object) {
+	//		 alert('LeanCloud works!');
+	//	 }
+	// });
+	// });
+
+
+	}
+
+	function onFail(message) {
+	alert('code: '		+ error.code		+ '\n' +
+			'message: ' + error.message + '\n');
+	}
+
+};
+//提醒积分已经放入用户的账户中
+$scope.creditIn = function() {
+  //放积分
+  $ionicLoading.show({
+    template: '积分已放入您的账户！'
+  });
+  $timeout(function() {
+    $ionicLoading.hide(); //由于某种原因3秒后关闭弹出
+  }, 1500);
+};
+
 })
 
 .controller('loginCtrl',function($scope){

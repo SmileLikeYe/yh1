@@ -2,7 +2,7 @@
   height: 100px;
   position: relative;
 }
-.cover{
+.album_cover{
   font-size: 60px;
 }
 .album_name{
@@ -14,4 +14,8 @@
   position: absolute;
   top: 50px;
   left: 100px;
+  font-size: 14px;
+}
+.arrow_bigger{
+  font-size: 35px;
 }

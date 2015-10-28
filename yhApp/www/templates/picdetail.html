@@ -13,13 +13,13 @@
       </div>
       <div ng-repeat="pic in pics" class="pic_contain">
         <span class="time font-color">10月22日</span>
-        <div class="">
+        <span class="time font-color">12:56</span>
+        <div class="slide_box">
           <ion-slide-box>
             <ion-slide>
               <div class="box">
                 <img ng-src="{{pic.img}}" class="photoview">
               </div>
-              <button class="btn-retake btn-operation font-color" on-reorder="reorderItem(pic, $fromIndex, $toIndex)"><i class="icon-exchange font-color" ></i>重拍</button>
             </ion-slide>
             <ion-slide>
               <div class="box blue">
@@ -27,6 +27,7 @@
               </div>
             </ion-slide>
           </ion-slide-box>
+          <button class="btn-retake btn-operation font-color" on-reorder="reorderItem(pic, $fromIndex, $toIndex)"><i class="icon-exchange font-color" ></i>重拍</button>
         </div>
         </div>
     </ion-list>

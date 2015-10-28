@@ -2,6 +2,7 @@
   padding: 0;
   width: 90%;
   margin: 0 auto;
+  position: relative;
 }
 .contain_box{
   background-color: #ffffff;
@@ -171,3 +172,53 @@
 .right{
   text-align: right;
 }
+/*进度条*/
+.homepage_process{
+  margin-top: 5%;
+  text-align: center;
+}
+.hp_load_bar{
+  width: 50%;
+  height: 15px;
+  border-radius: 40px;
+  overflow: hidden;
+}
+.hp_process_bar{
+  width: 50%;
+  height: 100%;
+  display: inline-block;
+}
+.hp_right_loadbar{
+  width: 20%;
+  background-color: #C0C0C0;
+}
+.hp_left_loadbar{
+  width: 80%;
+  background-color: #f1b133;
+}
+.inline{
+  display: inline-block;
+  margin-right: 5px;
+}
+.gift{
+  font-size: 30px;
+}
+/*红包*/
+.package_contain{
+
+}
+.red_package{
+  width: 50%;
+  height: 36%;
+  position: absolute;
+  top: 30%;
+  left: 25%;
+  z-index: 5;
+}
+.package_close{
+  position: absolute;
+  top: 30%;
+  right: 15%;
+  z-index: 5;
+}
+

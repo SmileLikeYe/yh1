@@ -10,6 +10,19 @@
   <!-- TODO:替换placeholder -->
   <!-- TODO:真tm丑-->
 <div id="homepage">
+    <div ng-init="packageHide=true" ng-hide="packageHide" class="package_contain">
+      <div class="cover"></div>
+      <img ng-click="creditIn()" class="red_package" src="img/red_package.png">
+      <i ng-click="packageHide=true" class="icon-remove font-color gift package_close"></i>
+    </div>
+    <div class="homepage_process">
+      <span class="earn_text inline">任务1</span>
+      <div class="hp_load_bar inline">
+        <span class="hp_left_loadbar hp_process_bar"></span><span class="hp_right_loadbar hp_process_bar"></span>
+      </div>
+      <span class="earn_text inline">0/10</span>
+      <i ng-click="" class="font-color gift icon-gift inline"></i>
+    </div>
 	  <div class="contain_box">
 				<button class="btn_primary snatch" ng-click="showQuestNotification ()">抢</button>
         <div class="serial_num">
