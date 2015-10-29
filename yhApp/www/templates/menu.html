@@ -13,20 +13,21 @@
   </ion-side-menu-content>
 
   <ion-side-menu side="left">
-    <ion-header-bar class="bar-light">
-      <h1 class="title font-color">个&nbsp;人</h1>
+<!--    这里好像没什么存在的必要？
+	<ion-header-bar class="bar-light">
+      <h1 class="title"> </h1>
     </ion-header-bar>
+-->
     <ion-content class="back_color">
       <ion-list>
         <!-- TODO:页面模板做好后把url和controller对应起来  -->
         <div class="gap"></div>
-        <ion-item menu-close ng-click="login()">
+        <ion-item menu-close ng-click="showLogin()">
           <i class="sculpture icon-user font-color"></i>
           <span class="username font-color">{{loginData.username}}</span>
           <i class="arrow arrow_first icon-angle-right font-color"></i>
         </ion-item>
         <div class="gap"></div>
-
         <ion-item menu-close href="#/app/homepage">
           <i class="arrow icon-home font-color"></i>
           <span class="management">返回主页</span>

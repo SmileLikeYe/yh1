@@ -1,6 +1,6 @@
 <ion-modal-view>
   <ion-header-bar>
-    <h1 class="title font-color">兑换积分</h1>
+    <h1 class="title font-color">赚钱啦！</h1>
     <div class="buttons">
       <i class="icon-remove close font-color" ng-click="closeCashNotification()"></i>
     </div>
@@ -9,12 +9,10 @@
     <form ng-submit="doLogin()">
       <div class="list">
         <label class="item item-input">
-          <input type="text" placeholder="  请输入支付宝账号">
+          <input type="text" placeholder="  请输入支付宝账号" ng-model="loginData.username">
         </label>
-        <label ng-init="" class="item item-input">
-          <span ng-click="minusCredit()" class="credit_minus white">-</span>
-          <span class="credit_num font-color">0</span>
-          <span ng-click="addCredit()" class="credit_add white add_right">+</span>
+        <label class="item item-input">
+          <input type="password" placeholder="  请要兑换的积分" ng-model="loginData.password">
         </label>
         <label class="item">
           <button class="button button-block button-positive" type="button" ng-click="closeCashNotification()">确定</button>
