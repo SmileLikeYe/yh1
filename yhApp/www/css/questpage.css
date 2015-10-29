@@ -11,9 +11,14 @@
 .icon_bigger{
   font-size: 30px;
 }
-.icon_pos{
+.icon_pos_p{
   position: absolute;
-  top: 40px;
+  top: 50px;
+  left: 10%;
+}
+.icon_pos_c{
+  position: absolute;
+  top: 20px;
   left: 10%;
 }
 .status{
@@ -34,6 +39,11 @@
   padding-top: 10px;
   position: relative;
 }
+.task_process{
+  margin: 0 auto;
+  width: 90%;
+  text-align: center;
+}
 .wraper_process{
   border: 2px solid #f1b133;
 }
@@ -41,9 +51,8 @@
   border: 2px solid #387ef5;
 }
 .load_bar{
-  width: 80%;
-  margin: 0 auto;
-  height: 20px;
+  width: 60%;
+  height: 15px;
   border-radius: 40px;
   overflow: hidden;
 }
