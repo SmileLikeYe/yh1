@@ -6,16 +6,18 @@
     </div>
   </ion-header-bar>
   <ion-content>
-    <form ng-submit="doLogin()">
+    <form >
       <div class="list">
         <label class="item item-input">
-          <input type="text" placeholder="  请输入支付宝账号" ng-model="loginData.username">
+          <input type="text" placeholder="  请输入支付宝账号" ng-model="payData.username"></input>
         </label>
         <label class="item item-input">
-          <input type="password" placeholder="  请要兑换的积分" ng-model="loginData.password">
+          <input type="number" placeholder="  请要兑换的积分" ng-model="payData.creditsToRedeem"></input>
         </label>
         <label class="item">
-          <button class="button button-block button-positive" type="button" ng-click="closeCashNotification()">确定</button>
+          <button class="button button-block button-positive" type="button" ng-click="redeemCredits()">确定</button>
+        </label>
+        <label class="item">
           <button class="button button-block button-positive" type="button" ng-click="closeCashNotification()">取消</button>
         </label>
       </div>

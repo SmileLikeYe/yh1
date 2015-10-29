@@ -1,7 +1,7 @@
 angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $timeout, $http) {
-//
+//！——全局变量和本地存储的数据
 $scope.loginData = {username:'未登录',logged_in:false};
 if(window.localStorage['username'] != '未登录'&& window.localStorage['username'] != ''){
 	$scope.loginData.username = window.localStorage['username'];
@@ -9,11 +9,19 @@ if(window.localStorage['username'] != '未登录'&& window.localStorage['usernam
 }
 
 $scope.regData={};
-	$ionicModal.fromTemplateUrl('templates/cashNotification.html', {
+//创建积分兑换窗口
+$ionicModal.fromTemplateUrl('templates/cashNotification.html', {
 		scope: $scope
 	}).then(function(modal) {
 		$scope.cashNotificationModal = modal;
+		//TODO:服务器获取当前积分
+		$scope.payData = {username:"", creditsToRedeem:100,};
 	});
+	$scope.redeemCredits = function(){
+		//TODO:向服务器发送兑换请求
+		alert("兑换积分");
+		$scope.cashNotificationModal.hide();
+	};
 	$scope.closeCashNotification = function() {
 		$scope.cashNotificationModal.hide();
 	};
@@ -31,7 +39,7 @@ $ionicModal.fromTemplateUrl('templates/questNotification.html', {
 	$scope.questNotificationModal.hide();
 	};
 	$scope.showQuestNotification = function() {
-		//获取任务数据
+		//TODO:获取任务数据
 		$scope.newQuest = {name:"拍什么拍",endtime:"2014-12-30",info:"完成十张照片",totalCredit:20};
 		$scope.questNotificationModal.show();
 	};
@@ -61,62 +69,62 @@ $ionicModal.fromTemplateUrl('templates/unavailcredit.html',{
 	scope: $scope
 }).then(function(modal){
 	$scope.unavailCreditModal = modal;
-});
 	$scope.closeUnavailCredit = function() {
-	$scope.unavailCreditModal.hide();
+		$scope.unavailCreditModal.hide();
 	};
 	$scope.showUnavailCredit = function() {
-	$scope.unavailCreditModal.show();
+		$scope.unavailCreditModal.show();
 	};
+});
 
 //创建新手规则说明弹窗
 $ionicModal.fromTemplateUrl('templates/rule.html',{
 	scope: $scope
 }).then(function(modal){
 	$scope.ruleModal = modal;
-});
 	$scope.closeRule = function() {
-	$scope.ruleModal.hide();
+		$scope.ruleModal.hide();
 	};
 	$scope.showRule = function() {
-	$scope.ruleModal.show();
+		$scope.ruleModal.show();
 	};
+});
 
 //创建编辑地址弹窗
 $ionicModal.fromTemplateUrl('templates/addressmodify.html',{
 	scope: $scope
 }).then(function(modal){
 	$scope.addressModifyModal = modal;
-});
 	$scope.closeAddressModify = function() {
-	$scope.addressModifyModal.hide();
+		$scope.addressModifyModal.hide();
 	};
 	$scope.showAddressModify = function() {
-	$scope.addressModifyModal.show();
+		$scope.addressModifyModal.show();
 	};
 	$scope.submitAddressModify = function() {
-	//$scope.addressModifyModal.hide();
+		//$scope.addressModifyModal.hide();
 	};
 	$scope.setDefault = function() {
-	$scope.showAddPopup();
-	console.log('confirm show');
+		$scope.showAddPopup();
+		console.log('confirm show');
 	};
+});
 
 //创建新建地址弹窗
 $ionicModal.fromTemplateUrl('templates/addressadd.html',{
 	scope: $scope
 }).then(function(modal){
 	$scope.addressAddModal = modal;
-});
 	$scope.closeAddressAdd = function() {
-	$scope.addressAddModal.hide();
+		$scope.addressAddModal.hide();
 	};
 	$scope.showAddressAdd = function() {
-	$scope.addressAddModal.show();
+		$scope.addressAddModal.show();
 	};
 	$scope.submitAddressAdd = function() {
-	$scope.addressAddModal.hide();
+		$scope.addressAddModal.hide();
 	};
+});
 
 //选择任务小弹窗
 $scope.showTaskPopup = function() {
@@ -166,7 +174,7 @@ $ionicModal.fromTemplateUrl('templates/login.html', {
 		if($scope.loginData.logged_in == false){
 			$scope.modal.show();
 		}else{
-			//已经登录了,先放个退出吧，以后改成别的功能
+			//已经登录了,先放个退出吧，可以改成别的功能
 			$scope.doLogout();
 			$scope.loginData = {username:'未登录',logged_in:false};
 		}
@@ -188,7 +196,7 @@ $ionicModal.fromTemplateUrl('templates/register.html', {
 	$scope.checkRegData = function(regData){
 		if(regData.password == '123456'){
 			return "密码过于简单！";
-		} else {
+		} else {//登录成功
 			return "";
 		}
 	};
@@ -218,19 +226,24 @@ $ionicModal.fromTemplateUrl('templates/register.html', {
 
 //进行登录
 $scope.doLogin = function() {
-	if($scope.loginData.username1 != '' && $scope.loginData.username == '未登录'){//使用另一个变量username1避免侧边栏显示空白
+	//使用另一个变量username1避免侧边栏显示空白
+	if($scope.loginData.username1 != '' && $scope.loginData.username == '未登录'){
 		$scope.loginData.username = $scope.loginData.username1;
 	};
+	//放入本地存储
 	$scope.loginData.logged_in = true;
 	window.localStorage['logged_in'] = true;
 	window.localStorage['username'] = $scope.loginData.username;
 	console.log('Doing login', $scope.loginData);
+	alert("欢迎回来，"+$scope.loginData.username);
 	$scope.closeLogin();
 };
 $scope.doLogout = function() {
+	//改变本地存储
 	$scope.loginData.logged_in = false;
 	window.localStorage['logged_in'] = false;
 	window.localStorage['username'] = '未登录';
+	alert("已退出登录");
 };
 //管理个人资料
 $scope.editInfo = function() {
@@ -265,7 +278,7 @@ $scope.editPassword = function() {
 
 //任务管理-控制器
 .controller('questCtrl', function($scope, $http, $timeout) {
-//假设此处取到了数据$http.get
+//假设此处取到了数据  $http.get
 $scope.currentQuest = {name:"耐克拍照",endtime:"2015-12-30",info:"完成十张照片",totalCredit:20,currentCredit:19};
 $scope.finishedQuests = [
 	{name:"耐克拍照",endtime:"2014-12-30",info:"完成十张照片",totalCredit:20,currentCredit:17,done:100*17/20,left:100-100*17/20},
@@ -274,15 +287,15 @@ $scope.finishedQuests = [
 //对数据进行处理，加上done和left两条，用来显示进度条
 $scope.progress = {
 	done:100*$scope.currentQuest.currentCredit/$scope.currentQuest.totalCredit,
-	left:100 - 100*$scope.currentQuest.currentCredit/$scope.currentQuest.totalCredit
+	left:100 - 100*$scope.currentQuest.currentCredit/$scope.currentQuest.totalCredit,
 };
-
+/*
 $scope.currentQuest.getProgress = function(current,total){
 	return 100*current/total;
 };
 $scope.currentQuest.getProgressLeft = function(current,total){
 	return 100 - 100*current/total;
-};
+};*/
 })
 
 
