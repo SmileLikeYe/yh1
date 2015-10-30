@@ -80,7 +80,7 @@ background-color:#FFFF00;
 .bg_image{
   width: 100%;
   height: 100%;
-  background-image: url('../img/bgimg.png');
+  background-image: url('../img/bg.png');
 }
 .start{
   margin: 15px 40px;
@@ -124,7 +124,7 @@ background-color:#FFFF00;
 .place{
   position: relative;
 }
-/*¶Ò»»»ý·Ö*/
+/*ï¿½Ò»ï¿½ï¿½ï¿½ï¿½*/
 .credit_minus,.credit_add{
   width: 25px;
   height: 25px;
