@@ -33,9 +33,12 @@ angular.module('starter.services', [])
             service.register = function (regData) {
                 var deferred = $q.defer();
                 AV.User.verifyMobilePhone(regData.vcode).then(function () {
+                    deferred.resolve(regData);
                 }, function (err) {
                     alert("验证码错误"+JSON.stringify(err));
+                    deferred.reject("验证码错误");
                 });
+                return deferred.promise;
             };
             //提供登录
             service.login = function (loginData) {
