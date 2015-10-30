@@ -183,7 +183,6 @@
   overflow: hidden;
 }
 .hp_process_bar{
-  width: 50%;
   height: 100%;
   display: inline-block;
 }

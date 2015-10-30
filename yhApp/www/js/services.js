@@ -30,35 +30,35 @@ angular.module('starter.services', [])
                 return deferred.promise;
             };
             //提供注册
-            service.register = function(user){
+            service.register = function (user) {
                 var deferred = $q.defer();
                 user.set("username", regData.username);
                 user.set("password", regData.password);
                 user.set("phone", regData.username);
-                user.verifyMobilePhone(regData.vcode).then(function(){
+                user.verifyMobilePhone(regData.vcode).then(function () {
                     user.signUp(null, {
-                        success: function(data) {
+                        success: function (data) {
                             deferred.resolve(data);
                         },
-                        error: function(data, error) {
-                            alert("Error: " + error.code + " " + error.message +"|"+ JSON.stringify(user));
+                        error: function (data, error) {
+                            alert("Error: " + error.code + " " + error.message + "|" + JSON.stringify(user));
                             deferred.reject("读取失败");
                         }
                     });
-                }, function(err){
+                }, function (err) {
                     deferred.reject("验证码错误");
                 });
                 return deferred.promise;
             };
             //提供登录
-            service.login = function(loginData){
+            service.login = function (loginData) {
                 var deferred = $q.defer();
                 AV.User.logIn(loginData.username, loginData.password, {
-                    success: function(user) {
+                    success: function (user) {
                         deferred.resolve(user);
                     },
-                    error: function(user, error) {
-                        alert("Error: " + error.code + " " + error.message +"|"+ JSON.stringify(user));
+                    error: function (user, error) {
+                        alert("Error: " + error.code + " " + error.message + "|" + JSON.stringify(user));
                         deferred.reject("失败");
                     }
                 });
@@ -195,12 +195,14 @@ angular.module('starter.services', [])
                 return deferred.promise;
             };
             var currentQuest = {
-                name: "耐克拍照",
+                title: "耐克拍照",
                 endtime: "2015-12-30",
                 info: "完成十张照片",
-                totalCredit: 20,
-                currentCredit: 19
+                creditTotal: 20,
+                currentCredit: 16
             };
+            currentQuest.done = 100 * currentQuest.currentCredit / currentQuest.creditTotal;
+            currentQuest.left = 100 - 100 * currentQuest.currentCredit / currentQuest.creditTotal;
 
             var finishedQuests = [
                 {
@@ -222,11 +224,9 @@ angular.module('starter.services', [])
                     left: 100 - 100 * 17 / 20
                 },
             ];
-            currentQuest.done = 100 * currentQuest.currentCredit / currentQuest.totalCredit,
-                currentQuest.left = 100 - 100 * currentQuest.currentCredit / currentQuest.totalCredit,
-                service.getCurrentQuest = function () {
-                    return currentQuest;
-                };
+            service.getCurrentQuest = function () {
+                return currentQuest;
+            };
             service.getFinishedQuests = function () {
                 return finishedQuests;
             };

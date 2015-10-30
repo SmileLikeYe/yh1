@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="5e4b3b2b-4601-4dbc-a58b-950dbbd65030" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/js/controllers.js" afterPath="$PROJECT_DIR$/yhApp/www/js/controllers.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/css/register.css" afterPath="$PROJECT_DIR$/yhApp/www/css/register.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/register.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/register.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/css/homepage.css" afterPath="$PROJECT_DIR$/yhApp/www/css/homepage.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/homepage.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/homepage.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/templates/questpage.html" afterPath="$PROJECT_DIR$/yhApp/www/templates/questpage.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yhApp/www/js/services.js" afterPath="$PROJECT_DIR$/yhApp/www/js/services.js" />
     </list>
     <ignored path="yh1.iws" />
@@ -29,8 +30,8 @@
       <file leaf-file-name="register.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yhApp/www/templates/register.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.8">
-              <caret line="14" column="56" selection-start-line="14" selection-start-column="56" selection-end-line="14" selection-end-column="56" />
+            <state vertical-scroll-proportion="-11.2">
+              <caret line="16" column="57" selection-start-line="16" selection-start-column="57" selection-end-line="16" selection-end-column="57" />
               <folding />
             </state>
           </provider>
@@ -40,20 +41,55 @@
         <entry file="file://$PROJECT_DIR$/yhApp/www/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="242" column="72" selection-start-line="242" selection-start-column="72" selection-end-line="242" selection-end-column="72" />
+              <caret line="326" column="49" selection-start-line="326" selection-start-column="49" selection-end-line="326" selection-end-column="49" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="services.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="homepage.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/yhApp/www/templates/homepage.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-12.21875">
+              <caret line="17" column="99" selection-start-line="17" selection-start-column="99" selection-end-line="17" selection-end-column="99" />
+              <folding>
+                <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#0;n#ion-content#0;n#ion-view#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="homepage.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/yhApp/www/css/homepage.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="185" column="15" selection-start-line="185" selection-start-column="15" selection-end-line="185" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="questpage.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/yhApp/www/templates/questpage.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.4580067">
+              <caret line="23" column="82" selection-start-line="23" selection-start-column="82" selection-end-line="23" selection-end-column="82" />
+              <folding>
+                <element signature="n#style#0;n#span#0;n#div#0;n#div#0;n#div#1;n#div#0;n#ion-content#0;n#ion-view#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#1;n#div#0;n#div#0;n#div#1;n#div#0;n#ion-content#0;n#ion-view#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="services.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yhApp/www/js/services.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3809524">
-              <caret line="64" column="40" selection-start-line="64" selection-start-column="40" selection-end-line="64" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="199" column="31" selection-start-line="199" selection-start-column="31" selection-end-line="199" selection-end-column="31" />
               <folding>
-                <element signature="e#2765#6545#0" expanded="false" />
-                <element signature="e#6680#7468#0" expanded="false" />
+                <element signature="e#2781#6561#0" expanded="false" />
+                <element signature="e#6696#7484#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -68,8 +104,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/yhApp/www/templates/homepage.html" />
-        <option value="$PROJECT_DIR$/yhApp/www/css/homepage.css" />
         <option value="$PROJECT_DIR$/yhApp/www/css/questpage.css" />
         <option value="$PROJECT_DIR$/yhApp/www/templates/menu.html" />
         <option value="$PROJECT_DIR$/yhApp/www/css/menu.css" />
@@ -81,11 +115,13 @@
         <option value="$PROJECT_DIR$/yhApp/www/templates/questNotification.html" />
         <option value="$PROJECT_DIR$/yhApp/www/templates/picmanagepage.html" />
         <option value="$PROJECT_DIR$/yhApp/www/css/style.css" />
-        <option value="$PROJECT_DIR$/yhApp/www/templates/questpage.html" />
         <option value="$PROJECT_DIR$/yhApp/www/css/register.css" />
-        <option value="$PROJECT_DIR$/yhApp/www/js/services.js" />
         <option value="$PROJECT_DIR$/yhApp/www/templates/register.html" />
         <option value="$PROJECT_DIR$/yhApp/www/js/controllers.js" />
+        <option value="$PROJECT_DIR$/yhApp/www/templates/homepage.html" />
+        <option value="$PROJECT_DIR$/yhApp/www/js/services.js" />
+        <option value="$PROJECT_DIR$/yhApp/www/css/homepage.css" />
+        <option value="$PROJECT_DIR$/yhApp/www/templates/questpage.html" />
       </list>
     </option>
   </component>
@@ -488,25 +524,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/homepage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.10663507">
-          <caret line="21" column="97" selection-start-line="21" selection-start-column="97" selection-end-line="21" selection-end-column="97" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/yhApp/www/templates/addresspage.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.21327014">
           <caret line="6" column="34" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/yhApp/www/css/homepage.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5852018">
-          <caret line="30" column="28" selection-start-line="30" selection-start-column="20" selection-end-line="30" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -612,37 +633,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/questpage.html">
+    <entry file="file://$PROJECT_DIR$/yhApp/www/js/controllers.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.32885906">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="326" column="49" selection-start-line="326" selection-start-column="49" selection-end-line="326" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/yhApp/www/templates/register.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.8">
-          <caret line="14" column="56" selection-start-line="14" selection-start-column="56" selection-end-line="14" selection-end-column="56" />
+        <state vertical-scroll-proportion="-11.2">
+          <caret line="16" column="57" selection-start-line="16" selection-start-column="57" selection-end-line="16" selection-end-column="57" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yhApp/www/js/controllers.js">
+    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/homepage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.21875">
+          <caret line="17" column="99" selection-start-line="17" selection-start-column="99" selection-end-line="17" selection-end-column="99" />
+          <folding>
+            <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#0;n#ion-content#0;n#ion-view#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yhApp/www/css/homepage.css">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="242" column="72" selection-start-line="242" selection-start-column="72" selection-end-line="242" selection-end-column="72" />
+          <caret line="185" column="15" selection-start-line="185" selection-start-column="15" selection-end-line="185" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/yhApp/www/js/services.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3809524">
-          <caret line="64" column="40" selection-start-line="64" selection-start-column="40" selection-end-line="64" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="199" column="31" selection-start-line="199" selection-start-column="31" selection-end-line="199" selection-end-column="31" />
           <folding>
-            <element signature="e#2765#6545#0" expanded="false" />
-            <element signature="e#6680#7468#0" expanded="false" />
+            <element signature="e#2781#6561#0" expanded="false" />
+            <element signature="e#6696#7484#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yhApp/www/templates/questpage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4580067">
+          <caret line="23" column="82" selection-start-line="23" selection-start-column="82" selection-end-line="23" selection-end-column="82" />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#div#0;n#div#0;n#div#1;n#div#0;n#ion-content#0;n#ion-view#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#1;n#div#0;n#div#0;n#div#1;n#div#0;n#ion-content#0;n#ion-view#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>

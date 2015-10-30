@@ -321,8 +321,8 @@ angular.module('starter.controllers', [])
 
 
 //主页控制器
-    .controller('HomePageCtrl', function ($scope, Camera, Pictures, $ionicLoading, $timeout) {//定义本个ctrl的局部数据和方法, 主体是个函数
-
+    .controller('HomePageCtrl', function ($scope, Camera, Pictures, $ionicLoading, $timeout, questsFactory) {//定义本个ctrl的局部数据和方法, 主体是个函数
+        $scope.currentQuest = questsFactory.getCurrentQuest();
         $scope.moreTasks = function () {
             window.location.href = "#/app/quest";
         };
@@ -350,33 +350,7 @@ angular.module('starter.controllers', [])
             }, 1500);
             $scope.packageHide = true;
         };
-        $scope.test = function () {
-            // 	// 该语句应该只声明一次
-            var Post = AV.Object.extend("Post");
-            var deleteObjects = {};
-            var query = new AV.Query(Post);
-            query.get("5630947d00b0023cde9cb5dc", {
-                success: function (post) {
-                    // post.set('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
-                    //    		post.save();
-                    deleteObjects.add(post)
-                },
-                error: function (post, error) {
-                    alert("fail");
-                }
-            });
-            query.get("5630947060b20259f8d5a2f6", {
-                success: function (post) {
-                    // post.set('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
-                    //    		post.save();
-                    deleteObjects.add(post)
-                },
-                error: function (post, error) {
-                    alert("fail");
-                }
-            });
-            AV.Object.destroyAll(deleteObjects);
-        };
+
 
     })
 
