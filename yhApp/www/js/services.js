@@ -11,7 +11,7 @@ angular.module('starter.services', [])
     })
 
 //////////////////////////////////////////////////////////////////////
-//任务数据管理
+//用户数据管理
     .provider('userProvider', function () {
         var service = {};
         var username = "";
@@ -30,23 +30,23 @@ angular.module('starter.services', [])
                 return deferred.promise;
             };
             //提供注册
-            service.register = function(regData){
+            service.register = function(user){
                 var deferred = $q.defer();
-                var user = new AV.User();
                 user.set("username", regData.username);
                 user.set("password", regData.password);
                 user.set("phone", regData.username);
-                user.setMobilePhoneNumber(regData.username);
-                user.signUp(null, {
-                    success: function(user) {
-                        // 注册成功，可以使用了.
-                        deferred.resolve(user);
-                    },
-                    error: function(user, error) {
-                        // 失败了
-                        deferred.reject("读取失败");
-                        alert("Error: " + error.code + " " + error.message +"|"+ JSON.stringify(user));
-                    }
+                user.verifyMobilePhone(regData.vcode).then(function(){
+                    user.signUp(null, {
+                        success: function(data) {
+                            deferred.resolve(data);
+                        },
+                        error: function(data, error) {
+                            alert("Error: " + error.code + " " + error.message +"|"+ JSON.stringify(user));
+                            deferred.reject("读取失败");
+                        }
+                    });
+                }, function(err){
+                    deferred.reject("验证码错误");
                 });
                 return deferred.promise;
             };

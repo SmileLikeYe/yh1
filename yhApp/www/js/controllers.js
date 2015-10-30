@@ -172,6 +172,7 @@ angular.module('starter.controllers', [])
             //打开登录界面
             $scope.showLogin = function () {
                 if ($scope.loginData.logged_in == false) {
+                    $scope.regModal.hide();
                     $scope.modal.show();
                 } else {
                     //已经登录了,先放个退出吧，可以改成别的功能
@@ -184,9 +185,41 @@ angular.module('starter.controllers', [])
         $ionicModal.fromTemplateUrl('templates/register.html', {
             scope: $scope
         }).then(function (modal) {
-            $scope.regModal = modal;//发送验证码
+            $scope.regModal = modal;
+            $scope.user = new AV.User();
+            $scope.btndisabled = false;
+            $scope.btnlabel = "获取验证码";
+            $scope.TIMEOUT = 60;
+            $scope.wait = $scope.TIMEOUT;
+            $scope.timing = function () {
+                if ($scope.wait == 0) {
+                    $scope.btndisabled = false;
+                    $scope.btnlabel = "获取验证码";
+                    $scope.wait = $scope.TIMEOUT;
+                } else {
+                    $scope.btnlabel = "重新发送(" + $scope.wait + ")";
+                    $scope.wait--;
+                    $timeout(function () {
+                            $scope.timing();
+                        },
+                        1000)
+                }
+            }
+            //发送验证码
             $scope.sendVCode = function () {
-                console.log('should send VCode');
+                $scope.btndisabled = true;
+                $scope.wait = $scope.TIMEOUT;
+                $scope.timing();
+                alert("验证码已发送");
+                $scope.user.setMobilePhoneNumber($scope.regData.username);
+                /*$scope.user.requestMobilePhoneVerify($scope.regData.username).then(function () {
+                    //发送成功
+                    alert("suc");
+                }, function (err) {
+                    //发送失败
+                    alert("suck");
+                });*/
+
             };
             //关闭注册页面
             $scope.closeRegister = function () {
@@ -194,16 +227,11 @@ angular.module('starter.controllers', [])
             };
             //注册
             $scope.checkRegData = function (regData) {
-                if (regData.password == '123456') {
-                    return "密码过于简单！";
-                } else {//登录成功
-                    return "";
-                }
+                return "";
             };
         });
 //打开注册页面
         $scope.toRegister = function () {
-            console.log('should go to register page');
             $scope.closeLogin();
             $scope.regModal.show();
         };
@@ -227,6 +255,7 @@ angular.module('starter.controllers', [])
 //进行登录
         $scope.doLogin = function () {
             //使用另一个变量username1避免侧边栏显示空白
+            $scope.regData = {};
             if ($scope.loginData.username1 != '' && $scope.loginData.username == '未登录') {
                 $scope.loginData.username = $scope.loginData.username1;
             }
