@@ -1,4 +1,13 @@
 angular.module('starter.services', [])
+//存放数据库类
+.provider("AVObjects",function(){
+this.$get = function($q){
+return {
+	Task: AV.Object.extend("Task"),
+	
+};
+};
+})
 
 .factory('Camera', ['$location', 'Pictures', 'DateUtil', function($location, Pictures, DateUtil) {
 
@@ -98,6 +107,48 @@ angular.module('starter.services', [])
 		}
 	}
 })
+	
+//任务数据管理
+.provider('questsFactory', function() {
+//service存放factory数据
+var service = {};
+this.$get = function($q,AVObjects){
+	service.getTask = function(){
+		var query = new AV.Query(AVObjects.Task);
+		query.find({
+		  success: function(data) {
+		    deferred.resolve(data);
+		  },
+		  error: function(error) {
+		  		deferred.reject("读取失败");
+		  }
+		});
+		var deferred = $q.defer();
+		return deferred.promise;
+	};
+	var currentQuest = {name:"耐克拍照",endtime:"2015-12-30",info:"完成十张照片",totalCredit:20,currentCredit:19};
+
+	var finishedQuests = [
+		{name:"耐克拍照",endtime:"2014-12-30",info:"完成十张照片",totalCredit:20,currentCredit:17,done:100*17/20,left:100-100*17/20},
+		{name:"安踏拍照",endtime:"2014-12-31",info:"完成七张照片",totalCredit:21,currentCredit:14,done:100*14/21,left:100-100*14/21},
+	];
+	currentQuest.done = 100*currentQuest.currentCredit/currentQuest.totalCredit,
+	currentQuest.left = 100 - 100*currentQuest.currentCredit/currentQuest.totalCredit,
+	service.getCurrentQuest = function(){
+		return currentQuest;
+	};
+	service.getFinishedQuests = function(){
+		return finishedQuests;
+	};
+
+	return service;
+	};
+})
+
+
+
+
+
 /**
  * A simple example service that returns some data.
  */

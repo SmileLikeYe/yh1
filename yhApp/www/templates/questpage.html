@@ -10,9 +10,9 @@
       <div class="task_process">
         <i ng-click="" class="font-color gift icon-envelope inline"></i>
         <div class="load_bar inline">
-          <span class="left_loadbar_p process_bar" style="width:{{progress.done}}%"></span><span class="right_loadbar process_bar" style="width:{{progress.left}}%"></span>
+          <span class="left_loadbar_p process_bar" style="width:{{currentQuest.done}}%"></span><span class="right_loadbar process_bar" style="width:{{currentQuest.left}}%"></span>
         </div>
-        <span class="earn_text inline">{{progress.done}}/{{progress.left+progress.done}}</span>
+        <span class="earn_text inline">{{currentQuest.currentCredit}}/{{currentQuest.totalCredit}}</span>
       </div>
       <div class="next_word process">
         <ul>
@@ -21,6 +21,7 @@
           <li><p>任务要求：<span class="quest">{{currentQuest.info}}</span></p></li>
           <li><p>任务总积分：<span class="quest">{{currentQuest.totalCredit}}</span></p></li>
           <li><p>已获得积分：<span class="quest">{{currentQuest.currentCredit}}</span></p></li>
+          <li><p>已获得积分：<span class="quest">{{task}}</span></p></li>
         </ul>
       </div>
     </div>

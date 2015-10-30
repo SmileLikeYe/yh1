@@ -277,25 +277,13 @@ $scope.editPassword = function() {
 })
 
 //任务管理-控制器
-.controller('questCtrl', function($scope, $http, $timeout) {
-//假设此处取到了数据  $http.get
-$scope.currentQuest = {name:"耐克拍照",endtime:"2015-12-30",info:"完成十张照片",totalCredit:20,currentCredit:19};
-$scope.finishedQuests = [
-	{name:"耐克拍照",endtime:"2014-12-30",info:"完成十张照片",totalCredit:20,currentCredit:17,done:100*17/20,left:100-100*17/20},
-	{name:"安踏拍照",endtime:"2014-12-31",info:"完成七张照片",totalCredit:21,currentCredit:14,done:100*14/21,left:100-100*14/21},
-];
-//对数据进行处理，加上done和left两条，用来显示进度条
-$scope.progress = {
-	done:100*$scope.currentQuest.currentCredit/$scope.currentQuest.totalCredit,
-	left:100 - 100*$scope.currentQuest.currentCredit/$scope.currentQuest.totalCredit,
-};
-/*
-$scope.currentQuest.getProgress = function(current,total){
-	return 100*current/total;
-};
-$scope.currentQuest.getProgressLeft = function(current,total){
-	return 100 - 100*current/total;
-};*/
+.controller('questCtrl', function($scope, $http, $timeout, questsFactory) {
+$scope.currentQuest = questsFactory.getCurrentQuest();
+questsFactory.getTask().then(function(data){
+	$scope.task = JSON.stringify(data);
+	$scope.finishedQuests = questsFactory.getFinishedQuests();
+}
+);
 })
 
 
@@ -312,15 +300,7 @@ $scope.goToPic = function() {
 	window.location.href="#/app/picmanage";
 };
 $scope.doRefresh = function() {
-	/*$http.get('/new-items')
-	 .success(function(newItems) {
-		 $scope.items = newItems;
-	 })
-	 .finally(function() {
-		 // Stop the ion-refresher from spinning
-		 $scope.$broadcast('scroll.refreshComplete');
-	 });*/
-		 $scope.$broadcast('scroll.refreshComplete');
+	$scope.$broadcast('scroll.refreshComplete');
 };
 $scope.takePhoto = function(){
 	Camera.getPhoto();

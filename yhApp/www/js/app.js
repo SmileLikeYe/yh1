@@ -3,7 +3,7 @@
 var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform,$ionicLoading) {
-  AV.initialize('kTlCF8Aiq0rADHoFB1knF7US', 'x4CsV8ctJ0TUaDB67uDHSofS');
+  AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
   $ionicPlatform.ready(function() {
     // 移除键盘附加栏
     if (window.cordova && window.cordova.plugins.Keyboard) {
