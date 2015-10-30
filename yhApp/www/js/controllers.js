@@ -242,7 +242,7 @@ $scope.editPassword = function() {
 
 })
 //主页控制器
-.controller('HomePageCtrl',function($scope, Camera, Pictures,$ionicLoading,$timeout){//定义本个ctrl的局部数据和方法, 主体是个函数
+.controller('HomePageCtrl',function($scope, Camera, Pictures,$ionicLoading,$timeout,localStorageService){//定义本个ctrl的局部数据和方法, 主体是个函数
 $scope.moreTasks = function() {
 	window.location.href="#/app/quest";
 };
@@ -274,17 +274,94 @@ $scope.creditIn = function() {
     template: '10积分已放入您的账户！'
   });
   $timeout(function() {
-    $ionicLoading.hide(); //由于某种原因3秒后关闭弹出
+    // $ionicLoading.hide(); //由于某种原因3秒后关闭弹出
   }, 1500);
   $scope.packageHide = true;
 };
-
 $scope.test = function() {
-	// 	// 该语句应该只声明一次
-	var Post = AV.Object.extend("Post");
+	// localstoragetest.saveUser();
+	localStorageService.set("password", "ccccc");
+	alert(localStorageService.get("username"));
+	alert(localStorageService.get("password"));
 
-	// // 创建该类的一个实例
-	// var post = new Post();
+};
+
+$scope.test1 = function() {
+	alert(localStorageService.get("password"));
+
+	// 	// 该语句应该只声明一次
+	AV.initialize('kTlCF8Aiq0rADHoFB1knF7US', 'x4CsV8ctJ0TUaDB67uDHSofS');
+	var Post = AV.Object.extend("Post");
+	// var Comment = AV.Object.extend("Comment");
+
+
+	// var mypost = new Post();
+	// mypost.set("content", "ahhahahah");
+	// var mycomment = new Comment();
+	// mycomment.set("id", "1");
+	// mycomment.set("post",mypost);
+	// mycomment.save({null,{
+	// 	success: function(comment) {
+	// 		alert('New object created with objectId: ' + comment.id);
+	// 	},
+	// 	error: function(comment, error) {
+	// 		alert('comment save fail!');
+	// 	}
+	// }
+	// });
+
+	// 创建该类的一个实例
+	var post = new Post();
+	post.save({
+		content: "每个 JavaScript 程序员必备的 8 个开发工具",
+  		pubUser: "LeanCloud官方客服",
+  		pubTimestamp: 1435541999
+	}, {
+		success: function(post) {
+			// 成功保存之后，执行其他逻辑.
+    		alert('New object created with objectId: ' + post.id);
+		},
+		error: function(psot, error) {
+			// 失败之后执行其他逻辑
+   			// error 是 AV.Error 的实例，包含有错误码和描述信息.
+    		alert('Failed to create new object, with error message: ' + error.message);
+		}
+	});
+
+	// var deleteObjects = {};
+	// var query = new AV.Query(Post);
+	// query.get("5630947d00b0023cde9cb5dc", {
+	// 	success: function(post) {
+	// 		// post.set('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
+ //   //    		post.save();
+ //   			deleteObjects.add(post)
+	// 	},
+	// 	error: function(post, error) {
+	// 		alert("fail");
+	// 	}
+	// });
+	// query.get("5630947060b20259f8d5a2f6", {
+	// 	success: function(post) {
+	// 		// post.set('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
+ //   //    		post.save();
+ //   			deleteObjects.add(post)
+	// 	},
+	// 	error: function(post, error) {
+	// 		alert("fail");
+	// 	}
+	// });
+	// AV.Object.destroyAll(deleteObjects);
+
+};
+
+$scope.hu1 = function() {
+	alert("hu2: " + hu2());
+};
+
+function hu2() {
+	AV.initialize('kTlCF8Aiq0rADHoFB1knF7US', 'x4CsV8ctJ0TUaDB67uDHSofS');
+	var Post = AV.Object.extend("Post");
+	var post = new Post();
 	// post.save({
 	// 	content: "每个 JavaScript 程序员必备的 8 个开发工具",
  //  		pubUser: "LeanCloud官方客服",
@@ -300,32 +377,29 @@ $scope.test = function() {
  //    		alert('Failed to create new object, with error message: ' + error.message);
 	// 	}
 	// });
-
-	var deleteObjects = {};
+	result= "origin";
 	var query = new AV.Query(Post);
-	query.get("5630947d00b0023cde9cb5dc", {
-		success: function(post) {
-			// post.set('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
-   //    		post.save();
-   			deleteObjects.add(post)
-		},
-		error: function(post, error) {
-			alert("fail");
-		}
+	query.equalTo('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
+	query.find().then(function(posts) {
+		var promise = AV.Promiser.as();
+		result = posts[0].get('content');
+		return promise;
 	});
-	query.get("5630947060b20259f8d5a2f6", {
-		success: function(post) {
-			// post.set('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
-   //    		post.save();
-   			deleteObjects.add(post)
-		},
-		error: function(post, error) {
-			alert("fail");
-		}
-	});
-	AV.Object.destroyAll(deleteObjects);
+	alert('111' +  result);
+	return result;
 
-};
+	// query.get("5632fbc260b280456927b58b", {
+	// 	success: function(post) {
+	// 		// post.set('content', '每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/');
+ //   //    		post.save();
+ //   			result = post.get("content");
+	// 	},
+	// 	error: function(post, error) {
+	// 		alert("fail");
+	// 	}
+	// });
+
+}
 
 })
 

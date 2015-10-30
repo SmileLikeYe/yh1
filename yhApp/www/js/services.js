@@ -1,5 +1,17 @@
 angular.module('starter.services', [])
 
+.factory('localstoragetest',['localStorageService', function(localStorageService) {
+	
+	return {
+		saveUser: function() {
+			if (localStorageService.isSupported) {
+				return localStorageService.set('username', 'smile');
+				// alert(localStorageService.keys();
+			}
+		},
+	}
+}])
+
 .factory('Camera', ['$location', 'Pictures', 'DateUtil', function($location, Pictures, DateUtil) {
 
 	return {// 返回方法组的对象

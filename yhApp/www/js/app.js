@@ -1,11 +1,11 @@
 // Ionic Starter App
 // App module
-var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','LocalStorageModule'])
 
 
 .run(function($ionicPlatform,$ionicLoading) {
 
-  AV.initialize('kTlCF8Aiq0rADHoFB1knF7US', 'x4CsV8ctJ0TUaDB67uDHSofS');
+  // AV.initialize('kTlCF8Aiq0rADHoFB1knF7US', 'x4CsV8ctJ0TUaDB67uDHSofS');
   $ionicPlatform.ready(function() {
     // 移除键盘附加栏
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -19,7 +19,12 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('myApp')
+    .setStorageType('localStorage')
+    .setNotify(true, true);
+
   $stateProvider
 
     .state('app', {
@@ -142,6 +147,8 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
 
   $urlRouterProvider.otherwise('/app/homepage');
 })
+
+
 
 
 //全局变量
