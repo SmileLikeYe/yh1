@@ -30,25 +30,12 @@ angular.module('starter.services', [])
                 return deferred.promise;
             };
             //提供注册
-            service.register = function (user) {
+            service.register = function (regData) {
                 var deferred = $q.defer();
-                user.set("username", regData.username);
-                user.set("password", regData.password);
-                user.set("phone", regData.username);
-                user.verifyMobilePhone(regData.vcode).then(function () {
-                    user.signUp(null, {
-                        success: function (data) {
-                            deferred.resolve(data);
-                        },
-                        error: function (data, error) {
-                            alert("Error: " + error.code + " " + error.message + "|" + JSON.stringify(user));
-                            deferred.reject("读取失败");
-                        }
-                    });
+                AV.User.verifyMobilePhone(regData.vcode).then(function () {
                 }, function (err) {
-                    deferred.reject("验证码错误");
+                    alert("验证码错误"+JSON.stringify(err));
                 });
-                return deferred.promise;
             };
             //提供登录
             service.login = function (loginData) {

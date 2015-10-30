@@ -186,7 +186,6 @@ angular.module('starter.controllers', [])
             scope: $scope
         }).then(function (modal) {
             $scope.regModal = modal;
-            $scope.user = new AV.User();
             $scope.btndisabled = false;
             $scope.btnlabel = "获取验证码";
             $scope.TIMEOUT = 60;
@@ -205,20 +204,29 @@ angular.module('starter.controllers', [])
                         1000)
                 }
             }
-            //发送验证码
+            //发送验证码,实质是把用户数据注册到数据库，并发送验证码。
             $scope.sendVCode = function () {
                 $scope.btndisabled = true;
                 $scope.wait = $scope.TIMEOUT;
                 $scope.timing();
-                alert("验证码已发送");
+                $scope.user = new AV.User();
                 $scope.user.setMobilePhoneNumber($scope.regData.username);
-                /*$scope.user.requestMobilePhoneVerify($scope.regData.username).then(function () {
-                    //发送成功
-                    alert("suc");
+                $scope.user.set('username',$scope.regData.username);
+                $scope.user.set('password',$scope.regData.password);
+                $scope.user.signUp(null, {
+                    success: function(user) {
+                        // 注册成功，可以使用了.
+                    },
+                    error: function(user, error) {
+                        // 失败了
+                        alert("Error: " +JSON.stringify(err));
+                    }
+                });
+                AV.User.requestMobilePhoneVerify($scope.regData.username).then(function () {
+                    alert("验证码已发送至" + $scope.regData.username);
                 }, function (err) {
-                    //发送失败
-                    alert("suck");
-                });*/
+                    alert("发送失败"+JSON.stringify(err));
+                });
 
             };
             //关闭注册页面
