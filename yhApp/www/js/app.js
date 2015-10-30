@@ -1,11 +1,18 @@
 // Ionic Starter App
 // App module
+<<<<<<< HEAD
 var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','LocalStorageModule'])
 
 
 .run(function($ionicPlatform,$ionicLoading) {
 
   // AV.initialize('kTlCF8Aiq0rADHoFB1knF7US', 'x4CsV8ctJ0TUaDB67uDHSofS');
+=======
+var yhapp = angular.module('starter', ['ionic', 'starter.controllers'])
+
+.run(function($ionicPlatform,$ionicLoading) {
+  AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
+>>>>>>> origin/quest
   $ionicPlatform.ready(function() {
     // 移除键盘附加栏
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -39,7 +46,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
     views: {
       'menuContent': {
         templateUrl: 'templates/questpage.html',
-          controller: ''//TODO:Write controllers
+          controller: 'questCtrl'
       }
     }
   })
@@ -109,42 +116,9 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
           controller: ''
         }
       }
-    })
-
-  .state('app.userinfo',{
-      url: '/userinfo',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/userinfoPage.html',
-          controller: ''
-        }
-      }
-    })
-
-  .state('app.modifyinfo',{
-      url: '/modifyinfo',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/modifyInfo.html',
-          controller: ''
-        }
-      }
-    })
-
-  .state('app.modifypwd',{
-      url: '/modifyPwd',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/modifyPassword.html',
-          controller: ''
-        }
-      }
     });
 
-
-
-  // if none of the above states are matched, use this as the fallback
-
+  // 默认页面
   $urlRouterProvider.otherwise('/app/homepage');
 })
 
