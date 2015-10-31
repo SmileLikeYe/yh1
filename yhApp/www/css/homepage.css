@@ -3,7 +3,7 @@
   position: relative;
 }
 .contain_box{
-  background-color: #ffffff;
+  background-color: #e7f5fa;
   border-radius: 10px;
   margin: 20px;
   padding: 20px;
@@ -34,11 +34,11 @@
   color: #387ef5;
 }
 .take{
-  background-color: #c9deb2;
+  background-color: #83cc2b;
   float: right;
 }
 .take_text{
-  color: #c9deb2;
+  color: #83cc2b;
 }
 .earn{
   background-color: #f1b133;
@@ -156,7 +156,7 @@
 .timer_message{
   text-align: center;
   width: 90%;
-  color: #c9deb2;
+  color: #83cc2b;
   position: absolute;
   top: 0;
   left: 6%;
@@ -171,7 +171,7 @@
   text-align: right;
 }
 
-/*½ø¶ÈÌõ*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½*/
 .homepage_process{
   margin-top: 5%;
   text-align: center;
@@ -201,7 +201,7 @@
 .gift{
   font-size: 30px;
 }
-/*ºì°ü*/
+/*ï¿½ï¿½ï¿½*/
 .red_package{
   width: 50%;
   height: 36%;
@@ -216,7 +216,7 @@
   right: 15%;
   z-index: 5;
 }
-/*ºì°ü³öÏÖµÄ¶¯»­ÌøÈë*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 .animated {
   -webkit-animation-duration: 1s;
   animation-duration: 1s;

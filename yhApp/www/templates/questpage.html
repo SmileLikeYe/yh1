@@ -1,58 +1,55 @@
 <ion-view view-title="任务管理">
-    <ion-content>
-        <div class="contain-box">
-            <div class="title-bar">
-                <button ng-click="showRule()" class="btn-operation font-color btn-rule"><i
-                        class="icon-file font-color"></i>&nbsp;新手规则
-                </button>
-                <i class="icon-spinner process icon"></i>
+<<<<<<< HEAD
+    <ion-content class="bg_image">
+    <div class="contain-box">
+      <div class="title-bar">
+        <button ng-click="showRule()" class="btn-operation font-color btn-rule"><i class="icon-file font-color"></i>&nbsp;新手规则</button>
+        <i class="icon-spinner process icon"></i>
+        <p class="status process">进行中</p>
+      </div>
+      <div class="task_wraper wraper_process">
+          <div class="task_process">
+              <i ng-click="" class="font-color gift icon-envelope inline"></i>
 
-                <p class="status process">进行中</p>
-            </div>
-            <div class="task_wraper wraper_process">
-                <div class="task_process">
-                    <i ng-click="" class="font-color gift icon-envelope inline"></i>
+              <div class="load_bar inline">
+                  <span class="left_loadbar_p process_bar" style="width:{{currentQuest.done}}%"></span>
+                  <span class="right_loadbar process_bar" style="width:{{currentQuest.left}}%"></span>
+              </div>
+              <span class="earn_text inline">{{currentQuest.currentCredit}}/{{currentQuest.totalCredit}}</span>
+          </div>
+          <div class="next_word process">
+              <ul>
+                  <li><p><i class="icon-pushpin process icon_bigger icon_pos"></i>任务名称：{{currentQuest.name}}</p>
+                  </li>
+                  <li><p>截止时间：{{currentQuest.endtime}}</p></li>
+                  <li><p>任务要求：<span class="quest">{{currentQuest.info}}</span></p></li>
+                  <li><p>任务总积分：<span class="quest">{{currentQuest.totalCredit}}</span></p></li>
+                  <li><p>已获得积分：<span class="quest">{{currentQuest.currentCredit}}</span></p></li>
+                  <li><p><span class="quest">{{task}}</span></p></li>
+              </ul>
+          </div>
+        </div>
+    </div>
+    <div class="contain-box">
+        <div class="title-bar">
+            <i class="icon-ok completed icon"></i>
 
-                    <div class="load_bar inline">
-                        <span class="left_loadbar_p process_bar" style="width:{{currentQuest.done}}%"></span>
-                        <span class="right_loadbar process_bar" style="width:{{currentQuest.left}}%"></span>
-                    </div>
-                    <span class="earn_text inline">{{currentQuest.currentCredit}}/{{currentQuest.totalCredit}}</span>
-                </div>
-                <div class="next_word process">
+            <p class="status completed">已完成</p>
+        </div>
+        <div ng-repeat="quest in finishedQuests track by $index">
+            <div class="task_wraper wraper_completed">
+                <div class="next_word completed">
                     <ul>
-                        <li><p><i class="icon-pushpin process icon_bigger icon_pos"></i>任务名称：{{currentQuest.name}}</p>
+                        <li><p><i class="icon-pushpin completed icon_bigger icon_pos"></i>任务名称：{{quest.title}}</p>
                         </li>
-                        <li><p>截止时间：{{currentQuest.endtime}}</p></li>
-                        <li><p>任务要求：<span class="quest">{{currentQuest.info}}</span></p></li>
-                        <li><p>任务总积分：<span class="quest">{{currentQuest.totalCredit}}</span></p></li>
-                        <li><p>已获得积分：<span class="quest">{{currentQuest.currentCredit}}</span></p></li>
-                        <li><p><span class="quest">{{task}}</span></p></li>
+                        <li><p>截止时间：{{quest.title}}</p></li>
+                        <li><p>任务要求：<span class="quest">{{quest.title}}</span></p></li>
+                        <li><p>获得积分：<span class="quest">{{quest.title}}</span></p></li>
                     </ul>
                 </div>
             </div>
+            <br/>
         </div>
-        <div class="contain-box">
-            <div class="title-bar">
-                <i class="icon-ok completed icon"></i>
-
-                <p class="status completed">已完成</p>
-            </div>
-            <div ng-repeat="quest in finishedQuests track by $index">
-                <div class="task_wraper wraper_completed">
-                    <div class="next_word completed">
-                        <ul>
-                            <li><p><i class="icon-pushpin completed icon_bigger icon_pos"></i>任务名称：{{quest.title}}</p>
-                            </li>
-                            <li><p>截止时间：{{quest.title}}</p></li>
-                            <li><p>任务要求：<span class="quest">{{quest.title}}</span></p></li>
-                            <li><p>获得积分：<span class="quest">{{quest.title}}</span></p></li>
-                        </ul>
-                    </div>
-                </div>
-                <br/>
-            </div>
-        </div>
-        </div>
+    </div>
     </ion-content>
 </ion-view>

@@ -9,6 +9,7 @@
   padding: 20px 10px;
   position: relative;
   border-radius: 10px;
+  background-color: #e7f5fa;
 }
 .credit_avail{
   border: 2px solid #f5405a;
@@ -25,6 +26,7 @@
   border-radius: 10px;
   text-align: center;
   border: 2px solid #dddddd;
+  background-color: #e7f5fa;
 }
 .avail{
   color: #f5405a;
