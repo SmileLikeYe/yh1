@@ -379,20 +379,20 @@ angular.module('starter.controllers', [])
       localStorageService.set("password", "ccccc");
       alert(localStorageService.get("username"));
       alert(localStorageService.get("password"));
+  }
 
 $scope.hu1 = function() {
 	var Task = AV.Object.extend("Task");
 	var query = new AV.Query(Task);
 	query.get("5633062f00b0ee7f5e9c5962", {
-	  success: function(post) {
-	    // 成功获得实例
-	    var content = post.get("oid");
-	    alert("ddd:" + content + post.get('creditTotal') + post.get('content'));
-	  },
-	  error: function(error) {
-	    // 失败了.
-	  }
-	});
-};
-
+			  success: function(post) {
+			    // 成功获得实例
+			    var content = post.get("oid");
+			    alert("ddd:" + content + post.get('creditTotal') + post.get('content'));
+			  },
+			  error: function(error) {
+			    // 失败了.
+			  }
+		});
+	};
 })
