@@ -38,6 +38,7 @@
   border-radius: 10px;
   padding-top: 10px;
   position: relative;
+  background-color: #e7f5fb;
 }
 .task_process{
   margin: 0 auto;
@@ -90,4 +91,8 @@
   position: absolute;
   top: 20px;
   right: 5%;
+}
+.cloth{
+  width: 20px;
+  height: 20px;
 }
