@@ -1,29 +1,30 @@
 .credit_title{
   text-align: center;
-  font-size: 18px;
+  font-size: 20px;
   margin: 30px;
 }
-.credit_group{
-  width: 85%;
-  height: 90px;
-  margin: 0 auto;
-}
-
-.credit_today{
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  border: 1px solid #dddddd;
-}
-.credit{
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  border: 1px solid #dddddd;
-}
 .credit_contain{
-  display: inline-block;
-  width: 49%;
-  height: 100%;
+  height: 100px;
+  margin: 20px 40px;
+  padding: 20px 10px;
   position: relative;
+  border-radius: 10px;
+}
+.credit_avail{
+  border: 2px solid #f5405a;
+}
+.credit_unavail{
+  border: 2px solid #f1b133;
+}
+.credit_today{
+  border: 2px solid #387ef5;
+}
+.credit_list{
+  margin: 20px 40px;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  border: 2px solid #dddddd;
 }
 .avail{
   color: #f5405a;
@@ -32,84 +33,88 @@
   color: #666666;
 }
 .credit_icon{
-  font-size: 35px;
+  font-size: 55px;
   position: absolute;
   top: 20%;
   left: 10%;
 }
 .credit_detail{
   position: absolute;
-  top: 20px;
-  left: 46%;
+  top: 25%;
+  left: 55%;
   font-size: 16px;
 }
-.credit_detail_s{
+.credit_detail_t{
   position: absolute;
-  top: 20px;
-  left: 54%;
+  top: 25%;
+  left: 50%;
   font-size: 16px;
 }
 .credit_count{
   position: absolute;
-  top: 50px;
-  left: 56%;
+  top: 55%;
+  left: 55%;
   font-size: 22px;
   font-weight: 600;
 }
-
-.cover{
+.credit_span{
+  margin: 0 10px;
+}
+.credit_left{
+  margin-right: 55px;
+}
+.credit_right{
+  width: 75px;
+}
+.list_contain{
+  position: relative;
+  height: 65px;
+  margin-top: 10px;
+}
+.list_icon{
+  font-size: 30px;
+  position: absolute;
+  top: 5px;
+  left: 10px;
+}
+.list_yellow{
   width: 100%;
-  height: 150%;
+  height: 100%;
+  background-color: #f1b133;
+  border-radius: 6px;
   position: absolute;
   top: 0;
-  left: 0;
-  background-color: #eeeeee;
-  opacity: 0.7;
-  z-index: 4;
+  right: 0;
 }
-.get_package{
-  width: 85%;
-  margin: 0 auto;
-  height: 90px;
-  background-color: #ce0000;
-  border-radius: 6px;
-  position: relative;
-}
-.package_icon{
-  font-size: 50px;
-  position: absolute;
-  top: 10px;
-  left: 20px;
-}
-.package_name{
-  font-size: 18px;
-  font-weight: 600;
-  position: absolute;
-  top: 15px;
-  left: 80px;
-}
-.package_num{
-  font-size: 14px;
-  position: absolute;
-  top: 40px;
-  left: 80px;
-}
-.white_bottom{
+.list_grey{
   width: 100%;
-  height: 25px;
-  position: absolute;
-  bottom: -1px;
-  left: 0;
+  height: 20px;
   background-color: #dddddd;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
-}
-.to_detail{
-  font-size: 12px;
   position: absolute;
-  bottom: -8px;
-  left: 20px;
+  bottom: 0;
+  left: 0;
 }
-.hpg_pro{
+.list_count{
+  font-size: 30px;
+  font-weight: 600;
+  position: absolute;
+  top: 15%;
+  left: 50px;
+}
+.list_unit{
   font-size: 16px;
+  margin-left: 5px;
+}
+.list_time{
+  font-size: 10px;
+  position: absolute;
+  left: 5px;
+  bottom: 0;
+}
+.list_detail{
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
 }

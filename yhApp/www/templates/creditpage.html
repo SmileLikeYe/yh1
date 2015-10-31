@@ -1,15 +1,45 @@
 <ion-view view-title="积分管理">
-  <ion-content>
+  <ion-content ng-init="showList=false">
   <p class="credit_title font-color">积分详情</p>
   <div ng-click="showCashNotification()" class="credit_avail credit_contain">
     <i class="icon-envelope avail credit_icon"></i>
-    <p class="avail credit_detail">可兑换积分</p>
+    <p class="avail credit_detail">积分</p>
     <p class="avail credit_count">27</p>
   </div>
-    <div ng-click="showUnavailCredit()" class="credit_unavail credit_contain">
-      <i class="icon-envelope unavail credit_icon"></i>
-      <p class="unavail credit_detail">不可兑换积分</p>
-      <p class="unavail credit_count">18</p>
+    <div class="credit_unavail credit_contain earn_text">
+      <i class="icon-gift credit_icon"></i>
+      <p class="credit_detail">衣币</p>
+      <p class="credit_count">18</p>
+      <div ng-click="showList=!showList" class="list_detail">
+        <span class="earn_text">详情</span>
+        <i ng-class="{true: 'icon-chevron-up earn_text', false: 'icon-chevron-down earn_text'}[showList]"></i>
+      </div>
+    </div>
+    <div ng-show="showList" class="credit_list earn_text">
+      <p class="font-color">衣币详情列表</p>
+      <div class="list_contain">
+        <div class="list_yellow">
+          <i class="icon-gift white list_icon"></i>
+          <p class="list_count white">20<span class="list_unit white">衣币</span></p>
+          <div class="list_grey">
+            <span class="list_time font-color">过期时间：2015-10-15&nbsp;&nbsp;22:12:23</span>
+          </div>
+        </div>
+      </div>
+      <div class="list_contain">
+        <div class="list_yellow">
+          <i class="icon-gift white list_icon"></i>
+          <p class="list_count white">20<span class="list_unit white">衣币</span></p>
+          <div class="list_grey">
+            <span class="list_time font-color">过期时间：2015-10-15&nbsp;&nbsp;22:12:23</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="credit_today credit_contain snatch_text">
+      <i class="icon-money credit_icon"></i>
+      <p class="credit_detail_t">今日赚得</p>
+      <p class="credit_count">27</p>
     </div>
   </ion-content>
 </ion-view>
