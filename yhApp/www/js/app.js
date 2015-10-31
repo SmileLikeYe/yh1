@@ -102,7 +102,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
           controller: ''
         }
       }
-      
+
     })
 
   .state('app.userinfo',{
@@ -110,7 +110,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
       views: {
         'menuContent': {
           templateUrl: 'templates/userinfoPage.html',
-          controller: ''
+          controller: 'userInfoCtrl'
         }
       }
     })
@@ -130,7 +130,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
       views: {
         'menuContent': {
           templateUrl: 'templates/modifyPassword.html',
-          controller: ''
+          controller: 'modPwdCtrl'
         }
       }
     });

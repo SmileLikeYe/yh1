@@ -6,7 +6,7 @@ angular.module('starter.services', [])
       return {
         Task: AV.Object.extend("Task"),
         User: AV.Object.extend("_User"),
-
+        Photo: AV.Object.extend("Photo"),
       };
     };
   })
@@ -18,24 +18,14 @@ angular.module('starter.services', [])
     var username = window.localStorage['username'];
     var uoid = window.localStorage['uoid'];
     this.$get = function ($q, AVObjects) {
-      service.getUser = function () {
-        var query = new AV.Query(AVObjects.Task);
-        query.find({
-          success: function (data) {
-            deferred.resolve(data);
-          },
-          error: function (error) {
-            deferred.reject("读取失败");
-          }
-        });
-        var deferred = $q.defer();
-        return deferred.promise;
-      };
+
+
       //提供注册
       service.register = function (regData) {
         var deferred = $q.defer();
         AV.User.verifyMobilePhone(regData.vcode).then(function () {
-          deferred.resolve(regData);
+          deferred.resolve("注册成功");
+          alert('注册成功！');
         }, function (err) {
           alert("验证码错误" + JSON.stringify(err));
           deferred.reject("验证码错误");
@@ -48,7 +38,7 @@ angular.module('starter.services', [])
         AV.User.logIn(loginData.username, loginData.password, {
           success: function (user) {
             window.localStorage['uoid'] = user.id;
-            deferred.resolve(user);
+            deferred.resolve(user._serverData);
           },
           error: function (user, error) {
             alert("Error: " + error.code + " " + error.message + "|" + JSON.stringify(user));
@@ -91,36 +81,18 @@ angular.module('starter.services', [])
 //service存放factory数据
     var service = {};
     this.$get = function ($q, AVObjects) {
-      service.getTask = function () {
-        var deferred = $q.defer();
-        var query = new AV.Query(AVObjects.Task);
-        query.find({
-          success: function (data) {
-            var result = new Array();
-            for (var i = 0; i < data.length; i++) {
-              var t = data[i]['_serverData'];
-              //t['endTime'] = t['endTime'].toString();
-              result.push(t);
-            }
-            deferred.resolve(result);
-          },
-          error: function (error) {
-            deferred.reject("读取失败");
-          }
-        });
-        return deferred.promise;
-      };
-      service.getCurrentQuests = function () {
+      service.getQuests = function () {
         var deferred = $q.defer();
         var query = new AV.Query(AVObjects.Task);
         var me = new AVObjects.User();
         me.id = window.localStorage['uoid'];
-        query.equalTo("participant",me);
+        query.equalTo("participant", me);
         query.find({
           success: function (data) {
             var result = new Array();
             for (var i = 0; i < data.length; i++) {
               var t = data[i]['_serverData'];
+              t.id = data[i].id;
               result.push(t);
             }
             deferred.resolve(result);
@@ -131,30 +103,30 @@ angular.module('starter.services', [])
         });
         return deferred.promise;
       };
-      service.getFinishedQuests = function () {
-        var finishedQuests = [
-          {
-            name: "耐克拍照",
-            endtime: "2014-12-30",
-            info: "完成十张照片",
-            totalCredit: 20,
-            currentCredit: 17,
-            done: 100 * 17 / 20,
-            left: 100 - 100 * 17 / 20
+      service.getCurrentCreditOfQuest = function (qid) {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Photo);
+        var quest = new AVObjects.Task();
+        quest.id = qid;
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.equalTo("uploader", me);
+        query.equalTo("task", quest);
+        query.find({
+          success: function (data) {
+            var credit = 0;
+            for (var i = 0; i < data.length; i++) {
+              var t = data[i]['_serverData'];
+              credit += t.credit;
+            }
+            deferred.resolve(credit);
           },
-          {
-            name: "耐克拍照",
-            endtime: "2014-12-30",
-            info: "完成十张照片",
-            totalCredit: 20,
-            currentCredit: 17,
-            done: 100 * 17 / 20,
-            left: 100 - 100 * 17 / 20
-          },
-        ];
-        return finishedQuests;
+          error: function (error) {
+            deferred.reject("读取失败");
+          }
+        });
+        return deferred.promise;
       };
-
       return service;
     };
   })

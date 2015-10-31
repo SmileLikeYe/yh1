@@ -22,7 +22,7 @@
         <div class="gap"></div>
         <ion-item menu-close ng-click="showLogin()">
           <i class="sculpture icon-user font-color"></i>
-          <span class="username font-color">{{loginData.username}}</span>
+          <span class="username font-color">{{loginData.nickName}}</span>
           <i class="arrow arrow_first icon-angle-right font-color"></i>
         </ion-item>
         <div class="gap"></div>
@@ -31,7 +31,7 @@
           <span class="management">返回主页</span>
           <i class="arrow arrow_other icon-angle-right font-color"></i>
         </ion-item>
-        <ion-item menu-close href="#/app/quest">
+        <ion-item menu-close ng-click="toQuest()">
           <i class="arrow icon-time font-color"></i>
           <span class="management">任务管理</span>
           <i class="arrow arrow_other icon-angle-right font-color"></i>
