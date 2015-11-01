@@ -1,12 +1,13 @@
 angular.module('starter.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $timeout, userProvider) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $timeout, userProvider, questsFactory) {
 //！——全局变量和本地存储的数据
     $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
     var currentuser = AV.User.current();
     if (window.localStorage['username'] != '未登录' && window.localStorage['username'] != '') {
       $scope.loginData.username = window.localStorage['username'];
       $scope.loginData.logged_in = window.localStorage['logged_in'];
+      $scope.loginData.password = window.localStorage['password'];
       $scope.loginData.nickName = window.localStorage['nickName'];
     }
 
@@ -41,9 +42,14 @@ angular.module('starter.controllers', [])
       $scope.questNotificationModal.hide();
     };
     $scope.showQuestNotification = function () {
-      //TODO:获取任务数据
-      $scope.newQuest = {name: "拍什么拍", endtime: "2014-12-30", info: "完成十张照片", totalCredit: 20};
-      $scope.questNotificationModal.show();
+      questsFactory.getNewQuest().then(function(q){
+        $scope.newQuest = q;
+        if($scope.newQuest){//抢到任务
+          $scope.questNotificationModal.show();
+        }else{
+          alert('现在没有任务了，明天再来看看吧！');
+        }
+      });
     };
     $scope.goPurchase = function () {
       $scope.closeQuestNotification();
@@ -281,6 +287,7 @@ angular.module('starter.controllers', [])
           $scope.loginData.logged_in = true;
           window.localStorage['logged_in'] = true;
           window.localStorage['username'] = $scope.loginData.username;
+          window.localStorage['password'] = $scope.loginData.password;
           window.localStorage['nickName'] = data.nickName;
           $scope.loginData.nickName = data.nickName;
           alert("欢迎回来，" + $scope.loginData.nickName);
@@ -322,18 +329,18 @@ angular.module('starter.controllers', [])
   })
 
 //任务管理-控制器
-  .controller('questCtrl', function ($scope, $http, $timeout, questsFactory) {
+  .controller('questCtrl', function ($scope, $http, $timeout, questsFactory,DateUtil) {
     questsFactory.getQuests().then(function (data) {
         $scope.currentQuests = new Array();
         $scope.finishedQuests = new Array();
-        var now = JSON.stringify(new Date()).replace(/[":A-Z.-]/g, "");
+        var now = DateUtil.getNowFormatDate();
         data.forEach(
           function (q) {
-            var limit = JSON.stringify(q['endTime']).replace(/[":A-Z.-]/g, "");
+            var limit = DateUtil.getFormatDate(eval(q['endTime']));
             if (now < limit) {//未超时
-              q.endTime = JSON.stringify(q['endTime']).replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
+              q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
               questsFactory.getCurrentCreditOfQuest(q.id).then(
-                function (credit) {//可以做成动画效果，但是懒得做了
+                function (credit) {
                   q.currentCredit = credit;
                   q.done = 100 * q.currentCredit / q.creditTotal;
                   q.left = 100 - q.done;
@@ -341,6 +348,8 @@ angular.module('starter.controllers', [])
               );
               $scope.currentQuests.push(q);
             } else {//已超时
+              console.log("1 finished");
+              q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
               $scope.finishedQuests.push(q);
             }
           }
@@ -352,7 +361,32 @@ angular.module('starter.controllers', [])
 
 //主页控制器
 
-  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout) {
+  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout,questsFactory, DateUtil) {
+    $scope.hpQuest =  {title:"还没有任务，赶快开始赚钱吧！"};
+    if(window.localStorage['logged_in']){
+      questsFactory.getQuests().then(function (data) {
+        $scope.hpQuests = [];
+        var now = JSON.stringify(new Date()).replace(/[":A-Z.-]/g, "");
+        data.forEach(
+          function (q) {
+            var tt = DateUtil.getFormatDate(eval(q['endTime']));
+            var limit = tt.replace(/[":A-Z.-]/g, "");
+            if (now < limit) {//未超时
+              q.endTime = tt.replace(/T/g, " ").replace(/"/g, "").substring(0, 10);
+              questsFactory.getCurrentCreditOfQuest(q.id).then(
+                function (credit) {
+                  q.currentCredit = credit;
+                  q.done = 100 * q.currentCredit / q.creditTotal;
+                  q.left = 100 - q.done;
+                }
+              );
+              $scope.hpQuests.push(q);
+            }
+          }
+        );
+        $scope.hpQuest = $scope.hpQuests[0];
+      });
+    }
     $scope.pics = [
       {id: 0, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/ionic.png"},
       {id: 1, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/thumb.jpg"},
@@ -398,15 +432,11 @@ angular.module('starter.controllers', [])
   })
 
   .controller('userInfoCtrl', function ($scope, userProvider) {
-    $scope.userinfo = $scope.loginData;
     $scope.logout = function () {
       console.log("退出");//TODO 换成某种手机上能显示的东西
       $scope.doLogout();
     };
-    $scope.submitEdit = function () {
-      window.location.href = "#/app/userinfo";
-    };
-    $scope.editPassword = function () {
+    $scope.toEditPwd = function () {
       window.location.href = "#/app/modifyPwd";
     };
     $scope.editInfo = function () {
@@ -415,10 +445,12 @@ angular.module('starter.controllers', [])
   })
 
   .controller('modPwdCtrl', function ($scope, userProvider, AVObjects) {
-    $scope.userinfo = $scope.loginData;
     $scope.mp = {};
     $scope.modPwd = function () {
-      alert(111);
+      if($scope.mp.newPwd != $scope.mp.confirmPwd){
+        alert("两次输入密码不一致");
+        return;
+      }
       var me = new AVObjects.User();
       me.id = window.localStorage['uoid'];
       userProvider.login({
@@ -432,13 +464,39 @@ angular.module('starter.controllers', [])
           $scope.loginData.nickName = data.nickName;
           me.updatePassword($scope.mp.oldPwd, $scope.mp.newPwd, {
             sucess: function () {
-              console.log(修改密码成功);
             },
             error: function (user, err) {
               console.log(JSON.stringify(err));
             }
+          }).then(function(){
+            window.localStorage['password'] = $scope.mp.newPwd;
+            console.log('修改密码成功');
+            $scope.mp = {};
+            window.location.href = "#/app/userinfo";
           });
         }
       );
     };
+  })
+  .controller('modInfoCtrl', function ($scope, userProvider, AVObjects) {
+    $scope.userinfo = $scope.loginData;
+    $scope.submitEdit = function () {
+      window.location.href = "#/app/userinfo";
+      var me = new AVObjects.User();
+      me.id = window.localStorage['uoid'];
+      userProvider.login({
+        username:$scope.loginData.username,
+        password:window.localStorage['password']
+      }).then(function(data){
+          me.set('nickName',$scope.userinfo.nickName);
+          me.set('alipayAccount',$scope.userinfo.alipayAccount);
+          me.save().then(function(){
+            window.localStorage['nickName'] = $scope.userinfo.nickName;
+            $scope.loginData.nickName = $scope.userinfo.nickName;
+          });
+
+        }
+      );
+    };
+
   })

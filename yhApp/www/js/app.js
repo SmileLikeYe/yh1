@@ -120,7 +120,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
       views: {
         'menuContent': {
           templateUrl: 'templates/modifyInfo.html',
-          controller: ''
+          controller: 'modInfoCtrl'
         }
       }
     })

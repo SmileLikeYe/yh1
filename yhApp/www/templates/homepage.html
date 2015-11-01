@@ -1,85 +1,87 @@
 <ion-view view-title="主页">
   <ion-content class="back_color bg_image">
-  <!--  <ion-refresher
-	pulling-text="下拉刷新..."
-	on-refresh="doRefresh()">
-  </ion-refresher>
-  <!-- 主页的模板 -->
-  <!-- TODO:给div添加css -->
-  <!-- TODO:给按钮添加onclick事件 -->
-  <!-- TODO:替换placeholder -->
-  <!-- TODO:真tm丑-->
-<div id="homepage">
-    <div ng-init="packageHide=true" ng-hide="packageHide" class="package_contain">
-      <div class="cover"></div>
-      <img ng-click="creditIn()" class="red_package animated zoomInDown" src="img/red_package.png">
-      <i ng-click="packageHide=true" class="icon-remove font-color gift package_close animated bounceInRight"></i>
-    </div>
-    <div class="homepage_process white">
-      <span class="hpg_pro inline">任务1</span>
-      <div class="hp_load_bar inline">
-        <span class="hp_left_loadbar hp_process_bar"></span><span class="hp_right_loadbar hp_process_bar"></span>
+    <!--  <ion-refresher
+      pulling-text="下拉刷新..."
+      on-refresh="doRefresh()">
+    </ion-refresher>
+    <!-- 主页的模板 -->
+    <div id="homepage">
+      <div ng-init="packageHide=true" ng-hide="packageHide" class="package_contain">
+        <div class="cover"></div>
+        <img ng-click="creditIn()" class="red_package animated zoomInDown" src="img/red_package.png">
+        <i ng-click="packageHide=true" class="icon-remove font-color gift package_close animated bounceInRight"></i>
       </div>
-      <span class="hpg_pro inline">0/10</span>
-      <i ng-click="hu1()" class="gift icon-gift inline"></i>
-    </div>
-	  <div class="contain_box">
-				<button class="btn_primary snatch" ng-click="showQuestNotification ()">抢</button>
+      <div class="homepage_process white">
+        <span class="hpg_pro inline">{{hpQuest.title}}</span>
+
+        <div class="hp_load_bar inline">
+          <span class="hp_left_loadbar hp_process_bar" style="width:{{hpQuest.done}}%"></span><span class="hp_right_loadbar hp_process_bar"style="width:{{hpQuest.left}}%"></span>
+        </div>
+        <span class="hpg_pro inline">{{hpQuest.currentCredit}}/{{hpQuest.creditTotal}}</span>
+        <i ng-click="hu1()" class="gift icon-gift inline"></i>
+      </div>
+      <div class="contain_box">
+        <button class="btn_primary snatch" ng-click="showQuestNotification()">抢</button>
         <div class="serial_num">
           <!-- showSerialNumber -->
           <a ng-click="test1()" class="home_link">已经有序列号?</a>
         </div>
         <div class="text_group">
           <div class="text_box">
-            <p ng-click="sTextClick=!sTextClick" class="snatch_text"><i class="icon-pushpin icon"></i>耐克拍照</p>
-            <p ng-show="sTextClick" class="snatch_info snatch_text">2015-11-20</p>
-            <p ng-show="sTextClick" class="snatch_info snatch_text">8/10</p>
+            <p ng-click="sTextClick=!sTextClick" class="snatch_text"><i class="icon-pushpin icon"></i>{{hpQuests[0].title}}</p>
+
+            <p ng-show="sTextClick" class="snatch_info snatch_text">{{hpQuests[0].endTime}}</p>
+
+            <p ng-show="sTextClick" class="snatch_info snatch_text">{{hpQuests[0].currentCredit}}/{{hpQuests[0].creditTotal}}</p>
           </div>
           <div class="text_box">
-            <p class="snatch_text"><i class="icon-pushpin icon"></i>爱拍拍照</p>
-            <p ng-hide="true" class="snatch_info snatch_text">2015-11-20</p>
-            <p ng-hide="true" class="snatch_info snatch_text">7/10</p>
+            <p class="snatch_text"><i class="icon-pushpin icon"></i>{{hpQuests[1].title}}</p>
+
+            <p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].endTime}}</p>
+
+            <p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].currentCredit}}/{{hpQuests[1].creditTotal}}</p>
           </div>
         </div>
         <div ng-click="moreTasks()" class="details">
           <span class="number snatch_text">5</span>
           <i class="icon-angle-right icon more snatch_text"></i>
         </div>
-		</div>
-		<div  class = "contain_box full_height">
-      <div class="timer_group">
-        <span class="timer_message"><i class="icon-camera-retro camera take_text"></i>距离您下次拍照时间</span>
-        <p class="timer font-color">1&nbsp;:&nbsp;23&nbsp;:&nbsp;24</p>
       </div>
-      <button class="btn_primary take" ng-click="showTaskPopup()">拍</button>
-      <div ng-click="goToPic()" class="details_left">
-        <i class="icon-angle-left icon more_left take_text"></i>
-        <span class="go_album take_text">相册</span>
-      </div>
-		</div>
-	  <div class="contain_box">
-			<button class="btn_primary earn" ng-click="showCashNotification()">赚</button>
-		  <div class="text_group right">
-        <p class="text_earn earn_text">积分&nbsp;<span class="count font-color">18</span></p>
-      </div>
-      <div ng-click="creditDetails()" class="details_credit">
-        <span class="detail_c earn_text">详情</span>
-        <i class="icon-angle-right icon more_credit earn_text"></i>
-      </div>
-	  </div>
-</div>
+      <div class="contain_box full_height">
+        <div class="timer_group">
+          <span class="timer_message"><i class="icon-camera-retro camera take_text"></i>距离您下次拍照时间</span>
 
-<!--
+          <p class="timer font-color">1&nbsp;:&nbsp;23&nbsp;:&nbsp;24</p>
+        </div>
+        <button class="btn_primary take" ng-click="showTaskPopup()">拍</button>
+        <div ng-click="goToPic()" class="details_left">
+          <i class="icon-angle-left icon more_left take_text"></i>
+          <span class="go_album take_text">相册</span>
+        </div>
+      </div>
+      <div class="contain_box">
+        <button class="btn_primary earn" ng-click="showCashNotification()">赚</button>
+        <div class="text_group right">
+          <p class="text_earn earn_text">积分&nbsp;<span class="count font-color">18</span></p>
+        </div>
+        <div ng-click="creditDetails()" class="details_credit">
+          <span class="detail_c earn_text">详情</span>
+          <i class="icon-angle-right icon more_credit earn_text"></i>
+        </div>
+      </div>
+    </div>
 
-		<div class="card">
-		  <div class="item item-text-wrap">
-			This is a basic Card which contains an item that has wrapping text.
-			This is a basic Card which contains an item that has wrapping text.
-			This is a basic Card which contains an item that has wrapping text.
-			This is a basic Card which contains an item that has wrapping text.
-			This is a basic Card which contains an item that has wrapping text.
-		  </div>
-		</div>
--->
+    <!--
+
+            <div class="card">
+              <div class="item item-text-wrap">
+                This is a basic Card which contains an item that has wrapping text.
+                This is a basic Card which contains an item that has wrapping text.
+                This is a basic Card which contains an item that has wrapping text.
+                This is a basic Card which contains an item that has wrapping text.
+                This is a basic Card which contains an item that has wrapping text.
+              </div>
+            </div>
+    -->
   </ion-content>
 </ion-view>

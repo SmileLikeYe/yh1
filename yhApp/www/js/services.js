@@ -71,6 +71,34 @@ angular.module('starter.services', [])
           + " " + date.getHours() + seperator2 + date.getMinutes()
           + seperator2 + date.getSeconds();
         return currentdate;
+      },
+      getFormatDate: function (date) {
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        var strSec = date.getSeconds();
+        var strMin = date.getMinutes();
+        var strHour = date.getHours();
+        if (month >= 1 && month <= 9) {
+          month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+          strDate = "0" + strDate;
+        }
+        if (strHour >= 0 && strHour <= 9) {
+          strHour = "0" + strHour;
+        }
+        if (strMin >= 0 && strMin <= 9) {
+          strMin = "0" + strMin;
+        }
+        if (strSec >= 0 && strSec <= 9) {
+          strSec = "0" + strSec;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+          + " " + strHour + seperator2 + strMin
+          + seperator2 + strSec;
+        return currentdate;
       }
     }
   })
@@ -80,7 +108,7 @@ angular.module('starter.services', [])
   .provider('questsFactory', function () {
 //service存放factory数据
     var service = {};
-    this.$get = function ($q, AVObjects) {
+    this.$get = function ($q, AVObjects, DateUtil) {
       service.getQuests = function () {
         var deferred = $q.defer();
         var query = new AV.Query(AVObjects.Task);
@@ -93,11 +121,39 @@ angular.module('starter.services', [])
             for (var i = 0; i < data.length; i++) {
               var t = data[i]['_serverData'];
               t.id = data[i].id;
+              console.log("a quest");
               result.push(t);
             }
             deferred.resolve(result);
           },
           error: function (error) {
+            deferred.reject("读取失败");
+          }
+        });
+        return deferred.promise;
+      };
+      service.getNewQuest = function () {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Task);
+        var now = DateUtil.getNowFormatDate();
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.notEqualTo("participant", me);
+        query.find({
+          success: function (data) {
+            for (var i = 0; i < data.length; i++) {
+              var t = data[i]['_serverData'];
+              t.id = data[i].id;
+              var participants = t['participant'];
+              var limit = DateUtil.getFormatDate(eval(t['endTime']));
+              if(limit>now){
+                deferred.resolve(t);
+                return;
+              }
+            }
+          },
+          error: function (error) {
+            console.log("error"+JSON.stringify(error));
             deferred.reject("读取失败");
           }
         });
@@ -216,27 +272,6 @@ angular.module('starter.services', [])
   }])// function [] factory
 
 
-  .factory("DateUtil", function () {
-    return {
-      getNowFormatDate: function () {
-        var date = new Date();
-        var seperator1 = "-";
-        var seperator2 = ":";
-        var month = date.getMonth() + 1;
-        var strDate = date.getDate();
-        if (month >= 1 && month <= 9) {
-          month = "0" + month;
-        }
-        if (strDate >= 0 && strDate <= 9) {
-          strDate = "0" + strDate;
-        }
-        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-          + " " + date.getHours() + seperator2 + date.getMinutes()
-          + seperator2 + date.getSeconds();
-        return currentdate;
-      }
-    }
-  })
 /**
  * A simple example service that returns some data.
  */
