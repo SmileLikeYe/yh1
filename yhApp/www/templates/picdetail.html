@@ -27,7 +27,7 @@
               </div>
             </ion-slide>
           </ion-slide-box>
-          <span ng-class="{'status earn_text': underway, 'status font-color': failure, 'status take_text': success}" on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
+          <span ng-class="{'status_text earn_text': underway, 'status_text font-color': failure, 'status_text take_text': success}" on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
             <i ng-class="{'icon-spinner earn_text': underway, 'icon-remove font-color': failure, 'icon-ok take_text': success}" ></i>
             {{status}}
           </span>
