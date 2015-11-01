@@ -27,8 +27,10 @@
               </div>
             </ion-slide>
           </ion-slide-box>
-          <!--<button class="btn-retake btn-operation font-color" on-reorder="reorderItem(pic, $fromIndex, $toIndex)"><i class="icon-exchange font-color" ></i>重拍</button>-->
-
+          <span ng-class="{'status_text earn_text': underway, 'status_text font-color': failure, 'status_text take_text': success}" on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
+            <i ng-class="{'icon-spinner earn_text': underway, 'icon-remove font-color': failure, 'icon-ok take_text': success}" ></i>
+            {{status}}
+          </span>
         </div>
         </div>
     </ion-list>
