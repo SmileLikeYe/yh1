@@ -183,6 +183,44 @@ angular.module('starter.services', [])
         });
         return deferred.promise;
       };
+      service.apply = function (qid) {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Task);
+        var now = DateUtil.getNowFormatDate();
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.get(qid,{
+          success: function (data) {
+            var relation = data.relation('participant');
+            relation.add(me);
+            data.save();
+            deferred.resolve(credit);
+          },
+          error: function (error) {
+            deferred.reject("申请失败");
+          }
+        });
+        return deferred.promise;
+      };
+      service.cancelApply = function (qid) {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Task);
+        var now = DateUtil.getNowFormatDate();
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.get(qid,{
+          success: function (data) {
+            var relation = data.relation('participant');
+            relation.remove(me);
+            data.save();
+            deferred.resolve(credit);
+          },
+          error: function (error) {
+            deferred.reject("申请失败");
+          }
+        });
+        return deferred.promise;
+      };
       return service;
     };
   })

@@ -38,21 +38,31 @@ angular.module('starter.controllers', [])
     }).then(function (modal) {
       $scope.questNotificationModal = modal;
     });
+    $scope.showQuestNotification = function () {
+      if (window.localStorage['logged_in'] && !$scope.loginData.full) {
+        questsFactory.getNewQuest().then(function (q) {
+          $scope.newQuest = q;
+          console.log("applying" + q);
+          if ($scope.newQuest) {//抢到任务
+            questsFactory.apply(q.id);
+            $scope.questNotificationModal.show();
+          } else {
+            alert('现在没有任务了，明天再来看看吧！');
+          }
+        });
+      } else if ($scope.loginData.full) {
+        alert("你的任务列表已经满了！请先完成任务");
+      } else {
+        alert("请先登录！");
+
+      }
+    };
     $scope.closeQuestNotification = function () {
+      questsFactory.cancelApply($scope.newQuest.id);
       $scope.questNotificationModal.hide();
     };
-    $scope.showQuestNotification = function () {
-      questsFactory.getNewQuest().then(function(q){
-        $scope.newQuest = q;
-        if($scope.newQuest){//抢到任务
-          $scope.questNotificationModal.show();
-        }else{
-          alert('现在没有任务了，明天再来看看吧！');
-        }
-      });
-    };
     $scope.goPurchase = function () {
-      $scope.closeQuestNotification();
+      $scope.questNotificationModal.hide();
       window.location.href = '#/app/purchase';
     };
 
@@ -226,7 +236,7 @@ angular.module('starter.controllers', [])
           },
           error: function (user, error) {
             // 失败了
-            alert("Error: " + JSON.stringify(err));
+            alert("varifying Error: " + JSON.stringify(err));
           }
         });
         AV.User.requestMobilePhoneVerify($scope.regData.username).then(function () {
@@ -329,7 +339,7 @@ angular.module('starter.controllers', [])
   })
 
 //任务管理-控制器
-  .controller('questCtrl', function ($scope, $http, $timeout, questsFactory,DateUtil) {
+  .controller('questCtrl', function ($scope, $http, $timeout, questsFactory, DateUtil) {
     questsFactory.getQuests().then(function (data) {
         $scope.currentQuests = new Array();
         $scope.finishedQuests = new Array();
@@ -361,9 +371,9 @@ angular.module('starter.controllers', [])
 
 //主页控制器
 
-  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout,questsFactory, DateUtil) {
-    $scope.hpQuest =  {title:"还没有任务，赶快开始赚钱吧！"};
-    if(window.localStorage['logged_in']){
+  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout, questsFactory, DateUtil) {
+    $scope.hpQuest = {title: "还没有任务，赶快开始赚钱吧！"};
+    if (window.localStorage['logged_in']) {
       questsFactory.getQuests().then(function (data) {
         $scope.hpQuests = [];
         var now = JSON.stringify(new Date()).replace(/[":A-Z.-]/g, "");
@@ -381,6 +391,13 @@ angular.module('starter.controllers', [])
                 }
               );
               $scope.hpQuests.push(q);
+            }
+            if (typeof($scope.loginData) == 'undefined') {
+              $scope.loginData = {};
+            }
+            $scope.loginData.quests = $scope.hpQuests;
+            if ($scope.hpQuests.length >= 2) {
+              $scope.loginData.full = true;
             }
           }
         );
@@ -447,16 +464,16 @@ angular.module('starter.controllers', [])
   .controller('modPwdCtrl', function ($scope, userProvider, AVObjects) {
     $scope.mp = {};
     $scope.modPwd = function () {
-      if($scope.mp.newPwd != $scope.mp.confirmPwd){
+      if ($scope.mp.newPwd != $scope.mp.confirmPwd) {
         alert("两次输入密码不一致");
         return;
       }
       var me = new AVObjects.User();
       me.id = window.localStorage['uoid'];
       userProvider.login({
-        username:$scope.loginData.username,
-        password:$scope.mp.oldPwd
-      }).then(function(data){
+        username: $scope.loginData.username,
+        password: $scope.mp.oldPwd
+      }).then(function (data) {
           $scope.loginData.logged_in = true;
           window.localStorage['logged_in'] = true;
           window.localStorage['username'] = $scope.loginData.username;
@@ -468,7 +485,7 @@ angular.module('starter.controllers', [])
             error: function (user, err) {
               console.log(JSON.stringify(err));
             }
-          }).then(function(){
+          }).then(function () {
             window.localStorage['password'] = $scope.mp.newPwd;
             console.log('修改密码成功');
             $scope.mp = {};
@@ -485,12 +502,12 @@ angular.module('starter.controllers', [])
       var me = new AVObjects.User();
       me.id = window.localStorage['uoid'];
       userProvider.login({
-        username:$scope.loginData.username,
-        password:window.localStorage['password']
-      }).then(function(data){
-          me.set('nickName',$scope.userinfo.nickName);
-          me.set('alipayAccount',$scope.userinfo.alipayAccount);
-          me.save().then(function(){
+        username: $scope.loginData.username,
+        password: window.localStorage['password']
+      }).then(function (data) {
+          me.set('nickName', $scope.userinfo.nickName);
+          me.set('alipayAccount', $scope.userinfo.alipayAccount);
+          me.save().then(function () {
             window.localStorage['nickName'] = $scope.userinfo.nickName;
             $scope.loginData.nickName = $scope.userinfo.nickName;
           });
