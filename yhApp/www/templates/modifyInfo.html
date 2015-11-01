@@ -1,26 +1,26 @@
 <ion-view view-title="编辑资料">
   <ion-content class="back_color">
     <label class="item item-input edit_input">
-      <input type="text" value="16345647368">
-      <span class="edit_title font-color">用户名
+      <input type="text" ng-model="userinfo.nickName">
+      <span class="edit_title font-color">昵称
       </span>
     </label>
     <label class="item item-input edit_input">
-      <input type="text" value="16345647368">
+      <input type="text" ng-model="userinfo.username" ng-disabled="true">
       <span class="edit_title font-color">手机号码
       </span>
     </label>
     <label class="item item-input edit_input">
-      <input type="text" value="16345647368@163.com">
+      <input type="text" ng-model="userinfo.alipayAccount">
       <span class="edit_title font-color">支付宝账号
       </span>
     </label>
     <div class="info_btngroup">
-      <span ng-click="returnInfo()" class="info_btn">
+      <span ng-click="toUserInfo()" class="info_btn">
         <i class="icon-remove white edit_icon"></i>
         <span class="info_btntext white">取消</span>
       </span>
-      <span ng-click="sumbitEdit()" class="info_btn">
+      <span ng-click="submitEdit()" class="info_btn">
         <i class="icon-upload-alt white edit_icon"></i>
         <span class="info_btntext white">提交</span>
       </span>

@@ -9,24 +9,22 @@
 
                 <p class="status process">进行中</p>
             </div>
-            <div class="task_wraper wraper_process">
+            <div class="task_wraper wraper_process" ng-repeat="cquest in currentQuests track by $index">
                 <div class="task_process">
                     <i ng-click="" class="font-color gift icon-envelope inline"></i>
 
                     <div class="load_bar inline">
-                        <span class="left_loadbar_p process_bar" style="width:{{currentQuest.done}}%"></span>
-                        <span class="right_loadbar process_bar" style="width:{{currentQuest.left}}%"></span>
+                        <span class="left_loadbar_p process_bar" style="width:{{cquest.done}}%"></span><span class="right_loadbar process_bar" style="width:{{cquest.left}}%"></span>
                     </div>
-                    <span class="earn_text inline">{{currentQuest.currentCredit}}/{{currentQuest.totalCredit}}</span>
+                    <span class="earn_text inline">{{cquest.currentCredit}}/{{cquest.creditTotal}}</span>
                 </div>
                 <div class="next_word process">
                     <ul>
-                        <li><p><i class="icon-pushpin process icon_bigger icon_pos"></i>任务名称：{{currentQuest.name}}</p>
+                        <li><p><i class="icon-pushpin process icon_bigger icon_pos"></i>任务名称：{{cquest.title}}</p>
                         </li>
-                        <li><p>截止时间：{{currentQuest.endtime}}</p></li>
-                        <li><p>任务要求：<span class="quest">{{currentQuest.info}}</span></p></li>
-                        <li><p>已获得积分：<span class="quest">{{currentQuest.currentCredit}}</span></p></li>
-                        <li><p><span class="quest">{{task}}</span></p></li>
+                        <li><p>截止时间：{{cquest.endTime}}</p></li>
+                        <li><p>任务要求：<span class="quest">{{cquest.content}}</span></p></li>
+                        <li><p>已获得积分：<span class="quest">{{cquest.currentCredit}}</span></p></li>
                     </ul>
                 </div>
             </div>
@@ -43,9 +41,9 @@
                         <ul>
                             <li><p><i class="icon-pushpin completed icon_bigger icon_pos"></i>任务名称：{{quest.title}}</p>
                             </li>
-                            <li><p>截止时间：{{quest.title}}</p></li>
-                            <li><p>任务要求：<span class="quest">{{quest.title}}</span></p></li>
-                            <li><p>获得积分：<span class="quest">{{quest.title}}</span></p></li>
+                            <li><p>截止时间：{{quest.endTime}}</p></li>
+                            <li><p>任务要求：<span class="quest">{{quest.content}}</span></p></li>
+                            <li><p>获得积分：<span class="quest">{{quest.creditTotal}}</span></p></li>
                         </ul>
                     </div>
                 </div>

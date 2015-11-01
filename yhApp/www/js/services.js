@@ -6,7 +6,7 @@ angular.module('starter.services', [])
       return {
         Task: AV.Object.extend("Task"),
         User: AV.Object.extend("_User"),
-
+        Photo: AV.Object.extend("Photo"),
       };
     };
   })
@@ -18,24 +18,14 @@ angular.module('starter.services', [])
     var username = window.localStorage['username'];
     var uoid = window.localStorage['uoid'];
     this.$get = function ($q, AVObjects) {
-      service.getUser = function () {
-        var query = new AV.Query(AVObjects.Task);
-        query.find({
-          success: function (data) {
-            deferred.resolve(data);
-          },
-          error: function (error) {
-            deferred.reject("读取失败");
-          }
-        });
-        var deferred = $q.defer();
-        return deferred.promise;
-      };
+
+
       //提供注册
       service.register = function (regData) {
         var deferred = $q.defer();
         AV.User.verifyMobilePhone(regData.vcode).then(function () {
-          deferred.resolve(regData);
+          deferred.resolve("注册成功");
+          alert('注册成功！');
         }, function (err) {
           alert("验证码错误" + JSON.stringify(err));
           deferred.reject("验证码错误");
@@ -48,7 +38,7 @@ angular.module('starter.services', [])
         AV.User.logIn(loginData.username, loginData.password, {
           success: function (user) {
             window.localStorage['uoid'] = user.id;
-            deferred.resolve(user);
+            deferred.resolve(user._serverData);
           },
           error: function (user, error) {
             alert("Error: " + error.code + " " + error.message + "|" + JSON.stringify(user));
@@ -81,6 +71,34 @@ angular.module('starter.services', [])
           + " " + date.getHours() + seperator2 + date.getMinutes()
           + seperator2 + date.getSeconds();
         return currentdate;
+      },
+      getFormatDate: function (date) {
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        var strSec = date.getSeconds();
+        var strMin = date.getMinutes();
+        var strHour = date.getHours();
+        if (month >= 1 && month <= 9) {
+          month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+          strDate = "0" + strDate;
+        }
+        if (strHour >= 0 && strHour <= 9) {
+          strHour = "0" + strHour;
+        }
+        if (strMin >= 0 && strMin <= 9) {
+          strMin = "0" + strMin;
+        }
+        if (strSec >= 0 && strSec <= 9) {
+          strSec = "0" + strSec;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+          + " " + strHour + seperator2 + strMin
+          + seperator2 + strSec;
+        return currentdate;
       }
     }
   })
@@ -90,37 +108,20 @@ angular.module('starter.services', [])
   .provider('questsFactory', function () {
 //service存放factory数据
     var service = {};
-    this.$get = function ($q, AVObjects) {
-      service.getTask = function () {
-        var deferred = $q.defer();
-        var query = new AV.Query(AVObjects.Task);
-        query.find({
-          success: function (data) {
-            var result = new Array();
-            for (var i = 0; i < data.length; i++) {
-              var t = data[i]['_serverData'];
-              //t['endTime'] = t['endTime'].toString();
-              result.push(t);
-            }
-            deferred.resolve(result);
-          },
-          error: function (error) {
-            deferred.reject("读取失败");
-          }
-        });
-        return deferred.promise;
-      };
-      service.getCurrentQuests = function () {
+    this.$get = function ($q, AVObjects, DateUtil) {
+      service.getQuests = function () {
         var deferred = $q.defer();
         var query = new AV.Query(AVObjects.Task);
         var me = new AVObjects.User();
         me.id = window.localStorage['uoid'];
-        query.equalTo("participant",me);
+        query.equalTo("participant", me);
         query.find({
           success: function (data) {
             var result = new Array();
             for (var i = 0; i < data.length; i++) {
               var t = data[i]['_serverData'];
+              t.id = data[i].id;
+              console.log("a quest");
               result.push(t);
             }
             deferred.resolve(result);
@@ -131,30 +132,57 @@ angular.module('starter.services', [])
         });
         return deferred.promise;
       };
-      service.getFinishedQuests = function () {
-        var finishedQuests = [
-          {
-            name: "耐克拍照",
-            endtime: "2014-12-30",
-            info: "完成十张照片",
-            totalCredit: 20,
-            currentCredit: 17,
-            done: 100 * 17 / 20,
-            left: 100 - 100 * 17 / 20
+      service.getNewQuest = function () {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Task);
+        var now = DateUtil.getNowFormatDate();
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.notEqualTo("participant", me);
+        query.find({
+          success: function (data) {
+            for (var i = 0; i < data.length; i++) {
+              var t = data[i]['_serverData'];
+              t.id = data[i].id;
+              var participants = t['participant'];
+              var limit = DateUtil.getFormatDate(eval(t['endTime']));
+              if(limit>now){
+                deferred.resolve(t);
+                return;
+              }
+            }
           },
-          {
-            name: "耐克拍照",
-            endtime: "2014-12-30",
-            info: "完成十张照片",
-            totalCredit: 20,
-            currentCredit: 17,
-            done: 100 * 17 / 20,
-            left: 100 - 100 * 17 / 20
-          },
-        ];
-        return finishedQuests;
+          error: function (error) {
+            console.log("error"+JSON.stringify(error));
+            deferred.reject("读取失败");
+          }
+        });
+        return deferred.promise;
       };
-
+      service.getCurrentCreditOfQuest = function (qid) {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Photo);
+        var quest = new AVObjects.Task();
+        quest.id = qid;
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.equalTo("uploader", me);
+        query.equalTo("task", quest);
+        query.find({
+          success: function (data) {
+            var credit = 0;
+            for (var i = 0; i < data.length; i++) {
+              var t = data[i]['_serverData'];
+              credit += t.credit;
+            }
+            deferred.resolve(credit);
+          },
+          error: function (error) {
+            deferred.reject("读取失败");
+          }
+        });
+        return deferred.promise;
+      };
       return service;
     };
   })
@@ -244,27 +272,6 @@ angular.module('starter.services', [])
   }])// function [] factory
 
 
-  .factory("DateUtil", function () {
-    return {
-      getNowFormatDate: function () {
-        var date = new Date();
-        var seperator1 = "-";
-        var seperator2 = ":";
-        var month = date.getMonth() + 1;
-        var strDate = date.getDate();
-        if (month >= 1 && month <= 9) {
-          month = "0" + month;
-        }
-        if (strDate >= 0 && strDate <= 9) {
-          strDate = "0" + strDate;
-        }
-        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-          + " " + date.getHours() + seperator2 + date.getMinutes()
-          + seperator2 + date.getSeconds();
-        return currentdate;
-      }
-    }
-  })
 /**
  * A simple example service that returns some data.
  */

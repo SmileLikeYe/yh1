@@ -1,11 +1,14 @@
 angular.module('starter.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $timeout, userProvider) {
+  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $timeout, userProvider, questsFactory) {
 //！——全局变量和本地存储的数据
-    $scope.loginData = {username: '未登录', logged_in: false};
+    $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
+    var currentuser = AV.User.current();
     if (window.localStorage['username'] != '未登录' && window.localStorage['username'] != '') {
       $scope.loginData.username = window.localStorage['username'];
       $scope.loginData.logged_in = window.localStorage['logged_in'];
+      $scope.loginData.password = window.localStorage['password'];
+      $scope.loginData.nickName = window.localStorage['nickName'];
     }
 
     $scope.regData = {};
@@ -39,9 +42,14 @@ angular.module('starter.controllers', [])
       $scope.questNotificationModal.hide();
     };
     $scope.showQuestNotification = function () {
-      //TODO:获取任务数据
-      $scope.newQuest = {name: "拍什么拍", endtime: "2014-12-30", info: "完成十张照片", totalCredit: 20};
-      $scope.questNotificationModal.show();
+      questsFactory.getNewQuest().then(function(q){
+        $scope.newQuest = q;
+        if($scope.newQuest){//抢到任务
+          $scope.questNotificationModal.show();
+        }else{
+          alert('现在没有任务了，明天再来看看吧！');
+        }
+      });
     };
     $scope.goPurchase = function () {
       $scope.closeQuestNotification();
@@ -175,9 +183,7 @@ angular.module('starter.controllers', [])
           $scope.regModal.hide();
           $scope.modal.show();
         } else {
-          //已经登录了,先放个退出吧，可以改成别的功能
-          $scope.doLogout();
-          $scope.loginData = {username: '未登录', logged_in: false};
+          $scope.toUserInfo();
         }
       };
     });
@@ -212,10 +218,11 @@ angular.module('starter.controllers', [])
         $scope.user = new AV.User();
         $scope.user.setMobilePhoneNumber($scope.regData.username);
         $scope.user.set('username', $scope.regData.username);
+        $scope.user.set('salt', $scope.regData.username);
         $scope.user.set('password', $scope.regData.password);
         $scope.user.signUp(null, {
           success: function (user) {
-            // 注册成功，可以使用了.
+            alert("验证码已发送！");
           },
           error: function (user, error) {
             // 失败了
@@ -243,15 +250,23 @@ angular.module('starter.controllers', [])
       $scope.closeLogin();
       $scope.regModal.show();
     };
+    $scope.toQuest = function () {
+      console.log($scope.loginData.logged_in);
+      if ($scope.loginData.logged_in) {
+        window.location.href = "#/app/quest";
+      } else {
+        alert('请先登录');
+      }
+    };
 
     $scope.doRegister = function () {
       //TODO 在此检查注册信息
       $scope.regData.hint = $scope.checkRegData($scope.regData);
       if ($scope.regData.hint == '') {
-        userProvider.register($scope.regData).then(function () {
+        userProvider.register($scope.regData).then(function (retv) {
           $scope.loginData = $scope.regData;
           $scope.closeRegister();
-          console.log('Doing reg', $scope.regData);
+          console.log('Doing reg', retv);
           $scope.doLogin();
         });
       }
@@ -272,37 +287,34 @@ angular.module('starter.controllers', [])
           $scope.loginData.logged_in = true;
           window.localStorage['logged_in'] = true;
           window.localStorage['username'] = $scope.loginData.username;
-          alert("欢迎回来，" + $scope.loginData.username);
+          window.localStorage['password'] = $scope.loginData.password;
+          window.localStorage['nickName'] = data.nickName;
+          $scope.loginData.nickName = data.nickName;
+          alert("欢迎回来，" + $scope.loginData.nickName);
           $scope.closeLogin();
         }
       );
     };
     $scope.doLogout = function () {
       //改变本地存储
-      $scope.loginData.logged_in = false;
       window.localStorage['logged_in'] = false;
       window.localStorage['username'] = '未登录';
       window.localStorage['uoid'] = '';
+      $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
       alert("已退出登录");
+      //$location.path('#/app/homepage');
+      window.location.href = '#/app/homepage';
+      AV.User.logOut();
     };
 //管理个人资料
-    $scope.editInfo = function () {
-      window.location.href = "#/app/modifyinfo";
-    };
-    $scope.returnInfo = function () {
+    $scope.toUserInfo = function () {
       window.location.href = "#/app/userinfo";
-    };
-    $scope.submitEdit = function () {
-      window.location.href = "#/app/userinfo";
-    };
-    $scope.editPassword = function () {
-      window.location.href = "#/app/modifyPwd";
     };
 
   })
 
 //图片管理-控制器
-  .controller('piclistCtrl', function ($scope, $location) {
+  .controller('piclistCtrl', function ($scope) {
     $scope.shouldShowDelete = false;
     $scope.shouldShowReorder = false;
     $scope.listCanSwipe = true;
@@ -317,15 +329,31 @@ angular.module('starter.controllers', [])
   })
 
 //任务管理-控制器
-  .controller('questCtrl', function ($scope, $http, $timeout, questsFactory) {
-    questsFactory.getCurrentQuests().then(function (data) {
-        $scope.currentQuests = data;
-      }
-    );
-    questsFactory.getTask().then(function (data) {
-        $scope.task = JSON.stringify(data);
-        $scope.finishedQuests = eval(data);
-        //$scope.finishedQuests = questsFactory.getFinishedQuests();
+  .controller('questCtrl', function ($scope, $http, $timeout, questsFactory,DateUtil) {
+    questsFactory.getQuests().then(function (data) {
+        $scope.currentQuests = new Array();
+        $scope.finishedQuests = new Array();
+        var now = DateUtil.getNowFormatDate();
+        data.forEach(
+          function (q) {
+            var limit = DateUtil.getFormatDate(eval(q['endTime']));
+            if (now < limit) {//未超时
+              q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
+              questsFactory.getCurrentCreditOfQuest(q.id).then(
+                function (credit) {
+                  q.currentCredit = credit;
+                  q.done = 100 * q.currentCredit / q.creditTotal;
+                  q.left = 100 - q.done;
+                }
+              );
+              $scope.currentQuests.push(q);
+            } else {//已超时
+              console.log("1 finished");
+              q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
+              $scope.finishedQuests.push(q);
+            }
+          }
+        );
       }
     );
   })
@@ -333,7 +361,32 @@ angular.module('starter.controllers', [])
 
 //主页控制器
 
-  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout) {
+  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout,questsFactory, DateUtil) {
+    $scope.hpQuest =  {title:"还没有任务，赶快开始赚钱吧！"};
+    if(window.localStorage['logged_in']){
+      questsFactory.getQuests().then(function (data) {
+        $scope.hpQuests = [];
+        var now = JSON.stringify(new Date()).replace(/[":A-Z.-]/g, "");
+        data.forEach(
+          function (q) {
+            var tt = DateUtil.getFormatDate(eval(q['endTime']));
+            var limit = tt.replace(/[":A-Z.-]/g, "");
+            if (now < limit) {//未超时
+              q.endTime = tt.replace(/T/g, " ").replace(/"/g, "").substring(0, 10);
+              questsFactory.getCurrentCreditOfQuest(q.id).then(
+                function (credit) {
+                  q.currentCredit = credit;
+                  q.done = 100 * q.currentCredit / q.creditTotal;
+                  q.left = 100 - q.done;
+                }
+              );
+              $scope.hpQuests.push(q);
+            }
+          }
+        );
+        $scope.hpQuest = $scope.hpQuests[0];
+      });
+    }
     $scope.pics = [
       {id: 0, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/ionic.png"},
       {id: 1, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/thumb.jpg"},
@@ -374,25 +427,76 @@ angular.module('starter.controllers', [])
       }, 1500);
       $scope.packageHide = true;
     };
-    $scope.test = function () {
-      // localstoragetest.saveUser();
-      localStorageService.set("password", "ccccc");
-      alert(localStorageService.get("username"));
-      alert(localStorageService.get("password"));
-  }
 
-$scope.hu1 = function() {
-	var Task = AV.Object.extend("Task");
-	var query = new AV.Query(Task);
-	query.get("5633062f00b0ee7f5e9c5962", {
-			  success: function(post) {
-			    // 成功获得实例
-			    var content = post.get("oid");
-			    alert("ddd:" + content + post.get('creditTotal') + post.get('content'));
-			  },
-			  error: function(error) {
-			    // 失败了.
-			  }
-		});
-	};
-})
+
+  })
+
+  .controller('userInfoCtrl', function ($scope, userProvider) {
+    $scope.logout = function () {
+      console.log("退出");//TODO 换成某种手机上能显示的东西
+      $scope.doLogout();
+    };
+    $scope.toEditPwd = function () {
+      window.location.href = "#/app/modifyPwd";
+    };
+    $scope.editInfo = function () {
+      window.location.href = "#/app/modifyinfo";
+    };
+  })
+
+  .controller('modPwdCtrl', function ($scope, userProvider, AVObjects) {
+    $scope.mp = {};
+    $scope.modPwd = function () {
+      if($scope.mp.newPwd != $scope.mp.confirmPwd){
+        alert("两次输入密码不一致");
+        return;
+      }
+      var me = new AVObjects.User();
+      me.id = window.localStorage['uoid'];
+      userProvider.login({
+        username:$scope.loginData.username,
+        password:$scope.mp.oldPwd
+      }).then(function(data){
+          $scope.loginData.logged_in = true;
+          window.localStorage['logged_in'] = true;
+          window.localStorage['username'] = $scope.loginData.username;
+          window.localStorage['nickName'] = data.nickName;
+          $scope.loginData.nickName = data.nickName;
+          me.updatePassword($scope.mp.oldPwd, $scope.mp.newPwd, {
+            sucess: function () {
+            },
+            error: function (user, err) {
+              console.log(JSON.stringify(err));
+            }
+          }).then(function(){
+            window.localStorage['password'] = $scope.mp.newPwd;
+            console.log('修改密码成功');
+            $scope.mp = {};
+            window.location.href = "#/app/userinfo";
+          });
+        }
+      );
+    };
+  })
+  .controller('modInfoCtrl', function ($scope, userProvider, AVObjects) {
+    $scope.userinfo = $scope.loginData;
+    $scope.submitEdit = function () {
+      window.location.href = "#/app/userinfo";
+      var me = new AVObjects.User();
+      me.id = window.localStorage['uoid'];
+      userProvider.login({
+        username:$scope.loginData.username,
+        password:window.localStorage['password']
+      }).then(function(data){
+          me.set('nickName',$scope.userinfo.nickName);
+          me.set('alipayAccount',$scope.userinfo.alipayAccount);
+          me.save().then(function(){
+            window.localStorage['nickName'] = $scope.userinfo.nickName;
+            $scope.loginData.nickName = $scope.userinfo.nickName;
+          });
+
+        }
+      );
+    };
+
+  })
