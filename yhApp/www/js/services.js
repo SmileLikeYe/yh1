@@ -19,7 +19,6 @@ angular.module('starter.services', [])
     var uoid = window.localStorage['uoid'];
     this.$get = function ($q, AVObjects) {
 
-
       //提供注册
       service.register = function (regData) {
         var deferred = $q.defer();
@@ -189,44 +188,42 @@ angular.module('starter.services', [])
 
 
 //////////////////////////////////////////////////////////////////////
-  .factory('Camera', ['$location', 'Pictures', 'DateUtil', function ($location, Pictures, DateUtil) {
+  .factory('Camera', ['$location', 'DateUtil', '$q', function ($location, DateUtil, $q) {
 
     return {// 返回方法组的对象
       getPhoto: function () {
+        var deferred = $q.defer();
         alert("getPhoto()");
         // $scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
         navigator.camera.getPicture(onSuccess, onFail, {
-          quality: 50,
-          destinationType: Camera.DestinationType.FILE_URI,
-          allowEdit: false,
-          encodingType: Camera.EncodingType.JPEG,
-          cameraDirection: Camera.Direction.FRONT
+          sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+          // quality: 50,
+          // destinationType: Camera.DestinationType.NATIVE_URI,
+          // allowEdit: false,
+          // encodingType: Camera.EncodingType.PNG,
+          // cameraDirection: Camera.Direction.FRONT
         });
-
         function onSuccess(imageURI) {
           alert("getPhoto onSucess" + imageURI);
-          Pictures.insert({
-            id: Pictures.length,
-            title: "安踏拍照",
-            description: "拍的好",
-            date: DateUtil.getNowFormatDate(),
-            img: imageURI
-          });
+          deferred.resolve(imageURI);
         }
-
         function onFail(message) {
           alert('getPhoto Failed because: ' + message);
+            deferred.reject("拍照失败");
         }
+         return deferred.promise;
       },
+
       getLocation: function () {
+        var deferred = $q.defer();
         alert("getLocation()");
         navigator.geolocation.getCurrentPosition(onSuccess, onFail, {
           enableHighAccuracy: false,
           timeout: 60 * 1000,
           maximumAge: 1000 * 60 * 10
         });
-
         function onSuccess(position) {
+          var result = {};
           alert('Latitude: ' + position.coords.latitude + '\n' +
             'Longitude: ' + position.coords.longitude + '\n' +
             'Altitude: ' + position.coords.altitude + '\n' +
@@ -235,68 +232,145 @@ angular.module('starter.services', [])
             'Heading: ' + position.coords.heading + '\n' +
             'Speed: ' + position.coords.speed + '\n' +
             'Timestamp: ' + position.timestamp + '\n');
-          // 百度地图API功能
-          // var map = new BMap.Map("allmap");
-          // // var point = new BMap.Point(116.331398,39.897445);
-          // var point = new BMap.Point(position.coords.longitude, position.coords.latitude);
-          // var gc = new BMap.Geocoder();
-          // gc.getLocation(point, function(rs){
-          //		var addComp = rs.addressComponents;
-          //		alert(addComp.province + ", " + addComp.city +
-          //			", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
-          //		 AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
-          // var PhotoLocation = AV.Object.extend('PhotoLocation');
-          // var photoLocation = new PhotoLocation();
-          // photoLocation.save({
-          //	 longitude: position.coords.longitude,
-          //	 latitude: position.coords.latitude,
-          //	 location: (addComp.province + ", " + addComp.city +
-          //			", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber)
-          // }, {
-          //	 success: function(object) {
-          //		 alert('LeanCloud works!');
-          //	 }
-          // });
-          // });
-
-
+          result.latitude = position.coords.latitude;
+          result.longitude =  position.coords.longitude;
+          deferred.resolve(result);
         }
-
         function onFail(message) {
           alert('code: ' + error.code + '\n' +
             'message: ' + error.message + '\n');
+          deferred.reject("getLocation() fail!");
         }
-      }// 方法是return的对象中的{， ， ，}
+        return deferred.promise;
+      },// 方法是return的对象中的{， ， ，}
+
+      getLocationDescription: function (latitude, longitude) {
+        var deferred = $q.defer();
+        //百度地图API功能s
+        var map = new BMap.Map("allmap");
+        // var point = new BMap.Point(116.331398,39.897445);
+        var point = new BMap.Point(longitude, latitude);
+        var gc = new BMap.Geocoder();
+        gc.getLocation(point, function(rs){
+          var addComp = rs.addressComponents;
+          var location = addComp.province + ", " + addComp.city +
+            ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
+          alert(location);
+          deferred.resolve(location);
+        });
+        return deferred.promise;
+      }
 
     }//return对象定义结束
   }])// function [] factory
 
 
-/**
- * A simple example service that returns some data.
- */
-  .factory('Pictures', function () {
-    // Might use a resource here that returns a JSON array
+//////////////////////////////////////////////////////////////////////
+//用户数据管理
+  .provider('photoProvider', function () {
+    var service = {};
+    var username = window.localStorage['username'];
+    var uoid = window.localStorage['uoid'];
+    this.$get = function ($q, AVObjects, Camera) {
 
-    var pics = [
-      {id: 0, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/ionic.png"},
-      {id: 1, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/thumb.jpg"},
-      {id: 2, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/ionic.png"},
-    ];
+      //提供注册
+      service.savePhoto = function (regData) {
 
-    return {
-      all: function () {
-        return pics;
-      },
-      get: function (friendId) {
-        // Simple index lookup
-        return pics[friendId];
-      },
-      insert: function (pic) {
-        pics.unshift(pic);
-      },
-      length: function () {
-        return pics.length;
-      }
-    }
-  });
+
+      };
+      service.uploadPhoto = function(tasks) {
+        //上传需要的字段
+        var credit;
+        var imgFile;
+        var latitude;
+        var longitude;
+        var location;
+        var status;
+        var task;
+        var uploader;
+
+        //赋值
+        credit = window.localStorage['firstPhotoCrdit'];
+        //todo:解决获得照片编码数据和位置问题
+        //todo:文件名
+        //var base64 = "6K+077yM5L2g5Li65LuA5LmI6KaB56C06Kej5oiR77yf";
+        //imgFile = new AV.File("myfile.txt", { base64: base64 });
+        imgFile = AV.File.withURL('bg.jpg', 'img/bg.jpg');
+        Camera.getLocation().then(function(result1){
+          alert('getLocation(): ' + result1);
+          latitude = result1.latitude;
+          longitude = result1.longitude;
+          Camera.getLocationDescription(result1.latitude, result1.longitude).then(function (result2) {
+             alert('getLocationDescription():' + result2);
+            location = result2;
+            status = window.localStorage['photoStatus'];
+            //todo:task是个数组，要从于信达那里拿
+            task = tasks;
+            var me = new AVObjects.User();
+            me.id = window.localStorage['uoid'];
+            uploader =  me;
+            var photo = new AVObjects.Photo();
+            //上传
+            photo.save({
+              credit : parseInt(credit),
+              imgFile :imgFile,
+              latitude : latitude.toString(),
+              longitude : longitude.toString(),
+              location : location,
+              status : parseInt(status),
+              task : task,
+              uploader: uploader
+            }, {
+              success: function(sphoto) {
+                // 实例已经成功保存.
+                alert('Successfylly ' + sphoto.id);
+              },
+              error: function(post, error) {
+                // 失败了.
+                alert('Fail' + error.message);
+              }
+            });
+          });
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // photo.save({
+        //   credit:2,
+        //   imgFile:file,
+        //   status:1,getLocation
+        //   uploader:AV.User.current(),
+        //   task:new AVObjects.Task()
+
+        // }, {
+        //   success: function(photo) {
+        //     // body...
+        //     alert('SAVE POST SUCESSFULLY:' + photo.id);
+        //   }
+
+        // }, {
+        //   error: function(photo, error) {
+        //     alert('SAVE PHOTO FAIL: ' + error.message);
+        //   }
+
+        // });
+
+      };
+
+
+      return service;
+    };
+  })

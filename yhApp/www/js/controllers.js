@@ -3,7 +3,12 @@ angular.module('starter.controllers', [])
   .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $timeout, userProvider, questsFactory) {
 //！——全局变量和本地存储的数据
     $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
-    var currentuser = AV.User.current();
+    $scope.currentUser = AV.User.current();
+    window.localStorage['firstPhotoCrdit'] = 4;
+    window.localStorage['photoStatus'] = 0;
+    window.localStorage['currentQuests'] = $scope.currentQuests;
+    window.localStorage['finishedQuests'] = $scope.finishedQuests;
+
     if (window.localStorage['username'] != '未登录' && window.localStorage['username'] != '') {
       $scope.loginData.username = window.localStorage['username'];
       $scope.loginData.logged_in = window.localStorage['logged_in'];
@@ -361,7 +366,7 @@ angular.module('starter.controllers', [])
 
 //主页控制器
 
-  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout,questsFactory, DateUtil) {
+  .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout,questsFactory, DateUtil, AVObjects, photoProvider) {
     $scope.hpQuest =  {title:"还没有任务，赶快开始赚钱吧！"};
     if(window.localStorage['logged_in']){
       questsFactory.getQuests().then(function (data) {
@@ -427,9 +432,58 @@ angular.module('starter.controllers', [])
       }, 1500);
       $scope.packageHide = true;
     };
+    $scope.test = function() {
+      //AV.Cloud.run('hello', { 'name': 'huxing'}, {
+      //  sucess: function(result) {
+      //    alert("result：" + result);
+      //  },
+      //  error: function (error) {
+      //    alert("error: " + error);
+      //
+      //  }
+      //});
+
+      var Task = AV.Object.extend("Task");
+      var query = new AV.Query(Task);
+      query.get("5641799d00b0023ca8fcac66", {
+        success: function(task) {
+          // 成功获得实例
+          photoProvider.uploadPhoto(task);
+
+        },
+        error: function(error) {
+          // 失败了.
+        }
+      });
 
 
-  })
+
+      // var photo = new AVObjects.Photo();
+      // var base64 = "6K+077yM5L2g5Li65LuA5LmI6KaB56C06Kej5oiR77yf";
+      // var file = new AV.File("myfile.txt", { base64: base64 });
+      // photo.save({
+      //   credit:2,
+      //   imgFile:file,
+      //   status:1,
+      //   uploader:AV.User.current(),
+      //   task:new AVObjects.Task()
+
+      // }, {
+      //   success: function(photo) {
+      //     // body...
+      //     alert('SAVE POST SUCESSFULLY:' + photo.id);
+      //   }
+
+      // }, {
+      //   error: function(photo, error) {
+      //     alert('SAVE PHOTO FAIL: ' + error.message);
+      //   }
+
+      // });
+
+
+    };
+})
 
   .controller('userInfoCtrl', function ($scope, userProvider) {
     $scope.logout = function () {
