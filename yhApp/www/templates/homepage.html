@@ -26,24 +26,24 @@
           <!-- showSerialNumber -->
           <a ng-click="showSerialNumber()" class="home_link">已经有序列号?</a>
         </div>
-        <div class="text_group">
+        <div class="text_group" ng-repeat="cquest in currentQuests track by $index">
           <div class="text_box">
-            <p ng-click="sTextClick=!sTextClick" class="snatch_text"><i class="icon-pushpin icon"></i>{{hpQuests[0].title}}</p>
+            <p ng-click="sTextClick=!sTextClick" class="snatch_text"><i class="icon-pushpin icon"></i>{{cquest.title}}</p>
 
-            <p ng-show="sTextClick" class="snatch_info snatch_text">{{hpQuests[0].endTime}}</p>
+            <p ng-show="sTextClick" class="snatch_info snatch_text">{{cquest.endTime}}</p>
 
-            <p ng-show="sTextClick" class="snatch_info snatch_text">{{hpQuests[0].currentCredit}}/{{hpQuests[0].creditTotal}}</p>
+            <p ng-show="sTextClick" class="snatch_info snatch_text">{{cquest.currentCredit}}/{{cquest.creditTotal}}</p>
           </div>
-          <div class="text_box">
-            <p class="snatch_text"><i class="icon-pushpin icon"></i>{{hpQuests[1].title}}</p>
+          <!--<div class="text_box">-->
+            <!--<p class="snatch_text"><i class="icon-pushpin icon"></i>{{hpQuests[1].title}}</p>-->
 
-            <p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].endTime}}</p>
+            <!--<p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].endTime}}</p>-->
 
-            <p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].currentCredit}}/{{hpQuests[1].creditTotal}}</p>
-          </div>
+            <!--<p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].currentCredit}}/{{hpQuests[1].creditTotal}}</p>-->
+          <!--</div>-->
         </div>
         <div ng-click="moreTasks()" class="details">
-          <span class="number snatch_text">5</span>
+          <span class="number snatch_text">{{currentQuests.length}}</span>
           <i class="icon-angle-right icon more snatch_text"></i>
         </div>
       </div>

@@ -4,10 +4,15 @@ angular.module('starter.controllers', [])
 //！——全局变量和本地存储的数据
     $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
     $scope.currentUser = AV.User.current();
+    $scope.regData = {};
+    $scope.payData = {username: "", creditsToRedeem: 100,};
+    $scope.TIMEOUT = 60;
+
+
+    $scope.packageHide = true;
+
     window.localStorage['firstPhotoCrdit'] = 4;
     window.localStorage['photoStatus'] = 0;
-    window.localStorage['currentQuests'] = $scope.currentQuests;
-    window.localStorage['finishedQuests'] = $scope.finishedQuests;
 
     if (window.localStorage['username'] != '未登录' && window.localStorage['username'] != '') {
       $scope.loginData.username = window.localStorage['username'];
@@ -16,14 +21,13 @@ angular.module('starter.controllers', [])
       $scope.loginData.nickName = window.localStorage['nickName'];
     }
 
-    $scope.regData = {};
+
 //创建积分兑换窗口
     $ionicModal.fromTemplateUrl('templates/cashNotification.html', {
       scope: $scope
     }).then(function (modal) {
       $scope.cashNotificationModal = modal;
       //TODO:服务器获取当前积分
-      $scope.payData = {username: "", creditsToRedeem: 100,};
     });
     $scope.redeemCredits = function () {
       //TODO:向服务器发送兑换请求
@@ -47,6 +51,8 @@ angular.module('starter.controllers', [])
       $scope.questNotificationModal.hide();
     };
     $scope.showQuestNotification = function () {
+      //$scope.currentQuests.push($scope.newQuest);
+      //window.localStorage['currentQuests'] = $scope.currentQuests;
       questsFactory.getNewQuest().then(function(q){
         $scope.newQuest = q;
         if($scope.newQuest){//抢到任务
@@ -59,6 +65,11 @@ angular.module('starter.controllers', [])
     $scope.goPurchase = function () {
       $scope.closeQuestNotification();
       window.location.href = '#/app/purchase';
+    };
+    $scope.acceptQuest = function() {
+      questsFactory.acceptQuest($scope.newQuest.id);
+      //$scope.currentQuests.push($scope.newQuest);
+      //window.localStorage['currentQuests'] = $scope.currentQuests;
     };
 
 //创建序列号弹窗
@@ -169,7 +180,6 @@ angular.module('starter.controllers', [])
       });
     };
 
-    $scope.selected = false;
 //准备登录界面
     $ionicModal.fromTemplateUrl('templates/login.html', {
       scope: $scope
@@ -320,6 +330,7 @@ angular.module('starter.controllers', [])
 
 //图片管理-控制器
   .controller('piclistCtrl', function ($scope) {
+    //todo:这里用来干什么
     $scope.shouldShowDelete = false;
     $scope.shouldShowReorder = false;
     $scope.listCanSwipe = true;
@@ -335,43 +346,44 @@ angular.module('starter.controllers', [])
 
 //任务管理-控制器
   .controller('questCtrl', function ($scope, $http, $timeout, questsFactory,DateUtil) {
-    questsFactory.getQuests().then(function (data) {
-        $scope.currentQuests = new Array();
-        $scope.finishedQuests = new Array();
-        var now = DateUtil.getNowFormatDate();
-        data.forEach(
-          function (q) {
-            var limit = DateUtil.getFormatDate(eval(q['endTime']));
-            if (now < limit) {//未超时
-              q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
-              questsFactory.getCurrentCreditOfQuest(q.id).then(
-                function (credit) {
-                  q.currentCredit = credit;
-                  q.done = 100 * q.currentCredit / q.creditTotal;
-                  q.left = 100 - q.done;
-                }
-              );
-              $scope.currentQuests.push(q);
-            } else {//已超时
-              console.log("1 finished");
-              q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
-              $scope.finishedQuests.push(q);
-            }
-          }
-        );
-      }
-    );
+    //
+    //questsFactory.getQuests().then(function (data) {
+    //    var now = DateUtil.getNowFormatDate();
+    //    data.forEach(
+    //      function (q) {
+    //        var limit = DateUtil.getFormatDate(eval(q['endTime']));
+    //        if (now < limit) {//未超时
+    //          q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
+    //          questsFactory.getCurrentCreditOfQuest(q.id).then(
+    //            function (credit) {
+    //              q.currentCredit = credit;
+    //              q.done = 100 * q.currentCredit / q.creditTotal;
+    //              q.left = 100 - q.done;
+    //            }
+    //          );
+    //          $scope.currentQuests.push(q);
+    //        } else {//已超时
+    //          console.log("1 finished");
+    //          q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
+    //          $scope.finishedQuests.push(q);
+    //        }
+    //      }
+    //    );
+    //  }
+    //);
   })
 
 
 //主页控制器
 
   .controller('HomePageCtrl', function ($scope, $http, Camera, $ionicLoading, $timeout,questsFactory, DateUtil, AVObjects, photoProvider) {
+    $scope.hpQuests = [];
     $scope.hpQuest =  {title:"还没有任务，赶快开始赚钱吧！"};
+    $scope.currentQuests = new Array();
+    $scope.finishedQuests = new Array();
     if(window.localStorage['logged_in']){
       questsFactory.getQuests().then(function (data) {
-        $scope.hpQuests = [];
-        var now = JSON.stringify(new Date()).replace(/[":A-Z.-]/g, "");
+        var now = DateUtil.getFormatDate(new Date()).replace(/[":A-Z.-]/g, "");
         data.forEach(
           function (q) {
             var tt = DateUtil.getFormatDate(eval(q['endTime']));
@@ -386,17 +398,25 @@ angular.module('starter.controllers', [])
                 }
               );
               $scope.hpQuests.push(q);
+              $scope.currentQuests.push(q);
+            }
+            else
+            {
+              q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
+              $scope.finishedQuests.push(q);
             }
           }
         );
         $scope.hpQuest = $scope.hpQuests[0];
+        window.localStorage['currentQuests'] = JSON.stringify($scope.currentQuests);
+        window.localStorage['finishedQuests'] = JSON.stringify($scope.finishedQuests);
       });
     }
-    $scope.pics = [
-      {id: 0, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/ionic.png"},
-      {id: 1, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/thumb.jpg"},
-      {id: 2, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/ionic.png"},
-    ];
+    //$scope.pics = [
+    //  {id: 0, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: ""},
+    //  {id: 1, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/thumb.jpg"},
+    //  {id: 2, title: "安踏拍照", description: "11111111111111111", date: "2015年10月20日", img: "img/ionic.png"},
+    //];
     $scope.moreTasks = function () {
       window.location.href = "#/app/quest";
     };
@@ -417,9 +437,29 @@ angular.module('starter.controllers', [])
        });*/
       $scope.$broadcast('scroll.refreshComplete');
     };
-    $scope.takePhoto = function () {
-      getPhoto();
-      getLocation();
+    $scope.takePhoto = function (taskId) {
+      $scope.pics = new Array();
+      var Task = AV.Object.extend("Task");
+      var query = new AV.Query(Task);
+      //var currentQuests =  JSON.parse(window.localStorage['currentQuests'] || '{}');
+      query.get(taskId, {
+        success: function(task) {
+          // 成功获得实例
+          photoProvider.uploadPhoto(task).then(
+            function(pic){
+              $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
+              $scope.pics.unshift(pic);
+              window.localStorage['pics'] = JSON.stringify($scope.pics);
+          }, function(error) {
+              alert("error:" + error.message);
+            });
+
+        },
+        error: function(error) {
+          // 失败了.
+        }
+      });
+
     };
 //提醒积分已经放入用户的账户中
     $scope.creditIn = function () {
@@ -433,55 +473,20 @@ angular.module('starter.controllers', [])
       $scope.packageHide = true;
     };
     $scope.test = function() {
-      //AV.Cloud.run('hello', { 'name': 'huxing'}, {
-      //  sucess: function(result) {
-      //    alert("result：" + result);
+
+
+
+
+      ////调用云函数，云函数接受JSON参数， 返回任务数据类型
+      //AV.Cloud.run('hello', {request:"43"}, {
+      //  success: function(result) {
+      //    // result is 'Hello world!'
+      //    alert(result);
       //  },
-      //  error: function (error) {
-      //    alert("error: " + error);
-      //
+      //  error: function(error) {
+      //    alert(error.message);
       //  }
       //});
-
-      var Task = AV.Object.extend("Task");
-      var query = new AV.Query(Task);
-      query.get("5641799d00b0023ca8fcac66", {
-        success: function(task) {
-          // 成功获得实例
-          photoProvider.uploadPhoto(task);
-
-        },
-        error: function(error) {
-          // 失败了.
-        }
-      });
-
-
-
-      // var photo = new AVObjects.Photo();
-      // var base64 = "6K+077yM5L2g5Li65LuA5LmI6KaB56C06Kej5oiR77yf";
-      // var file = new AV.File("myfile.txt", { base64: base64 });
-      // photo.save({
-      //   credit:2,
-      //   imgFile:file,
-      //   status:1,
-      //   uploader:AV.User.current(),
-      //   task:new AVObjects.Task()
-
-      // }, {
-      //   success: function(photo) {
-      //     // body...
-      //     alert('SAVE POST SUCESSFULLY:' + photo.id);
-      //   }
-
-      // }, {
-      //   error: function(photo, error) {
-      //     alert('SAVE PHOTO FAIL: ' + error.message);
-      //   }
-
-      // });
-
-
     };
 })
 
@@ -547,6 +552,10 @@ angular.module('starter.controllers', [])
           me.save().then(function(){
             window.localStorage['nickName'] = $scope.userinfo.nickName;
             $scope.loginData.nickName = $scope.userinfo.nickName;
+            window.localStorage['alipayAccount'] = $scope.userinfo.alipayAccount;
+            $scope.loginData.alipayAccount = $scope.userinfo.alipayAccount;
+          }, function (error) {
+            alert(error.message);
           });
 
         }

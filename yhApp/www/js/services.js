@@ -124,6 +124,7 @@ angular.module('starter.services', [])
               result.push(t);
             }
             deferred.resolve(result);
+            return;
           },
           error: function (error) {
             deferred.reject("读取失败");
@@ -131,7 +132,7 @@ angular.module('starter.services', [])
         });
         return deferred.promise;
       };
-      service.getNewQuest = function () {
+      service.getNewQuest = function () {  //todo:大于100的情况为未处理
         var deferred = $q.defer();
         var query = new AV.Query(AVObjects.Task);
         var now = DateUtil.getNowFormatDate();
@@ -147,6 +148,7 @@ angular.module('starter.services', [])
               var limit = DateUtil.getFormatDate(eval(t['endTime']));
               if(limit>now){
                 deferred.resolve(t);
+                alert("OK");
                 return;
               }
             }
@@ -167,6 +169,7 @@ angular.module('starter.services', [])
         me.id = window.localStorage['uoid'];
         query.equalTo("uploader", me);
         query.equalTo("task", quest);
+        query.equalTo("status", 1);// 这里注意是不是要转换
         query.find({
           success: function (data) {
             var credit = 0;
@@ -178,6 +181,30 @@ angular.module('starter.services', [])
           },
           error: function (error) {
             deferred.reject("读取失败");
+          }
+        });
+        return deferred.promise;
+      };
+      service.acceptQuest = function (qid) {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Task);
+        //query.equalTo("id", qid);
+
+        // 这个 id 是要修改条目的 objectId，你在生成这个实例并成功保存时可以获取到，请看前面的文档
+        query.get(qid, {
+          success: function(resultTask) {
+            // 成功，回调中可以取得这个 Post 对象的一个实例，然后就可以修改它了
+            var me = new AVObjects.User();
+            me.id = window.localStorage['uoid'];
+            var relation = resultTask.relation('participant')
+            relation.add(me);
+            resultTask.save();
+            deferred.resolve(resultTask);
+          },
+          error: function(object, error) {
+            // 失败了.
+            console.log(object);
+            deferred.reject("保存失败");
           }
         });
         return deferred.promise;
@@ -196,16 +223,16 @@ angular.module('starter.services', [])
         alert("getPhoto()");
         // $scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
         navigator.camera.getPicture(onSuccess, onFail, {
-          sourceType: Camera.PictureSourceType.PHOTOLIBRARY
-          // quality: 50,
-          // destinationType: Camera.DestinationType.NATIVE_URI,
-          // allowEdit: false,
-          // encodingType: Camera.EncodingType.PNG,
-          // cameraDirection: Camera.Direction.FRONT
+          sourceType: Camera.PictureSourceType.CAMERA,
+           quality: 50,
+           destinationType: Camera.DestinationType.DATA_URL,
+           allowEdit: false,
+           encodingType: Camera.EncodingType.PNG,
+           cameraDirection: Camera.Direction.FRONT
         });
-        function onSuccess(imageURI) {
-          alert("getPhoto onSucess" + imageURI);
-          deferred.resolve(imageURI);
+        function onSuccess(image64Data) {
+          alert("getPhoto onSucess" + image64Data);
+          deferred.resolve(image64Data);
         }
         function onFail(message) {
           alert('getPhoto Failed because: ' + message);
@@ -278,7 +305,8 @@ angular.module('starter.services', [])
 
 
       };
-      service.uploadPhoto = function(tasks) {
+      service.uploadPhoto = function(choosedTask) {
+        var deferred = $q.defer();
         //上传需要的字段
         var credit;
         var imgFile;
@@ -291,86 +319,77 @@ angular.module('starter.services', [])
 
         //赋值
         credit = window.localStorage['firstPhotoCrdit'];
-        //todo:解决获得照片编码数据和位置问题
+        //todo:解决获得照片编码数据和位置问题: 从服务器拿吧
         //todo:文件名
-        //var base64 = "6K+077yM5L2g5Li65LuA5LmI6KaB56C06Kej5oiR77yf";
-        //imgFile = new AV.File("myfile.txt", { base64: base64 });
-        imgFile = AV.File.withURL('bg.jpg', 'img/bg.jpg');
-        Camera.getLocation().then(function(result1){
-          alert('getLocation(): ' + result1);
-          latitude = result1.latitude;
-          longitude = result1.longitude;
-          Camera.getLocationDescription(result1.latitude, result1.longitude).then(function (result2) {
-             alert('getLocationDescription():' + result2);
-            location = result2;
-            status = window.localStorage['photoStatus'];
-            //todo:task是个数组，要从于信达那里拿
-            task = tasks;
-            var me = new AVObjects.User();
-            me.id = window.localStorage['uoid'];
-            uploader =  me;
-            var photo = new AVObjects.Photo();
-            //上传
-            photo.save({
-              credit : parseInt(credit),
-              imgFile :imgFile,
-              latitude : latitude.toString(),
-              longitude : longitude.toString(),
-              location : location,
-              status : parseInt(status),
-              task : task,
-              uploader: uploader
-            }, {
-              success: function(sphoto) {
-                // 实例已经成功保存.
-                alert('Successfylly ' + sphoto.id);
-              },
-              error: function(post, error) {
-                // 失败了.
-                alert('Fail' + error.message);
-              }
+        //todo:图片压缩 http://docs.qiniu.com/api/v6/image-process.html
+        var base64 = "6K+077yM5L2g5Li65LuA5LmI6KaB56C06Kej5oiR77yf";
+        imgFile = new AV.File("myfile.txt", { base64: base64 });
+
+        imgFile.save().then(function() {
+          Camera.getLocation().then(function(result1){
+            alert('getLocation(): ' + result1);
+            latitude = result1.latitude;
+            longitude = result1.longitude;
+            Camera.getLocationDescription(result1.latitude, result1.longitude).then(function (result2) {
+              alert('getLocationDescription():' + result2);
+              location = result2;
+              status = window.localStorage['photoStatus'];
+              //todo:task是个数组，要从于信达那里拿
+              task = choosedTask;
+              var me = new AVObjects.User();
+              me.id = window.localStorage['uoid'];
+              uploader =  me;
+              var photo = new AVObjects.Photo();
+              //上传
+              photo.save({
+                credit : parseInt(credit),
+                imgFile :imgFile,
+                latitude : latitude.toString(),
+                longitude : longitude.toString(),
+                location : location,
+                status : parseInt(status),
+                task : task,
+                uploader: uploader
+              }, {
+                success: function(sphoto) {
+                  // 实例已经成功保存.
+                  alert('Successfylly ' + sphoto.id);
+                  //存入本地和同步
+                  var pic = {credit: credit, imgBase64:"dfdf", latitude:latitude, longitude: longitude, location:location,
+                                      status:status, taskId:task.id, uploader:uploader.id, id:sphoto.id};
+                  deferred.resolve(pic);
+                },
+                error: function(post, error) {
+                  // 失败了.
+                  alert('Fail' + error.message);
+                  deferred.reject("fail to upload photo");
+                }
+              });
             });
           });
+        }, function(error) {
+          // The file either could not be read, or could not be saved to AV.
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // photo.save({
-        //   credit:2,
-        //   imgFile:file,
-        //   status:1,getLocation
-        //   uploader:AV.User.current(),
-        //   task:new AVObjects.Task()
-
-        // }, {
-        //   success: function(photo) {
-        //     // body...
-        //     alert('SAVE POST SUCESSFULLY:' + photo.id);
-        //   }
-
-        // }, {
-        //   error: function(photo, error) {
-        //     alert('SAVE PHOTO FAIL: ' + error.message);
-        //   }
-
-        // });
-
+        return deferred.promise;
       };
 
 
       return service;
     };
+  })
+
+
+//用户数据管理
+  .provider('creditProvider', function () {
+    var service = {};
+    var username = window.localStorage['username'];
+    var uoid = window.localStorage['uoid'];
+    this.$get = function ($q, AVObjects) {
+      service.getAllCredits = function () {
+
+      };
+
+      return service;
+    };
+
   })

@@ -1,10 +1,8 @@
 <i class="icon-remove close font-color close_pos" ng-click="closeTaskPopup()"></i>
-<ion-item ng-click="takePhoto()" class="album_sm" menu-close>
+<div ng-repeat="cquest in currentQuests track by $index">
+<ion-item ng-click="takePhoto(cquest.id)" class="album_sm" menu-close>
   <i class="cover_sm icon-picture font-color"></i>
-  <span class="album_name_sm font-color">耐克拍照</span>
+  <span class="album_name_sm font-color">{{cquest.title}}</span>
 </ion-item>
-<ion-item ng-click="takePhoto()" class="album_sm" menu-close>
-  <i class="cover_sm icon-picture font-color"></i>
-  <span class="album_name_sm">爱拍拍照</span>
-</ion-item>
+</div>
 <div class="gap"></div>
