@@ -1,6 +1,6 @@
 <ion-view view-title="主页">
   <ion-content class="back_color bg_image">
-    <!--  <ion-refresher
+      <ion-refresher
       pulling-text="下拉刷新..."
       on-refresh="doRefresh()">
     </ion-refresher>
@@ -9,16 +9,16 @@
       <div ng-init="packageHide=true" ng-hide="packageHide" class="package_contain">
         <div class="cover"></div>
         <img ng-click="creditIn()" class="red_package animated zoomInDown" src="img/red_package.png">
-        <i ng-click="packageHide=true" class="icon-remove font-color gift package_close animated bounceInRight"></i>
+        <i ng-click="" class="fa fa-remove fa-2x font-color gift package_close animated bounceInRight"></i>
       </div>
-      <div class="homepage_process white">
+      <div class="homepage_process little_dark">
         <span class="hpg_pro inline">{{hpQuest.title}}</span>
 
         <div class="hp_load_bar inline">
           <span class="hp_left_loadbar hp_process_bar" style="width:{{hpQuest.done}}%"></span><span class="hp_right_loadbar hp_process_bar"style="width:{{hpQuest.left}}%"></span>
         </div>
         <span class="hpg_pro inline">{{hpQuest.currentCredit}}/{{hpQuest.creditTotal}}</span>
-        <i ng-click="test()" class="gift icon-gift inline"></i>
+        <i ng-click="test()" class="fa fa-gift fa-2x gift inline"></i>
       </div>
       <div class="contain_box">
         <button class="btn_primary snatch" ng-click="showQuestNotification()">抢</button>
@@ -26,47 +26,45 @@
           <!-- showSerialNumber -->
           <a ng-click="showSerialNumber()" class="home_link">已经有序列号?</a>
         </div>
-        <div class="text_group" ng-repeat="cquest in currentQuests track by $index">
+        <div class="text_group" > <!--track by $index-->
           <div class="text_box">
-            <p ng-click="sTextClick=!sTextClick" class="snatch_text"><i class="icon-pushpin icon"></i>{{cquest.title}}</p>
+            <p ng-click="s1TextClick=!s1TextClick" class="snatch_text"><i class="fa fa-thumb-tack icon"></i>{{currentQuests[0].title}}</p>
+            <p ng-show="s1TextClick" class="snatch_info snatch_text">{{currentQuests[0].endTime.substring(0,10)}}</p>
 
-            <p ng-show="sTextClick" class="snatch_info snatch_text">{{cquest.endTime}}</p>
-
-            <p ng-show="sTextClick" class="snatch_info snatch_text">{{cquest.currentCredit}}/{{cquest.creditTotal}}</p>
+            <!--<p ng-show="sTextClick" class="snatch_info snatch_text">{{cquest.currentCredit}}/{{cquest.creditTotal}}</p>-->
           </div>
-          <!--<div class="text_box">-->
-            <!--<p class="snatch_text"><i class="icon-pushpin icon"></i>{{hpQuests[1].title}}</p>-->
-
-            <!--<p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].endTime}}</p>-->
-
-            <!--<p ng-hide="true" class="snatch_info snatch_text">{{hpQuests[1].currentCredit}}/{{hpQuests[1].creditTotal}}</p>-->
-          <!--</div>-->
+          <div class="text_box">
+            <p class="snatch_text" ng-click="s2TextClick=!s2TextClick"><i class="fa fa-thumb-tack icon"></i>{{currentQuests[1].title}}</p>
+            <p ng-show="s2TextClick" class="snatch_info snatch_text">{{currentQuests[1].endTime.substring(0,10)}}</p>
+          </div>
         </div>
         <div ng-click="moreTasks()" class="details">
           <span class="number snatch_text">{{currentQuests.length}}</span>
-          <i class="icon-angle-right icon more snatch_text"></i>
+          <i class="fa fa-chevron-right icon more snatch_text"></i>
         </div>
       </div>
       <div class="contain_box full_height">
+        <button class="btn_primary take" ng-click="showTaskPopup()">拍</button>
+        <i class="fa fa-info-circle fa-lg take_text take_rule" ng-click="goToRule()"></i>
         <div class="timer_group">
-          <span class="timer_message"><i class="icon-camera-retro camera take_text"></i>距离您下次拍照时间</span>
+          <span class="timer_message"><i class="fa fa-camera-retro fa-lg camera take_text"></i>下次拍照时间</span>
 
           <p class="timer font-color">1&nbsp;:&nbsp;23&nbsp;:&nbsp;24</p>
         </div>
-        <button class="btn_primary take" ng-click="showTaskPopup()">拍</button>
+
         <div ng-click="goToPic()" class="details_left">
-          <i class="icon-angle-left icon more_left take_text"></i>
           <span class="go_album take_text">相册</span>
+          <i class="fa fa-chevron-right icon more_photo take_text"></i>
         </div>
       </div>
       <div class="contain_box">
         <button class="btn_primary earn" ng-click="showCashNotification()">赚</button>
         <div class="text_group right">
-          <p class="text_earn earn_text">积分&nbsp;<span class="count font-color">18</span></p>
+          <span class="text_earn avail"><i class="fa fa-database avail camera"></i>积分&nbsp;<span class="count font-color">{{$parent.myCredit}}</span></span>
         </div>
         <div ng-click="creditDetails()" class="details_credit">
-          <span class="detail_c earn_text">详情</span>
-          <i class="icon-angle-right icon more_credit earn_text"></i>
+          <span class="detail_c avail">详情</span>
+          <i class="fa fa-chevron-right icon more_credit avail"></i>
         </div>
       </div>
     </div>

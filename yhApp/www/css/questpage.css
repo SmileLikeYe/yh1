@@ -2,7 +2,7 @@
   position: relative;
 }
 .title-bar{
-  padding: 10px;
+  padding: 10px 0 0 0;
   text-align: center;
 }
 .icon{
@@ -34,11 +34,11 @@
   color: #387ef5;
 }
 .task_wraper{
-  margin: 0 20px;
+  margin: 10px 20px;
   border-radius: 10px;
   padding-top: 10px;
   position: relative;
-  background-color: #e7f5fb;
+  background-color: #ffffff;
 }
 .task_process{
   margin: 0 auto;
@@ -46,7 +46,7 @@
   text-align: center;
 }
 .wraper_process{
-  border: 2px solid #f1b133;
+  border: 1px solid #dddddd;
 }
 .wraper_completed{
   border: 2px solid #387ef5;
@@ -69,7 +69,7 @@
 }
 .left_loadbar_p{
   width: 80%;
-  background-color: #f1b133;
+  background-color:  #f5405a;;
 }
 .left_loadbar_c{
   width: 80%;
@@ -77,12 +77,12 @@
 }
 .next_word{
   border-radius: 10px;
-  padding-top: 10px;
-  max-width: 60%;
-  text-align: center;
+  padding: 10px 0;
+  max-width: 74%;
   margin: 0 auto;
   font-size: 14px;
   word-wrap:break-word;
+  line-height: 15px;
 }
 .quest{
   max-width: 60%;
@@ -91,8 +91,15 @@
   position: absolute;
   top: 20px;
   right: 5%;
+  border: 1px solid #f5405a;
 }
 .cloth{
   width: 20px;
   height: 20px;
+}
+.contain_margin{
+  margin-top: 10px;
+}
+.avail_dark{
+  color: #c00000;
 }

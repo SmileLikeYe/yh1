@@ -2,20 +2,20 @@
   <ion-header-bar>
     <h1 class="title font-color">赚钱啦！</h1>
     <div class="buttons">
-      <i class="icon-remove close font-color" ng-click="closeCashNotification()"></i>
+      <i class="fa fa-remove fa-lg close font-color" ng-click="closeCashNotification()"></i>
     </div>
   </ion-header-bar>
   <ion-content>
     <form >
       <div class="list">
-        <label class="item item-input">
-          <input type="text" placeholder="  请输入支付宝账号" ng-model="payData.username"></input>
+        <label class="item">
+          <span type="text" ng-click="closeCashNotification()"> {{loginData.alipayAccount}}</span>
         </label>
         <label class="item item-input">
-          <input type="number" placeholder="  请要兑换的积分" ng-model="payData.creditsToRedeem"></input>
+          <input type="number" ng-model="creditToCash" max="{{myCredit}}" min="10">
         </label>
         <label class="item">
-          <button class="button button-block button-positive" type="button" ng-click="redeemCredits()">确定</button>
+          <button class="button button-block button-positive" type="button" ng-click="sendCashRequest()">确定</button>
         </label>
         <label class="item">
           <button class="button button-block button-positive" type="button" ng-click="closeCashNotification()">取消</button>

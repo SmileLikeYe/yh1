@@ -52,7 +52,7 @@
   border: 1px solid #666666;
   border-radius: 4px;
   text-align: center;
-  background-color: #e7f5fa;;
+  background-color: #ffffff;
   font-size: 14px;
   margin-right: 5px;
 }
@@ -62,11 +62,6 @@
   position: absolute;
   bottom: 2px;
   right: 5%;
-}
-.slider-pager{
-  position: absolute;
-  right: 35%;
-  bottom: 10px;
 }
 .slider{
   padding-bottom: 35px;

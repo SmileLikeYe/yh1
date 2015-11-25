@@ -2,7 +2,7 @@
 // App module
 var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform,$ionicLoading) {
+.run(function($ionicPlatform, $ionicLoading) {
   AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
   $ionicPlatform.ready(function() {
     // 移除键盘附加栏
@@ -66,6 +66,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
     })
     .state('app.picinfo', {
       url: '/picinfo',
+      //cache:false, // change to true and it works again
       views: {
         'menuContent': {
           templateUrl: 'templates/picinfo.html',
@@ -79,7 +80,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
     views: {
       'menuContent': {
         templateUrl: 'templates/creditpage.html',
-        controller: ''
+        controller: 'creditCtrl'
       }
     }
   })
@@ -89,7 +90,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
       views: {
         'menuContent':{
           templateUrl: 'templates/picdetail.html',
-          controller: 'piclistCtrl'
+          controller: 'picdetailCtrl'
         }
       }
     })
@@ -131,6 +132,26 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
         'menuContent': {
           templateUrl: 'templates/modifyPassword.html',
           controller: 'modPwdCtrl'
+        }
+      }
+    })
+
+    .state('app.takePhotoRule',{
+      url: '/takePhotoRule',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/takePhotoRule.html',
+          controller: ''
+        }
+      }
+    })
+
+  .state('app.feedback',{
+      url: '/feedback',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/feedback.html',
+          controller: ''
         }
       }
     });

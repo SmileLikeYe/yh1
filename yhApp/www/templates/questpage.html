@@ -1,48 +1,45 @@
 <ion-view view-title="任务管理">
-    <ion-content class="bg_image">
+    <ion-content class="back_color">
         <div class="contain-box">
             <div class="title-bar">
-                <button ng-click="showRule()" class="btn-operation font-color btn-rule"><i
-                        class="icon-file font-color"></i>&nbsp;新手规则
+                <button ng-click="showRule()" class="btn-operation avail btn-rule"><i
+                        class="fa fa-file-text avail"></i>&nbsp;新手规则
                 </button>
-                <i class="icon-spinner process icon"></i>
-
-                <p class="status process">进行中</p>
+                <p class="status avail">进行中</p>
             </div>
             <div class="task_wraper wraper_process" ng-repeat="cquest in currentQuests track by $index">
+              <p class="avail_dark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{cquest.title}}</p>
                 <div class="task_process">
-                    <i ng-click="" class="font-color gift icon-envelope inline"></i>
-
+                    <i ng-show="cqust.goldTaskIsFinished==0" ng-click="" class="avail gift fa fa-thumb-tack fa-2x inline"></i>
+                    <i ng-show="cqust.goldTaskIsFinished==1" ng-click="showGoldTaskBonus(cquestId)" class="avail gift fa fa-thumb-tack fa-2x inline"></i>
                     <div class="load_bar inline">
-                        <span class="left_loadbar_p process_bar" style="width:{{cquest.done}}%"></span><span class="right_loadbar process_bar" style="width:{{cquest.left}}%"></span>
+                        <span class="left_loadbar_p process_bar" style="width:{{cquest.goldTaskFinishedPercent}}%"></span>
+                        <span class="right_loadbar process_bar" style="width:{{100 - cquest.goldTaskFinishedPercent}}%"></span>
                     </div>
-                    <span class="earn_text inline">{{cquest.currentCredit}}/{{cquest.creditTotal}}</span>
+                    <span class="avail inline">{{cquest.continueDays}}/{{cquest.goldRequiredDays}}</span>
                 </div>
-                <div class="next_word process">
+                <div class="next_word avail">
                     <ul>
-                        <li><p><i class="icon-pushpin process icon_bigger icon_pos"></i>任务名称：{{cquest.title}}</p>
-                        </li>
+                        <!--<li><p class="avail_dark">任务名称：{{cquest.title}}</p></li>-->
                         <li><p>截止时间：{{cquest.endTime}}</p></li>
-                        <li><p>任务要求：<span class="quest">{{cquest.content}}</span></p></li>
-                        <li><p>已获得积分：<span class="quest">{{cquest.currentCredit}}</span></p></li>
+                        <li><p>实时进度：<span class="quest">158/1000</span></p></li>
+                        <li><p>已获积分：<span class="quest">{{cquest.currentCredit}}</span></p></li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="contain-box">
             <div class="title-bar">
-                <i class="icon-ok completed icon"></i>
-
                 <p class="status completed">已完成</p>
             </div>
-            <div ng-repeat="quest in finishedQuests track by $index">
+            <div class="contain_margin" ng-repeat="quest in finishedQuests track by $index">
                 <div class="task_wraper wraper_completed">
                     <div class="next_word completed">
                         <ul>
-                            <li><p><i class="icon-pushpin completed icon_bigger icon_pos"></i>任务名称：{{quest.title}}</p>
+                            <li><p class="avail_dark"><i class="icon-pushpin completed icon_bigger icon_pos"></i>任务名称：{{quest.title}}</p>
                             </li>
                             <li><p>截止时间：{{quest.endTime}}</p></li>
-                            <li><p>任务要求：<span class="quest">{{quest.content}}</span></p></li>
+                            <!--<li><p>任务要求：<span class="quest">{{quest.content}}</span></p></li>-->
                             <li><p>获得积分：<span class="quest">{{quest.creditTotal}}</span></p></li>
                         </ul>
                     </div>

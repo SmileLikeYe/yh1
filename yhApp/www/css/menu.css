@@ -3,7 +3,7 @@
   height: 20px;
 }
 .back_color{
-  background-color: #f4f4f4;
+  background-color: #eeeeee;
 }
 .sculpture{
   font-size: 50px;
@@ -21,7 +21,7 @@
 }
 .arrow_first{
   position: absolute;
-  top: 30px;
+  top: 40px;
   right: 40px;
 }
 .arrow_other{
@@ -30,7 +30,8 @@
   right: 40px;
 }
 .management{
-  margin-left: 10px;
+  position: absolute;
+  left: 20%;
   font-size: 14px;
 }
 

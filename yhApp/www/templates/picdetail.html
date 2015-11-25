@@ -2,33 +2,24 @@
   <ion-content>
     <ion-list show-delete="shouldShowDelete" show-reorder="shouldShowReorder" can-swipe="listCanSwipe">
       <div class="title_bar">
-        <i ng-click="gotoAlbum()" class="icon-angle-left returntask font-color"></i>
-        <i class="icon-user portrait font-color"></i>
+        <i ng-click="gotoAlbum()" class="fa fa-chevron-left fa-lg returntask font-color"></i>
+        <i class="fa fa-user fa-lg portrait font-color"></i>
         <span class="phone">我的相册</span>
-        <i ng-click="takePhoto()" class="icon-camera takephoto font-color"></i>
+        <i ng-click="takePhoto()" class="fa fa-camera fa-lg takephoto font-color"></i>
       </div>
       <div class="album_info">
         <span class="album_title">安踏拍照</span>
-        <p class="num">8张照片</p>
+        <p class="num">{{task.numberOfPassedPhotos}}张照片</p>
       </div>
-      <div ng-repeat="pic in pics" class="pic_contain">
-        <span class="time font-color">10月22日</span>
-        <span class="time font-color">12:56</span>
+      <div ng-repeat="pic in $parent.pics" class="pic_contain">
+        <span class="time font-color">{{pic.createdAt.substring(0, 10)}}</span>
+        <span class="time font-color">{{pic.createdAt.substring(11)}}</span>
         <div class="slide_box">
-          <ion-slide-box>
-            <ion-slide>
               <div class="box">
-                <img ng-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAAAAXNSR0IArs4c6QAAAJ1JREFUWAnt2OENQEAMhuEjNjARc9jAPDYwBxOZgQ5wzTVp/VCvn9r75J6TaJTChQACCKQS6LTdjNt+12rXuqhrav3R9/rowLfzBu8D5CQOyZi8Ocb15/+E5Z2ejTohbZ8TDtk1IQggkFhAnQuYJYJOnVkiCFKNcQszS6i2FBBAAAGLALOERcnT4/7S8V+iwe8WZpZoCFNGAAEEkgk8JV0bLvwOwggAAAAASUVORK5CYII=" alt="网络不给力~" width="150" height=200">
+                <img ng-src="data:image/png;base64,{{imgBase64}}" alt="网络不给力~" width="150" height=200">
               </div>
-            </ion-slide>
-            <ion-slide>
-              <div class="box blue">
-                <h1 align='center'>BLUE</h1>
-              </div>
-            </ion-slide>
-          </ion-slide-box>
           <span ng-class="{'status_text earn_text': underway, 'status_text font-color': failure, 'status_text take_text': success}" on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
-            <i ng-class="{'icon-spinner earn_text': underway, 'icon-remove font-color': failure, 'icon-ok take_text': success}" ></i>
+            <i ng-class="{'fa fa-circle-o-notch fa-spin earn_text': underway, 'fa fa-remove font-color': failure, 'fa fa-check take_text': success}" ></i>
             {{status}}
           </span>
         </div>
