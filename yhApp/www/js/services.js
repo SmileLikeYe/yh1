@@ -8,6 +8,7 @@ angular.module('starter.services', [])
         User: AV.Object.extend("_User"),
         Photo: AV.Object.extend("Photo"),
         CashRequest: AV.Object.extend("CashRequest"),
+        AuthCode: AV.Object.extend("AuthCode"),
       };
     };
   })
@@ -181,6 +182,21 @@ angular.module('starter.services', [])
 //service存放factory数据
     var service = {};
     this.$get = function ($q, AVObjects, DateUtil) {
+      service.checkAuthCode = function (authCodeId) {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.AuthCode);
+        query.include("task");
+        query.get(authCodeId, {
+          success: function (authCode) {
+            var task = authCode.get("task");
+            deferred.resolve(task.id);
+          },
+          error:function(authCode, error) {
+            deferred.reject("Not Exsit");
+          }
+        });
+        return deferred.promise;
+      };
       service.refreshQuests = function () {
         var deferred = $q.defer();
         var currentQuests = new Array();
@@ -252,10 +268,12 @@ angular.module('starter.services', [])
         var deferred = $q.defer();
         var query = new AV.Query(AVObjects.Task);
         var now = DateUtil.getNowFormatDate();
-        var me = new AVObjects.User();
-        me.id = window.localStorage['uoid'];
-        query.notEqualTo("participant", me);
-        query.greaterThan("endTime", new Date(DateUtil.getNowFormatDate()));
+        if (window.localStorage['logged_in'] == true) {
+          var me = new AVObjects.User();
+          me.id = window.localStorage['uoid'];
+          query.notEqualTo("participant", me);
+        }
+        query.greaterThan("acceptEndTime", new Date(DateUtil.getNowFormatDate()));
         query.lessThan("startTime",new Date(DateUtil.getNowFormatDate()));
         query.descending("priority");
         query.first({
@@ -358,27 +376,66 @@ angular.module('starter.services', [])
   .factory('Camera', ['$location', 'DateUtil', '$q', function ($location, DateUtil, $q) {
 
     return {// 返回方法组的对象
-      getPhoto: function () {
-        var deferred = $q.defer();
+
+      /**
+       *
+       * @param options
+       * @returns {*}
+       */
+      getPhoto: function (options) {
+        var q = $q.defer();
         alert("getPhoto()");
-        // $scope.pics.unshift({ id:$scope.pics.length,title:"安踏拍照",description:"拍的好",date:getNowFormatDate(),img:"img/ionic.png" });
-        navigator.camera.getPicture(onSuccess, onFail, {
-          sourceType: Camera.PictureSourceType.CAMERA,
-           quality: 50,
-           destinationType: Camera.DestinationType.DATA_URL,
-           allowEdit: false,
-           encodingType: Camera.EncodingType.PNG,
-           cameraDirection: Camera.Direction.FRONT
+        navigator.camera.getPicture(function (result) {
+          // Do any magic you need
+
+          q.resolve(result);
+        }, function (err) {
+          q.reject(err);
+        }, options);
+
+        return q.promise;
+      },
+      /**
+       *
+       * @param img_path
+       * @returns {*}
+       */
+      resizeImage: function (img_path) {
+        var q = $q.defer();
+        window.imageResizer.resizeImage(function (success_resp) {
+          console.log('success, img re-size: ' + JSON.stringify(success_resp));
+          q.resolve(success_resp);
+        }, function (fail_resp) {
+          console.log('fail, img re-size: ' + JSON.stringify(fail_resp));
+          q.reject(fail_resp);
+        }, img_path, 200, 0, {
+          imageDataType: ImageResizer.IMAGE_DATA_TYPE_URL,
+          resizeType: ImageResizer.RESIZE_TYPE_MIN_PIXEL,
+          pixelDensity: true,
+          storeImage: false,
+          photoAlbum: false,
+          format: 'jpg'
         });
-        function onSuccess(image64Data) {
-          alert("getPhoto onSucess" + image64Data);
-          deferred.resolve(image64Data);
-        }
-        function onFail(message) {
-          alert('getPhoto Failed because: ' + message);
-            deferred.reject("拍照失败");
-        }
-         return deferred.promise;
+
+        return q.promise;
+      },
+
+      toBase64Image: function (img_path) {
+        var q = $q.defer();
+        alert("resizeImage()");
+        window.imageResizer.resizeImage(function (success_resp) {
+          console.log('success, img toBase64Image: ' + JSON.stringify(success_resp));
+          q.resolve(success_resp);
+        }, function (fail_resp) {
+          console.log('fail, img toBase64Image: ' + JSON.stringify(fail_resp));
+          q.reject(fail_resp);
+        }, img_path, 1, 1, {
+          imageDataType: ImageResizer.IMAGE_DATA_TYPE_URL,
+          resizeType: ImageResizer.RESIZE_TYPE_FACTOR,
+          format: 'jpg'
+        });
+
+        return q.promise;
       },
 
       getLocation: function () {
@@ -404,8 +461,7 @@ angular.module('starter.services', [])
           deferred.resolve(result);
         }
         function onFail(message) {
-          alert('code: ' + error.code + '\n' +
-            'message: ' + error.message + '\n');
+          alert('Get location fail:' + message);
           deferred.reject("getLocation() fail!");
         }
         return deferred.promise;
@@ -476,7 +532,7 @@ angular.module('starter.services', [])
                   //
                   for (var i=0; i<currentQuests.length; i++) { //遍历当前任务，找到对应任务，
                     if (currentQuests[i].id == photo.id) {
-                      currentQuests[i].numberOfPassedPhoto = parseInt(currentQuests[i].numberOfPassedPhoto) + 1;
+                      currentQuests[i].numberOfPassedPhotos = parseInt(currentQuests[i].numberOfPassedPhotos) + 1;
                       if (pic.credit = window.localStorage['firstPhotoCrdit'] && parseInt(currentQuests[i].goldTaskStatus) == 0 ) { //这里如果是4 就表示不是连拍的第二张 ， 并且衣笔任务没有完成
                         currentQuests[i].continueDays = parseInt(currentQuests[i].continueDays) + 1; //总共拍了多少
                         currentQuests[i].goldTaskFinishedPercent = DateUtil.getPercent(currentQuests[i].continueDays, currentQuests[i].goldRequiredDays);  // [pics update]
@@ -509,78 +565,99 @@ angular.module('starter.services', [])
         var deferred = $q.defer();
         //上传需要的字段
         var credit;
-        var imgFile;
         var latitude;
         var longitude;
         var location;
         var status;
-        var task;
-        var uploader;
         //赋值
-        credit = window.localStorage['firstPhotoCrdit'];
+
+        var picOptions = {
+          destinationType: navigator.camera.DestinationType.FILE_URI,
+          quality: 75,
+          targetWidth: 200,
+          targetHeight: 250,
+          allowEdit: false,
+          saveToPhotoAlbum: true
+        };
+
         //todo:解决获得照片编码数据和位置问题: 从服务器拿吧
         //todo:文件名
         //todo:图片压缩 http://docs.qiniu.com/api/v6/image-process.html
-        Camera.getPhoto().then(function (image64Data) {
-          imgFile = new AV.File(DateUtil.getNowFormatDate() + window.localStorage['username'] + ".png", {base64: image64Data});
-          //保存
-          imgFile.save().then(function () {
-            Camera.getLocation().then(function (result1) {
-              alert('getLocation(): ' + result1);
-              latitude = result1.latitude;
-              longitude = result1.longitude;
-              Camera.getLocationDescription(result1.latitude, result1.longitude).then(function (result2) {
-                alert('getLocationDescription():' + result2);
-                location = result2;
-                status = window.localStorage['photoStatus'];
-                //todo:task是个数组，要从于信达那里拿
-                task = choosedTask;
-                var me = new AVObjects.User();
-                me.id = window.localStorage['uoid'];
-                uploader = me;
-                var photo = new AVObjects.Photo();
-                //上传
-                photo.save({
-                  credit: parseInt(credit),
-                  imgFile: imgFile,
-                  latitude: latitude.toString(),
-                  longitude: longitude.toString(),
-                  location: location,
-                  status: parseInt(status),
-                  task: task,
-                  uploader: uploader
-                }, {
-                  success: function (sphoto) {
-                    // 实例已经成功保存.
-                    alert('Successfylly ' + sphoto.id);
-                    //存入本地和同步
-                    var pic = {
-                      credit: credit,
-                      imgBase64: image64Data,
-                      latitude: latitude,
-                      longitude: longitude,
-                      location: location,
-                      status: status,
-                      taskId: task.id,
-                      uploaderId: uploader.id,
-                      id: sphoto.id,
-                      createdAt: DateUtil.getNowFormatDate()
-                    };
-                    deferred.resolve(pic);
-                  },
-                  error: function (post, error) {
-                    // 失败了.
-                    alert('Fail' + error.message);
-                    deferred.reject("fail to upload photo");
+        Camera.getPhoto(picOptions).then(function (imageURI) {
+          console.log("imageURI: " + imageURI);
+          Camera.toBase64Image(imageURI).then(function (result) {
+            console.log("convert base image ");
+            var image64Data = result.imageData;
+            alert(image64Data.length + '/n' + image64Data);
+            credit = window.localStorage['firstPhotoCrdit'];
+            latitude = 31.204603499999997;
+            longitude = 121.59734089999999;
+            //Camera.getLocationDescription(latitude, longitude).then(function (result2) {
+            //alert('getLocationDescription():' + result2);
+            location = "上海，杨浦，同济";
+            status = window.localStorage['photoStatus'];
+            //todo:task是个数组，要从于信达那里拿
+            //var me = new AVObjects.User();
+            //me.id = window.localStorage['uoid'];
+            //uploader = me;
+
+            AV.Cloud.run('savePhoto', {
+              fileName: (DateUtil.getNowFormatDate() + '_' + window.localStorage['username'] + ".png"),
+              image64Data: image64Data,
+              credit: parseInt(credit),
+              //imgFile: imgFile,
+              latitude: latitude.toString(),
+              longitude: longitude.toString(),
+              location: location,
+              status: parseInt(status),
+              taskId: choosedTask.id,
+              uploaderId: window.localStorage['uoid']
+
+            }, {
+              success: function (photoId) {
+                alert("Could savePhoto YES:" + photoId);
+
+                //
+                var currentQuests = new Array();
+                currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
+                var refreshedCurrentQuests = new Array();
+                for (var i=0; i<currentQuests.length; i++) { //遍历当前任务，找到对应任务，
+                  if (currentQuests[i].id == choosedTask.id) {
+                    currentQuests[i].numberOfUploadPhotos = parseInt(currentQuests[i].numberOfUploadPhotos) + 1;
                   }
-                });
-              });
+                  refreshedCurrentQuests.push(currentQuests[i]);
+                }//for end.
+                window.localStorage['currentQuests'] = JSON.stringify(refreshedCurrentQuests);
+
+                //存入本地
+                var pic = {
+                  credit: credit,
+                  imageURI: imageURI,
+                  latitude: latitude,
+                  longitude: longitude,
+                  location: location,
+                  status: status,
+                  taskId: choosedTask.id,
+                  uploaderId: window.localStorage['uoid'],
+                  id: photoId,
+                  createdAt: DateUtil.getNowFormatDate()
+                };
+                var pics = new Array();
+                pics = JSON.parse(window.localStorage['pics'] || '[]');
+                pics.unshift(pic);
+                window.localStorage['pics'] = JSON.stringify($scope.pics);
+                deferred.resolve(pic);
+              },
+              error: function (error) {
+                alert("Could savePhoto NO:" + error.message);
+                deferred.reject(error.message);
+              }
             });
-          }, function (error) {
-            // The file either could not be read, or could not be saved to AV.
+          }, function (_error) {
+            alert("convert base64 NO");
+            console.log(_error);
           });
         });
-
         return deferred.promise;
       };
 
@@ -699,18 +776,18 @@ angular.module('starter.services', [])
     };
   })
 
-.factory('Data', function(){
-    var data =
-    {
-      FirstName: ''
-    };
-
-    return {
-      getFirstName: function () {
-        return data.FirstName;
-      },
-      setFirstName: function (firstName) {
-        data.FirstName = firstName;
-      }
-    };
-  })
+//.factory('Data', function(){
+//    var data =
+//    {
+//      FirstName: ''
+//    };
+//
+//    return {
+//      getFirstName: function () {
+//        return data.FirstName;
+//      },
+//      setFirstName: function (firstName) {
+//        data.FirstName = firstName;
+//      }
+//    };
+//  })

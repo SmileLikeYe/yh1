@@ -13,7 +13,7 @@
                     <i ng-show="cqust.goldTaskIsFinished==0" ng-click="" class="avail gift fa fa-thumb-tack fa-2x inline"></i>
                     <i ng-show="cqust.goldTaskIsFinished==1" ng-click="showGoldTaskBonus(cquestId)" class="avail gift fa fa-thumb-tack fa-2x inline"></i>
                     <div class="load_bar inline">
-                        <span class="left_loadbar_p process_bar" style="width:{{cquest.goldTaskFinishedPercent}}%"></span>
+                        <span class="left_loadbar_p process_bar" style="width:({{cquest.goldTaskFinishedPercent}} + 0.01)%"></span>
                         <span class="right_loadbar process_bar" style="width:{{100 - cquest.goldTaskFinishedPercent}}%"></span>
                     </div>
                     <span class="avail inline">{{cquest.continueDays}}/{{cquest.goldRequiredDays}}</span>

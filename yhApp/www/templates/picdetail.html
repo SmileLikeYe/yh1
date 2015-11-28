@@ -9,14 +9,14 @@
       </div>
       <div class="album_info">
         <span class="album_title">安踏拍照</span>
-        <p class="num">{{task.numberOfPassedPhotos}}张照片</p>
+        <p class="num">{{task.numberOfPassedPhotos}}/{{task.numberOfUploadPhotos}}张照片</p>
       </div>
       <div ng-repeat="pic in $parent.pics" class="pic_contain">
         <span class="time font-color">{{pic.createdAt.substring(0, 10)}}</span>
         <span class="time font-color">{{pic.createdAt.substring(11)}}</span>
         <div class="slide_box">
               <div class="box">
-                <img ng-src="data:image/png;base64,{{imgBase64}}" alt="网络不给力~" width="150" height=200">
+                <img ng-src="{{pic.imageURI}}" alt="网络不给力~" width="250" height=300">
               </div>
           <span ng-class="{'status_text earn_text': underway, 'status_text font-color': failure, 'status_text take_text': success}" on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
             <i ng-class="{'fa fa-circle-o-notch fa-spin earn_text': underway, 'fa fa-remove font-color': failure, 'fa fa-check take_text': success}" ></i>

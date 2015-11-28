@@ -3,7 +3,7 @@
     <ion-item class="album snatch_text" menu-close href="#/app/photo" ng-repeat="task in $parent.currentQuests track by $index">
       <i class="album_cover fa fa-book fa-4x"></i>
       <span class="album_name">{{task.title}}</span>
-      <span class="album_num">{{task.numberOfPassedPhotos}}张</span>
+      <span class="album_num">{{task.numberOfPassedPhotos}}/{{task.numberOfUploadPhotos}}张</span>
       <i class="arrow_bigger arrow_first fa fa-chevron-right"></i>
     </ion-item>
     <ion-item class="album font-color" menu-close href="#/app/photo" ng-repeat="task in $parent.finishedQuests track by $index">

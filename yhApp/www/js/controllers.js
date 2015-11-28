@@ -1,7 +1,212 @@
 angular.module('starter.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $ionicModal, $ionicPopup, $timeout, userProvider, questsFactory, creditProvider, photoProvider, DateUtil) {
+  .controller('AppCtrl', function ($scope, $http, $ionicModal, $ionicPopup,$state, $timeout, userProvider, questsFactory, creditProvider, photoProvider, DateUtil) {
 
+    $scope.doRefresh = function () {
+      /*$http.get('/new-items')
+       .success(function(newItems) {
+       $scope.items = newItems;
+       })
+       .finally(function() {
+       // Stop the ion-refresher from spinning
+       $scope.$broadcast('scroll.refreshComplete');
+       });*/
+      if (window.localStorage['logged_in'] == "true") {
+        //这里是因为登陆时做了初始化
+        $scope.loginData.username = window.localStorage['username'];
+        $scope.loginData.logged_in = window.localStorage['logged_in'];
+        $scope.loginData.password = window.localStorage['password'];
+        $scope.loginData.nickName = window.localStorage['nickName'];
+        $scope.loginData.alipayAccount = window.localStorage['alipayAccount'];
+        //第一次登陆，本地没有做初始化
+        if (window.localStorage['totalCreditToCash'] == undefined)
+          window.localStorage['totalCreditToCash'] = 0;
+        $scope.totalCreditToCash = window.localStorage['totalCreditToCash'];
+        if (window.localStorage['globalTaskLocalInfo'] == undefined)
+          window.localStorage['globalTaskLocalInfo'] = JSON.stringify({
+            currentLevel: 1,
+            lastLevelFinishedDate: "2000-11-11 11:11:11",
+            finishedDays: 0,
+            notFinishedDays: 0
+          }); //单身狗永远未完成 '.'
+        //$scope.globalTaskLocalInfo = window.localStorage['globalTaskLocalInfo'];
+        if (window.localStorage['finishedDaysLog'] == undefined)
+          window.localStorage['finishedDaysLog'] = '[]';
+
+        //refresh my quests
+        $scope.hpQuests = [];
+        $scope.hpQuest = {title: "还没有任务，赶快开始赚钱吧！"};
+        $scope.currentQuests = new Array();
+        $scope.finishedQuests = new Array();
+        $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]'); //init in case net work is bad
+        $scope.finishedQuests = JSON.parse(window.localStorage['finishedQuests'] || '[]');
+
+        questsFactory.refreshQuests().then(function (data) {
+          $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
+        });
+        //questsFactory.getQuests().then(function (data) { //获得所有我参与的Quests
+        //  if (typeof (data) != 'undefined')
+        //  {
+        //    $scope.currentQuests.length = 0; //有网有返回值，所以清空，准备更新
+        //    $scope.finishedQuests.length = 0;
+        //    var now = DateUtil.getFormatDate(new Date()).replace(/[":A-Z.-]/g, "");
+        //    data.forEach(
+        //      function (q) {
+        //        var tt = DateUtil.getFormatDate(eval(q['endTime']));
+        //        var limit = tt.replace(/[":A-Z.-]/g, "");
+        //        q.numberOfPassedPhotos = q.numberOfPassedPhotos;
+        //        if (now < limit) {//未超时
+        //          q.endTime = tt.replace(/T/g, " ").replace(/"/g, "").substring(0, 10);
+        //          questsFactory.getCurrentCreditOfQuest(q.id).then(
+        //            function (credit) {
+        //              q.currentCredit = credit;
+        //              q.done = 100 * q.currentCredit / q.creditTotal;
+        //              q.left = 100 - q.done;
+        //            }
+        //          );
+        //          $scope.hpQuests.push(q);
+        //          $scope.currentQuests.push(q);
+        //        }
+        //        else
+        //        {
+        //          q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
+        //          $scope.finishedQuests.push(q);
+        //        }
+        //      }
+        //    );
+        //    $scope.hpQuest = $scope.hpQuests[0];
+        //    window.localStorage['currentQuests'] = JSON.stringify($scope.currentQuests);
+        //    window.localStorage['finishedQuests'] = JSON.stringify($scope.finishedQuests);
+        //  }
+        //
+        //});
+
+        //refresh the my credit  这里先赋值是怕网络出问题
+        if (window.localStorage['myCredit'] == undefined)
+          window.localStorage['myCredit'] = 0;
+        $scope.myCredit = window.localStorage['myCredit']; //init in case net work is bad
+        //$scope.myCredit = window.localStorage['myCredit']; //init in case net work is bad
+        if (window.localStorage['totalCreditToCash'] == undefined)
+          window.localStorage['totalCreditToCash'] = 0;
+        $scope.totalCreditToCash = window.localStorage['totalCreditToCash']; //init in case net work is bad
+        creditProvider.refreshCredit().then(function (me) {
+          if (typeof(me) != 'undefined') { //bad result
+            $scope.myCredit = me.credit - me.totalCreditToCash;
+            window.localStorage['myCredit'] = me.credit - me.totalCreditToCash;
+            $scope.totalCreditToCash = me.totalCreditToCash;
+            window.localStorage['totalCreditToCash'] = me.totalCreditToCash;
+          }
+        });
+
+        //refresh my photos.status
+        $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
+        photoProvider.refreshPhotos().then(function (result) {
+          //todo: 这里不管有没有正确result都会执行的话，前面的赋值显得毫无意义: update:如果请求不成功，不会执行下面
+          if (typeof(result) != undefined) { //bad result
+            $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
+          }
+        });
+        //refresh globalTaskLocalInfo 每天20：00后更新
+        $scope.pics = new Array();
+        //refresh my golabalTaskInfo
+        var finishedDaysLog = new Array();
+        var globalTaskLocalInfo = new Array();
+        finishedDaysLog = JSON.parse(window.localStorage['finishedDaysLog'] || '[]');
+        globalTaskLocalInfo = JSON.parse(window.localStorage['globalTaskLocalInfo'] || '[]');
+        if (parseInt(globalTaskLocalInfo.currentLevel) == 1) {
+          var finishiedDaysCount = 0;
+          for (var i = 0; i < finishedDaysLog.length; i++) {
+            var today = new Date();
+            var days = DateUtil.getDateDiff(finishedDaysLog[i], DateUtil.getTodayEndFormatDate((today)));
+            if (days < 12 && days >= 0) { //0 1 2 ... 11
+              finishiedDaysCount++;
+            }
+          } // for end
+          if (finishiedDaysCount >= 10) {
+            //完成了任务1
+            globalTaskLocalInfo.currentLevel = 2;
+            globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
+            globalTaskLocalInfo.finishedDays = 0;
+            globalTaskLocalInfo.notFinishedDays = 0;
+            $scope.packageHide = false;
+          } else {//这这一级没有失败这一说，就没没到10 就每天不断计算而已
+            globalTaskLocalInfo.finishedDays = finishiedDaysCount;
+          }
+        } else {
+          var today = new Date();
+          var passedDays = DateUtil.getDateDiff(globalTaskLocalInfo.lastLevelFinishedDate, DateUtil.getTodayEndFormatDate((today))); //第一级任务结束，到今天过了多少天
+          var finishiedDaysCount = 0;
+          for (var i = 0; i < finishedDaysLog.length; i++) {
+            var days = DateUtil.getDateDiff(globalTaskLocalInfo.lastLevelFinishedDate, finishedDaysLog[i]);
+            if (days < 12 && days >= 0) { //0 1 2 ... 11
+              finishiedDaysCount++;
+            }
+          } // for end
+          if (passedDays > 12) {
+            if (finishiedDaysCount >= 10) {
+              //完成了任务1
+              globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
+              globalTaskLocalInfo.finishedDays = 0;
+              globalTaskLocalInfo.notFinishedDays = 0;
+              if (parseInt(globalTaskLocalInfo.currentLevel) == 2)
+                globalTaskLocalInfo.currentLevel = 3;
+              if (parseInt(globalTaskLocalInfo.currentLevel) == 3)
+                globalTaskLocalInfo.currentLevel = 1;
+
+            } else {
+              //任务失败
+              globalTaskLocalInfo.currentLevel = 1;
+              globalTaskLocalInfo.lastLevelFinishedDate = "1111-11-11 11:11:11";
+              globalTaskLocalInfo.finishedDays = 0;
+              globalTaskLocalInfo.notFinishedDays = 0;
+            }
+          } else if (passedDays == 12) {
+            if (today.getHours <= 20) {
+              if (finishiedDaysCount >= 10) {
+                //完成了任务1
+                globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
+                globalTaskLocalInfo.finishedDays = 0;
+                globalTaskLocalInfo.notFinishedDays = 0;
+                if (parseInt(globalTaskLocalInfo.currentLevel) == 2)
+                  globalTaskLocalInfo.currentLevel = 3;
+                if (parseInt(globalTaskLocalInfo.currentLevel) == 3)
+                  globalTaskLocalInfo.currentLevel = 1;
+
+              } else {
+                //刷新
+                globalTaskLocalInfo.finishedDays = finishiedDaysCount;
+                globalTaskLocalInfo.notFinishedDays = 12 - finishiedDaysCount;
+              }
+            } else { // 20点后
+              if (finishiedDaysCount >= 10) {
+                //完成了任务1
+                globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
+                globalTaskLocalInfo.finishedDays = 0;
+                globalTaskLocalInfo.notFinishedDays = 0;
+                if (parseInt(globalTaskLocalInfo.currentLevel) == 2)
+                  globalTaskLocalInfo.currentLevel = 3;
+                if (parseInt(globalTaskLocalInfo.currentLevel) == 3)
+                  globalTaskLocalInfo.currentLevel = 1;
+
+              } else {
+                //任务失败
+                globalTaskLocalInfo.currentLevel = 1;
+                globalTaskLocalInfo.lastLevelFinishedDate = "1111-11-11 11:11:11";
+                globalTaskLocalInfo.finishedDays = 0;
+                globalTaskLocalInfo.notFinishedDays = 0;
+              }
+            }
+          } else {//不到12天 只是刷新
+            globalTaskLocalInfo.finishedDays = finishiedDaysCount;
+            globalTaskLocalInfo.notFinishedDays = 12 - finishiedDaysCount;
+          }
+        }
+        window.localStorage['globalTaskLocalInfo'] = JSON.stringify(globalTaskLocalInfo);
+        $scope.globalTaskLocalInfo = globalTaskLocalInfo;
+      }
+
+      $scope.$broadcast('scroll.refreshComplete');
+    };
     /**************************************************************************************
      * AppCtrl
      * $scope   window.localStorage 的变量
@@ -14,203 +219,21 @@ angular.module('starter.controllers', [])
     $scope.regData = {};
     $scope.TIMEOUT = 60;
     $scope.packageHide = true;
-    $scope.creditToCash = 10;
+    $scope.commomModel= {creditToCash: 10, authCode:""};
+    $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]'); //init in case net work is bad
 
 
     // 本地
     window.localStorage['firstPhotoCrdit'] = 4;
     window.localStorage['secondePhotoCrdit'] = 6;
     window.localStorage['photoStatus'] = 0;
+    window.localStorage['username'] = $scope.loginData.username;
+    window.localStorage['logged_in'] = $scope.loginData.logged_in;
+    window.localStorage['nickName'] = $scope.loginData.nickName;
+    //window.localStorage['username'] != '未登录' && window.localStorage['username'] != ''
+    $scope.doRefresh();
 
-    if (window.localStorage['username'] != '未登录' && window.localStorage['username'] != '') {
-      //这里是因为登陆时做了初始化
-      $scope.loginData.username = window.localStorage['username'];
-      $scope.loginData.logged_in = window.localStorage['logged_in'];
-      $scope.loginData.password = window.localStorage['password'];
-      $scope.loginData.nickName = window.localStorage['nickName'];
-      $scope.loginData.alipayAccount = window.localStorage['alipayAccount'];
-      //第一次登陆，本地没有做初始化
-      if (window.localStorage['totalCreditToCash'] == 'undefined')
-        window.localStorage['totalCreditToCash'] = 0;
-      $scope.totalCreditToCash = window.localStorage['totalCreditToCash'];
-      if (window.localStorage['globalTaskLocalInfo'] == 'undefined' )
-        window.localStorage['globalTaskLocalInfo'] = JSON.stringify({currentLevel:1, lastLevelFinishedDate: "2000-11-11 11:11:11", finishedDays:0, notFinishedDays:0}); //单身狗永远未完成 '.'
-      //$scope.globalTaskLocalInfo = window.localStorage['globalTaskLocalInfo'];
-      if (window.localStorage['finishedDaysLog'] == 'undefined')
-        window.localStorage['finishedDaysLog'] = '[]';
 
-      //refresh my quests
-      $scope.hpQuests = [];
-      $scope.hpQuest =  {title:"还没有任务，赶快开始赚钱吧！"};
-      $scope.currentQuests = new Array();
-      $scope.finishedQuests = new Array();
-      $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]'); //init in case net work is bad
-      $scope.finishedQuests = JSON.parse(window.localStorage['finishedQuests'] || '[]');
-
-      questsFactory.refreshQuests().then(function (data) {
-        $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
-      });
-      //questsFactory.getQuests().then(function (data) { //获得所有我参与的Quests
-      //  if (typeof (data) != 'undefined')
-      //  {
-      //    $scope.currentQuests.length = 0; //有网有返回值，所以清空，准备更新
-      //    $scope.finishedQuests.length = 0;
-      //    var now = DateUtil.getFormatDate(new Date()).replace(/[":A-Z.-]/g, "");
-      //    data.forEach(
-      //      function (q) {
-      //        var tt = DateUtil.getFormatDate(eval(q['endTime']));
-      //        var limit = tt.replace(/[":A-Z.-]/g, "");
-      //        q.numberOfPassedPhotos = q.numberOfPassedPhotos;
-      //        if (now < limit) {//未超时
-      //          q.endTime = tt.replace(/T/g, " ").replace(/"/g, "").substring(0, 10);
-      //          questsFactory.getCurrentCreditOfQuest(q.id).then(
-      //            function (credit) {
-      //              q.currentCredit = credit;
-      //              q.done = 100 * q.currentCredit / q.creditTotal;
-      //              q.left = 100 - q.done;
-      //            }
-      //          );
-      //          $scope.hpQuests.push(q);
-      //          $scope.currentQuests.push(q);
-      //        }
-      //        else
-      //        {
-      //          q.endTime = limit.replace(/T/g, " ").replace(/"/g, "").substring(0, 19);
-      //          $scope.finishedQuests.push(q);
-      //        }
-      //      }
-      //    );
-      //    $scope.hpQuest = $scope.hpQuests[0];
-      //    window.localStorage['currentQuests'] = JSON.stringify($scope.currentQuests);
-      //    window.localStorage['finishedQuests'] = JSON.stringify($scope.finishedQuests);
-      //  }
-      //
-      //});
-
-      //refresh the my credit  这里先赋值是怕网络出问题
-      if (window.localStorage['myCredit'] == "undefined")
-        window.localStorage['myCredit'] = 0;
-      $scope.myCredit = window.localStorage['myCredit']; //init in case net work is bad
-      //$scope.myCredit = window.localStorage['myCredit']; //init in case net work is bad
-      if (window.localStorage['totalCreditToCash'] == "undefined")
-        window.localStorage['totalCreditToCash'] = 0;
-      $scope.totalCreditToCash = window.localStorage['totalCreditToCash']; //init in case net work is bad
-      creditProvider.refreshCredit().then( function(me) {
-        if (typeof(me) != 'undefined'){ //bad result
-              $scope.myCredit = me.credit - me.totalCreditToCash;
-              window.localStorage['myCredit'] = me.credit - me.totalCreditToCash;
-              $scope.totalCreditToCash = me.totalCreditToCash;
-              window.localStorage['totalCreditToCash'] = me.totalCreditToCash;
-        }
-      });
-
-      //refresh my photos.status
-      $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
-      photoProvider.refreshPhotos().then(function (result) {
-        //todo: 这里不管有没有正确result都会执行的话，前面的赋值显得毫无意义: update:如果请求不成功，不会执行下面
-        if (typeof(result) != 'undefined') { //bad result
-          $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
-        }
-      });
-    }
-
-    //refresh globalTaskLocalInfo 每天20：00后更新
-    $scope.pics = new Array();
-    //refresh my golabalTaskInfo
-    var finishedDaysLog = new Array();
-    var globalTaskLocalInfo = new Array();
-    finishedDaysLog = JSON.parse(window.localStorage['finishedDaysLog'] || '[]');
-    globalTaskLocalInfo = JSON.parse(window.localStorage['globalTaskLocalInfo'] || '[]');
-    if (parseInt(globalTaskLocalInfo.currentLevel) == 1) {
-      var finishiedDaysCount = 0;
-      for (var i=0; i<finishedDaysLog.length; i++) {
-        var today = new Date();
-        var days = DateUtil.getDateDiff(finishedDaysLog[i], DateUtil.getTodayEndFormatDate((today)));
-        if (days < 12  && days >= 0 ) { //0 1 2 ... 11
-          finishiedDaysCount++;
-        }
-      } // for end
-      if (finishiedDaysCount >= 10) {
-        //完成了任务1
-        globalTaskLocalInfo.currentLevel = 2;
-        globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
-        globalTaskLocalInfo.finishedDays = 0;
-        globalTaskLocalInfo.notFinishedDays = 0;
-        $scope.packageHide = false;
-      }else {//这这一级没有失败这一说，就没没到10 就每天不断计算而已
-        globalTaskLocalInfo.finishedDays = finishiedDaysCount ;
-      }
-    }else {
-      var today = new Date();
-      var passedDays = DateUtil.getDateDiff(globalTaskLocalInfo.lastLevelFinishedDate, DateUtil.getTodayEndFormatDate((today))); //第一级任务结束，到今天过了多少天
-      var finishiedDaysCount = 0;
-      for (var i=0; i<finishedDaysLog.length; i++) {
-        var days = DateUtil.getDateDiff(globalTaskLocalInfo.lastLevelFinishedDate, finishedDaysLog[i]);
-        if (days < 12 && days >= 0 ) { //0 1 2 ... 11
-          finishiedDaysCount++;
-        }
-      } // for end
-      if (passedDays > 12) {
-        if (finishiedDaysCount >= 10) {
-          //完成了任务1
-          globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
-          globalTaskLocalInfo.finishedDays = 0;
-          globalTaskLocalInfo.notFinishedDays = 0;
-          if (parseInt(globalTaskLocalInfo.currentLevel) == 2)
-            globalTaskLocalInfo.currentLevel = 3;
-          if (parseInt(globalTaskLocalInfo.currentLevel) == 3)
-            globalTaskLocalInfo.currentLevel = 1;
-
-        }else {
-          //任务失败
-          globalTaskLocalInfo.currentLevel = 1;
-          globalTaskLocalInfo.lastLevelFinishedDate = "1111-11-11 11:11:11";
-          globalTaskLocalInfo.finishedDays = 0;
-          globalTaskLocalInfo.notFinishedDays = 0;
-        }
-      }else if(passedDays == 12) {
-          if (today.getHours <= 20) {
-            if (finishiedDaysCount >= 10) {
-              //完成了任务1
-              globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
-              globalTaskLocalInfo.finishedDays = 0;
-              globalTaskLocalInfo.notFinishedDays = 0;
-              if (parseInt(globalTaskLocalInfo.currentLevel) == 2)
-                globalTaskLocalInfo.currentLevel = 3;
-              if (parseInt(globalTaskLocalInfo.currentLevel) == 3)
-                globalTaskLocalInfo.currentLevel = 1;
-
-            }else {
-              //刷新
-              globalTaskLocalInfo.finishedDays = finishiedDaysCount;
-              globalTaskLocalInfo.notFinishedDays = 12 -finishiedDaysCount;
-            }
-          }else { // 20点后
-            if (finishiedDaysCount >= 10) {
-              //完成了任务1
-              globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
-              globalTaskLocalInfo.finishedDays = 0;
-              globalTaskLocalInfo.notFinishedDays = 0;
-              if (parseInt(globalTaskLocalInfo.currentLevel) == 2)
-                globalTaskLocalInfo.currentLevel = 3;
-              if (parseInt(globalTaskLocalInfo.currentLevel) == 3)
-                globalTaskLocalInfo.currentLevel = 1;
-
-            }else {
-              //任务失败
-              globalTaskLocalInfo.currentLevel = 1;
-              globalTaskLocalInfo.lastLevelFinishedDate = "1111-11-11 11:11:11";
-              globalTaskLocalInfo.finishedDays = 0;
-              globalTaskLocalInfo.notFinishedDays = 0;
-            }
-          }
-      } else {//不到12天 只是刷新
-        globalTaskLocalInfo.finishedDays = finishiedDaysCount;
-        globalTaskLocalInfo.notFinishedDays = 12 - finishiedDaysCount;
-      }
-    }
-    window.localStorage['globalTaskLocalInfo'] = JSON.stringify(globalTaskLocalInfo);
-    $scope.globalTaskLocalInfo = globalTaskLocalInfo;
     /**************************************************************************************
      * AppCtrl
      * Modals情景弹框
@@ -226,26 +249,33 @@ angular.module('starter.controllers', [])
       $scope.questNotificationModal.hide();
     };
     $scope.showQuestNotification = function () {
-      //$scope.currentQuests.push($scope.newQuest);
-      //window.localStorage['currentQuests'] = $scope.currentQuests;
-      questsFactory.getNewQuest().then(function(q){
-        $scope.newQuest = q;
-        if($scope.newQuest){//抢到任务
-          $scope.questNotificationModal.show();
-        }else{
-          alert('现在没有任务了，明天再来看看吧！');
-        }
-      });
+      if (window.localStorage['logged_in'] == true && $scope.currentQuests.length >= 2) {
+        alert("一个用户最多只能接受2个任务哦！");
+      }else {
+        questsFactory.getNewQuest().then(function (q) {
+          $scope.newQuest = q;
+          if ($scope.newQuest) {//抢到任务
+            $scope.questNotificationModal.show();
+          } else {
+            alert('现在没有可接受的任务，等会儿再来看看吧！');
+          }
+        });
+      }
     };
     $scope.goPurchase = function () {
       $scope.closeQuestNotification();
       window.location.href = '#/app/purchase';
     };
-    $scope.acceptQuest = function() {
-      questsFactory.acceptQuest($scope.newQuest.id).then(function () {
-        $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
-        $scope.closeQuestNotification();
-      });
+    $scope.acceptTheQuest = function() {
+      if (window.localStorage['logged_in'] == "false") {
+        alert("请先登陆哦！");
+        $scope.showLogin();
+      }else {
+        questsFactory.acceptQuest($scope.newQuest.id).then(function () {
+          $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
+          $scope.closeQuestNotification();
+        });
+      }
 
     };
 
@@ -259,10 +289,23 @@ angular.module('starter.controllers', [])
       $scope.serialNumberModal.hide();
     };
     $scope.showSerialNumber = function () {
-      $scope.serialNumberModal.show();
+
+      if ( $scope.currentQuests.length >= 2) {
+        alert("一个用户最多只能接受2个任务哦！");
+      }else {
+        $scope.serialNumberModal.show();
+      }
     };
-    $scope.submitNumber = function () {
-      $scope.serialNumberModal.hide();
+    $scope.submitAuthCode = function () {
+      questsFactory.checkAuthCode($scope.commomModel.authCode).then(function (taskId) {
+        questsFactory.acceptQuest(taskId).then(function (task) {
+          alert("恭喜您通过授权码拿到任务！");
+          $scope.questNotificationModal.show();
+          $scope.newQuest = task;
+        });
+      }, function() {
+        alert("您输入的授权码有误！");
+      });
     };
 
 //创建不可兑换积分说明弹窗
@@ -475,6 +518,9 @@ angular.module('starter.controllers', [])
           alert("欢迎回来，" + $scope.loginData.nickName);
           //todo: refresh
           $scope.closeLogin();
+          //$state.go($state.current, {}, {reload: true});
+          $scope.doRefresh();
+
         }
       );
     };
@@ -494,6 +540,8 @@ angular.module('starter.controllers', [])
 
 
     };
+
+
 //管理个人资料
     $scope.toUserInfo = function () {
       window.location.href = "#/app/userinfo";
@@ -543,7 +591,7 @@ angular.module('starter.controllers', [])
         },
         error: function (user, error) {
           // 失败了
-          alert("Error: " + JSON.stringify(err));
+          alert("Error: " + JSON.stringify(error));
         }
       });
       AV.User.requestMobilePhoneVerify($scope.regData.username).then(function () {
@@ -556,12 +604,12 @@ angular.module('starter.controllers', [])
     //发送兑换请求  credit - 减少
     $scope.sendCashRequest = function () {
       //TODO:向服务器发送兑换请求
-      creditProvider.uploadCashRequest($scope.creditToCash).then(function (result) {
+      creditProvider.uploadCashRequest($scope.commomModel.creditToCash).then(function (result) {
         alert("已经提交兑换申请，24小时内到账！");
-        $scope.myCredit = (parseInt($scope.myCredit) - parseInt($scope.creditToCash)).toString();
+        $scope.myCredit = (parseInt($scope.myCredit) - parseInt($scope.commomModel.creditToCash)).toString();
         window.localStorage['myCredit'] = $scope.myCredit;
-        $scope.totalCreditToCash = (parseInt($scope.totalCreditToCash ) + parseInt($scope.creditToCash)).toString();
-        window.localStorage['totalCreditToCash'] = $scope.creditToCash;
+        $scope.totalCreditToCash = (parseInt($scope.totalCreditToCash ) + parseInt($scope.commomModel.creditToCash)).toString();
+        window.localStorage['totalCreditToCash'] = $scope.commomModel.creditToCash;
         $scope.cashNotificationModal.hide();
       });
     };
@@ -575,18 +623,19 @@ angular.module('starter.controllers', [])
           photoProvider.uploadPhoto(task).then(
             function(pic){
               $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
-              $scope.pics.unshift(pic);
-              window.localStorage['pics'] = JSON.stringify($scope.pics);
+              $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
               $scope.closeTaskPopup();
+              alert("上传成功！");
             }, function(error) {
-              alert("error:" + error.message);
+              alert("上传照片失败:" + error.message);
             });
-
         },
         error: function(error) {
           // 失败了.
+          alert("任务不存在！");
         }
       });
+      $scope.closeTaskPopup();
     };
 
 
@@ -680,17 +729,8 @@ angular.module('starter.controllers', [])
     $scope.goToRule = function () {
       window.location.href = "#/app/takePhotoRule";
     };
-    $scope.doRefresh = function () {
-      /*$http.get('/new-items')
-       .success(function(newItems) {
-       $scope.items = newItems;
-       })
-       .finally(function() {
-       // Stop the ion-refresher from spinning
-       $scope.$broadcast('scroll.refreshComplete');
-       });*/
-      $scope.$broadcast('scroll.refreshComplete');
-    };
+
+
 
 
 //提醒积分已经放入用户的账户中
@@ -717,8 +757,8 @@ angular.module('starter.controllers', [])
       //var device = $cordovaDevice.getDevice();
       //var d = goldProvider.getDevice();
 
-      ////调用云函数，云函数接受JSON参数， 返回任务数据类型
-      //AV.Cloud.run('hello', {request:"43"}, {
+      //////调用云函数，云函数接受JSON参数， 返回任务数据类型
+      //AV.Cloud.run('hello', {fileName:"43.txt", image64Data:"adfdfdnflk"}, {
       //  success: function(result) {
       //    // result is 'Hello world!'
       //    alert(result);
@@ -727,6 +767,19 @@ angular.module('starter.controllers', [])
       //    alert(error.message);
       //  }
       //});
+
+
+      AV.Cloud.run('savePhoto', {fileName:"43.txt", image64Data:"adfdfdnflk"}, {
+        success: function(result) {
+          // result is 'Hello world!'
+          alert("YES:" + result);
+        },
+        error: function(error) {
+          alert("NO:" + error.message);
+        }
+      });
+
+
     };
 })
 

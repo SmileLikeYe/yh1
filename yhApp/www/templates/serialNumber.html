@@ -6,13 +6,13 @@
     </div>
   </ion-header-bar>
   <ion-content>
-    <form ng-submit="submitNumber()">
+    <form>
       <div class="list">
         <label class="item item-input">
-          <input type="text" placeholder="  请输入序列号"/>
+          <input type="text" placeholder="  请输入序列号"  ng-model="commomModel.authCode"/>
         </label>
         <label class="item">
-          <button class="button button-block button-positive" ng-click="showQuestNotification()">下一步</button>
+          <button class="button button-block button-positive" ng-click="submitAuthCode()">下一步</button>
         </label>
       </div>
     </form>

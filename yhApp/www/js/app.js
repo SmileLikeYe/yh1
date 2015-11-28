@@ -1,8 +1,8 @@
 // Ionic Starter App
 // App module
-var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 
-.run(function($ionicPlatform, $ionicLoading) {
+.run(function($ionicPlatform, $ionicLoading, $http) {
   AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
   $ionicPlatform.ready(function() {
     // 移除键盘附加栏
@@ -13,6 +13,10 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+    }
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+      //alert("navigator.geolocation works well");
     }
   });
 })

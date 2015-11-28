@@ -17,6 +17,8 @@
     <link href="css/userinfo.css" rel="stylesheet">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' yourhost.com ws://localhost:35729 data: gap: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *;script-src 'self' localhost:35729 'unsafe-eval' 'unsafe-inline';">-->
+
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -35,15 +37,19 @@
 
      <!-- <script src="https://cdn1.lncld.net/static/js/av-mini-0.6.4.js"></script>-->
     <!-- Baidu Map -->
-   <!--  // <script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=6quGk3QABNfWQ5opberVmQkG&v=1.0"></script> -->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=6quGk3QABNfWQ5opberVmQkG&v=1.0"></script>
     <!-- cdn -->
     <!--<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.3.js"></script>-->
 
      <!-- angularjs-local-storage -->
-     <script src="lib/angular-local-storage/angular-local-storage.min.js"></script>
+    <script src="lib/angular-local-storage/angular-local-storage.min.js"></script>
     <script src="lib/leanCloud/av-core-mini-0.6.4.js"></script>
-    <!--<script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=uYKHaUm9EwKzdnVpaOWIWWMV&v=1.0"></script>-->
-    <!--&lt;!&ndash; leancloud &ndash;&gt;-->
+    <!-- Allow everything but only from the same origin and foo.com -->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' foo.com">-->
+
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src="cordova.js"></script>
+
 
   </head>
 
