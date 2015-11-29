@@ -1,12 +1,15 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $timeout, $http) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $timeout, $http,$ionicHistory) {
 //！——全局变量和本地存储的数据
 $scope.loginData = {username:'未登录',logged_in:false};
 if(window.localStorage['username'] != '未登录'&& window.localStorage['username'] != ''){
 	$scope.loginData.username = window.localStorage['username'];
 	$scope.loginData.logged_in = window.localStorage['logged_in'];
 }
+ $ionicHistory.nextViewOptions({
+	disableBack: true
+});
 
 $scope.regData={};
 //创建积分兑换窗口
@@ -262,12 +265,17 @@ $scope.editPassword = function() {
 })
 
 //图片管理-控制器
-.controller('piclistCtrl', function($scope,$location) {
+.controller('piclistCtrl', function($scope,$location,$ionicHistory) {
  $scope.shouldShowDelete = false;
  $scope.shouldShowReorder = false;
  $scope.listCanSwipe = true;
  $scope.showInfo = function($scope){
 	window.location.href="#/app/picinfo";
+	console.log(window.location.href);
+};
+ $scope.showPhoto = function($scope){
+ console.log(JSON.stringify($ionicHistory.currentView()));
+	window.location.href="#/app/photo";
 	console.log(window.location.href);
 };
  $scope.gotoAlbum = function() {
