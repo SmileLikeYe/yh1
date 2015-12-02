@@ -2,10 +2,10 @@
   <ion-content class="bg_color">
     <div class="background">
         <label class="item item-input feedback_field">
-          <input class="feedback_input" type="text" placeholder="  请写下对我们的意见"/>
+          <input class="feedback_input" type="text" placeholder="  请写下对我们的意见" ng-model="feedbackModel.content" required/>
         </label>
         <div class="feedback_btn white">
-          <span>提交</span>
+          <span ng-click="showAddPopup()">提交</span>
         </div>
     </div>
   </ion-content>

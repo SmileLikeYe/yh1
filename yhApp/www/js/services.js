@@ -8,7 +8,10 @@ angular.module('starter.services', [])
         User: AV.Object.extend("_User"),
         Photo: AV.Object.extend("Photo"),
         CashRequest: AV.Object.extend("CashRequest"),
+        DonateRequest: AV.Object.extend("DonateRequest"),
         AuthCode: AV.Object.extend("AuthCode"),
+        ValueTable: AV.Object.extend("ValueTable"),
+        UserData: AV.Object.extend("UserData")
       };
     };
   })
@@ -47,6 +50,20 @@ angular.module('starter.services', [])
           }
         });
         return deferred.promise;
+      };
+      //创建UserData表
+      service.createUserData = function (uoid) {
+        var UserData = new AVObjects.UserData();
+        var me = new AVObjects.User();
+        me.id = uoid;
+        UserData.set("user", me);
+        UserData.save(null, {
+          success: function (myUserData) {
+          },
+          error: function (myUserData, error) {
+            console.log("创建用户数据失败: " + error.message);
+          }
+        });
       };
       return service;
     };
@@ -119,6 +136,11 @@ angular.module('starter.services', [])
         var dates = Math.abs((startTime - endTime))/(1000*60*60*24);
         return  dates;
       },
+      getDateSecondDiff: function (startDate,endDate) {
+        var startTime = new Date(Date.parse(startDate.replace(/-/g,   "/"))).getTime();
+        var endTime = new Date(Date.parse(endDate.replace(/-/g,   "/"))).getTime();
+        return Math.abs((startTime - endTime))/1000;
+      },
       getTodayEndFormatDate: function (date) {
         var seperator1 = "-";
         var seperator2 = ":";
@@ -163,7 +185,6 @@ angular.module('starter.services', [])
         var endDate = endY + seperator1 + endM + seperator1 + endD + " " + date.getHours()
           + seperator2 + date.getMinutes() + seperator2 + date.getSeconds();
         return endDate;
-
       },
       getPercent: function(num, total) {
       num = parseFloat(num);
@@ -171,7 +192,7 @@ angular.module('starter.services', [])
       if (isNaN(num) || isNaN(total)) {
         return "-";
       }
-      return total <= 0 ? "0%" : (Math.round(num / total * 10000) / 100.00 + "%");
+      return total <= 0 ? "0" : (Math.round(num / total * 10000) / 100.00);
       }
     }
   })
@@ -200,8 +221,11 @@ angular.module('starter.services', [])
       service.refreshQuests = function () {
         var deferred = $q.defer();
         var currentQuests = new Array();
+        var finishedQuests = new Array();
+        finishedQuests = JSON.parse(window.localStorage['finishedQuests'] || '[]');
         currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
         var refreshedCurrentQuests = new Array();
+        var j = 0;
         currentQuests.forEach(function(currentQuest) {
           var query = new AV.Query(AVObjects.Task);
           query.get(currentQuest.id, {
@@ -222,11 +246,18 @@ angular.module('starter.services', [])
               //currentQuest.numberOfPassedPhotos = "0";
               //currentQuest.numberOfUploadPhotos = "0";
               //currentQuest.continueDays = "0";
-              //currentQuest.isContinued = true;
               //currentQuest.goldTaskStatus = false;
               //currentQuest.goldTaskFinishedPercent = 0;
-
-
+              if (DateUtil.getNowFormatDate() < currentQuest.endTime ) { //判断是否过期
+                refreshedCurrentQuests.push(currentQuest);
+              }else {
+                finishedQuests.push(currentQuest);
+              }
+              j++;
+              if (j == currentQuest.length) {
+                window.localStorage['currentQuests'] = JSON.stringify(refreshedCurrentQuests);
+                window.localStorage['finishedQuests'] = JSON.stringify(finishedQuests);
+              }
               deferred.resolve(task);
             },
             error: function (task, error) {
@@ -234,8 +265,7 @@ angular.module('starter.services', [])
               deferred.reject(error);
             }
           });
-          refreshedCurrentQuests.push(currentQuest);
-          window.localStorage['currentQuests'] = JSON.stringify(refreshedCurrentQuests);
+          j ++;
         });
 
         return deferred.promise;
@@ -268,7 +298,7 @@ angular.module('starter.services', [])
         var deferred = $q.defer();
         var query = new AV.Query(AVObjects.Task);
         var now = DateUtil.getNowFormatDate();
-        if (window.localStorage['logged_in'] == true) {
+        if (window.localStorage['logged_in'] == 'true') {
           var me = new AVObjects.User();
           me.id = window.localStorage['uoid'];
           query.notEqualTo("participant", me);
@@ -345,10 +375,10 @@ angular.module('starter.services', [])
               currentQuest.id = task.id;
               currentQuest.takeTime = DateUtil.getNowFormatDate();
               //add new property
+              currentQuest.earnedCredit = 0;
               currentQuest.numberOfPassedPhotos = 0;
               currentQuest.numberOfUploadPhotos = 0;
               currentQuest.continueDays = 0;
-              currentQuest.isContinued = true;
               currentQuest.goldTaskStatus = 0;
               currentQuest.goldTaskFinishedPercent = 0;
 
@@ -373,7 +403,7 @@ angular.module('starter.services', [])
 
 
 //////////////////////////////////////////////////////////////////////
-  .factory('Camera', ['$location', 'DateUtil', '$q', function ($location, DateUtil, $q) {
+  .factory('Camera', ['DateUtil', '$q', '$cordovaGeolocation', function (DateUtil, $q, $cordovaGeolocation) {
 
     return {// 返回方法组的对象
 
@@ -438,32 +468,22 @@ angular.module('starter.services', [])
         return q.promise;
       },
 
-      getLocation: function () {
+      getLocation: function (options) {
         var deferred = $q.defer();
         alert("getLocation()");
-        navigator.geolocation.getCurrentPosition(onSuccess, onFail, {
-          enableHighAccuracy: false,
-          timeout: 60 * 1000,
-          maximumAge: 1000 * 60 * 10
-        });
-        function onSuccess(position) {
+        $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
+          console.log("$cordovaGeolocation.getCurrentPosition YES");
           var result = {};
-          alert('Latitude: ' + position.coords.latitude + '\n' +
-            'Longitude: ' + position.coords.longitude + '\n' +
-            'Altitude: ' + position.coords.altitude + '\n' +
-            'Accuracy: ' + position.coords.accuracy + '\n' +
-            'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '\n' +
-            'Heading: ' + position.coords.heading + '\n' +
-            'Speed: ' + position.coords.speed + '\n' +
-            'Timestamp: ' + position.timestamp + '\n');
           result.latitude = position.coords.latitude;
           result.longitude =  position.coords.longitude;
+          alert(result.latitude + "  " + result.longitude);
           deferred.resolve(result);
-        }
-        function onFail(message) {
-          alert('Get location fail:' + message);
+        }, function(error) {
+          console.log(error);
+          alert('Get location fail:' + error.message);
           deferred.reject("getLocation() fail!");
-        }
+        });
+
         return deferred.promise;
       },// 方法是return的对象中的{， ， ，}
 
@@ -496,6 +516,43 @@ angular.module('starter.services', [])
     var uoid = window.localStorage['uoid'];
     this.$get = function ($q, AVObjects, Camera, DateUtil) {
 
+      service.test1 = function () {
+        var a = 1;
+        var array1 = [1,0,0,1];
+        var array2 = [];
+        var j = 0;
+        array1.forEach(function(a1) {
+          if (a1 == 0) {
+            service.getPhotoById("5659ea0460b28da566569afc").then(function (photo) {
+              var d = photo.id;
+              var f = 1;
+              j++;
+              array2.push(a1);
+              if (j == array1.length) {
+                var c = i;
+              }
+            });
+          }else {
+            array2.push(a1);
+            j++;
+          }
+        });
+      };
+
+      service.getPhotoById = function (photoId) {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.Photo);
+        query.get(photoId, {
+          success: function (photo) {
+              deferred.resolve(photo);
+          },
+          error: function (photo, error) {
+              deferred.reject(error);
+          }
+        });
+        return deferred.promise;
+      };
+
       //刷新本地保存photo的status
       service.refreshPhotos = function () {
         //只要本地存的photo的status = 0 的需要refresh
@@ -509,68 +566,70 @@ angular.module('starter.services', [])
         var refreshedPics = new Array();
         var refreshedCurrentQuests = new Array();
 
-        pics.forEach(function(pic) { //遍历皂片
-          if (pic.status == 0) {
-            var photo = new AVObjects.Photo();
-            var query = new AV.Query(AVObjects.Photo);
-            query.get(pic.id, {
-              success: function (photo) {
-                pic.status = photo._serverData.status;//更新皂片状态, 包括没通过的2     [pics update]
-                if(photo._serverData.status == 1) { //如果是通过验证，接下来
-                  //更新积分状态
-                  pic.credit = photo._serverData.credit;  // [pics update]
-                  //照片拍摄当天已经完成任务 如2015-11-24 24：00:00:00
-                  var isExsited = false;
-                  var endPhotoDate = DateUtil.getTodayEndFormatDate(DateUtil.getFormatDate(eval(photo._serverData.createdAt)));
-                  for (var j=0; j<finishedDaysLog.length; j++) {
-                    if (finishedDaysLog[j] == endPhotoDate)
-                        isExsited = true;
-                  }
-                  if (isExsited == false) {
-                    finishedDaysLog.push(endPhotoDate); // eg:2015-11-25 24:00:00 拍照当天的24:00:00 方便计算  [finishiedDayLog add]
-                  }
-                  //
-                  for (var i=0; i<currentQuests.length; i++) { //遍历当前任务，找到对应任务，
-                    if (currentQuests[i].id == photo.id) {
-                      currentQuests[i].numberOfPassedPhotos = parseInt(currentQuests[i].numberOfPassedPhotos) + 1;
-                      if (pic.credit = window.localStorage['firstPhotoCrdit'] && parseInt(currentQuests[i].goldTaskStatus) == 0 ) { //这里如果是4 就表示不是连拍的第二张 ， 并且衣笔任务没有完成
-                        currentQuests[i].continueDays = parseInt(currentQuests[i].continueDays) + 1; //总共拍了多少
-                        currentQuests[i].goldTaskFinishedPercent = DateUtil.getPercent(currentQuests[i].continueDays, currentQuests[i].goldRequiredDays);  // [pics update]
-                        if (parseInt(continueDays) >= parseInt(currentQuests[i].goldRequiredDays)) { //判断是否完成衣笔任务
-                          currentQuests[i].goldTaskStatus = 1;  // [pics update]
-                        }
+        var j = 0;
+        //refresh pics
+        pics.forEach(function(pic){
+          if (parseInt(pic.status) == 0) {
+            //var photo = new AVObjects.Photo();
+            var photo = service.getPhotoById(pic.id).then(function (photo) {
+              pic.status = photo._serverData.status;//更新皂片状态, 包括没通过的2     [pics update]
+              if(parseInt(photo._serverData.status) == 1) { //如果是通过验证，接下来
+                //更新积分状态
+                pic.credit = photo._serverData.credit;  // [pics update]
+                //照片拍摄当天已经完成任务 如2015-11-24 24：00:00:00
+                var isExsited = false;
+                var thisDateT = DateUtil.getFormatDate(eval(photo.createdAt))
+                thisDateT = thisDateT.substr(0, 10) + "T" + thisDateT.substr(11, 8);
+                var createdAt = new Date(thisDateT);
+                var endPhotoDate = DateUtil.getTodayEndFormatDate(createdAt);
+                //refresh finishedDaysLog
+                for (var j=0; j<finishedDaysLog.length; j++) {
+                  if (finishedDaysLog[j] == endPhotoDate)
+                    isExsited = true;
+                }
+                if (isExsited == false) {
+                  finishedDaysLog.push(endPhotoDate); // eg:2015-11-25 24:00:00 拍照当天的24:00:00 方便计算  [finishiedDayLog add]
+                }
+                //refresh currentQuests
+                for (var i=0; i<currentQuests.length; i++) { //遍历当前任务，找到对应任务，
+                  if (currentQuests[i].id == pic.taskId) {
+                    currentQuests[i].earnedCredit  = parseInt(currentQuests[i].earnedCredit) + parseInt(pic.credit);
+                    currentQuests[i].numberOfPassedPhotos = parseInt(currentQuests[i].numberOfPassedPhotos) + 1;
+                    if (parseInt(pic.credit) == parseInt(window.localStorage['firstPhotoCredit']) && parseInt(currentQuests[i].goldTaskStatus) == 0 ) { //这里如果是4 就表示不是连拍的第二张 ， 并且衣笔任务没有完成
+                      currentQuests[i].continueDays = parseInt(currentQuests[i].continueDays) + 1; //总共拍了多少
+                      currentQuests[i].goldTaskFinishedPercent = DateUtil.getPercent(currentQuests[i].continueDays, currentQuests[i].goldRequiredDays);  // [pics update]
+                      if (parseInt(currentQuests[i].continueDays) >= parseInt(currentQuests[i].goldRequiredDays)) { //完成天数大于等于10天 判断是否完成衣笔任务
+                        currentQuests[i].goldTaskStatus = 1;  //金币任务完成  [pics update]
                       }
                     }
-                    refreshedCurrentQuests.push(currentQuests[i]);
-                  }//for end.
-                }
-                deferred.resolve(photo);
-              },
-              error: function (photo, error) {
-                alert("refresh photo credit fail for:  " + error.message);
+                  }
+                  refreshedCurrentQuests.push(currentQuests[i]);
+                }//for end.
+              }
+              refreshedPics.push(pic); // this is exe after callback for status = 0
+              j ++;
+              if ( j==pics.length) {
+                window.localStorage['pics'] = JSON.stringify(refreshedPics);
+                window.localStorage['currentQuests'] = JSON.stringify(currentQuests);
+                window.localStorage['finishedDaysLog'] = JSON.stringify(finishedDaysLog);
+                deferred.resolve(refreshedCurrentQuests);
               }
             });
-          }// forEach end
-          refreshedPics.push(pic);
+          }else {
+            refreshedPics.push(pic); // this is exe before callback for status != 0
+            j++;
+          }
+
         });
 
-        window.localStorage['pics'] = JSON.stringify(refreshedPics);
-        window.localStorage['currentQuests'] = JSON.stringify(currentQuests);
-        window.localStorage['finishedDaysLog'] = JSON.stringify(finishedDaysLog);
+
+
         return deferred.promise;
       };
 
       //上传图片 （存图片在本地）
       service.uploadPhoto = function(choosedTask) {
         var deferred = $q.defer();
-        //上传需要的字段
-        var credit;
-        var latitude;
-        var longitude;
-        var location;
-        var status;
-        //赋值
-
         var picOptions = {
           destinationType: navigator.camera.DestinationType.FILE_URI,
           quality: 75,
@@ -579,83 +638,89 @@ angular.module('starter.services', [])
           allowEdit: false,
           saveToPhotoAlbum: true
         };
-
-        //todo:解决获得照片编码数据和位置问题: 从服务器拿吧
-        //todo:文件名
         //todo:图片压缩 http://docs.qiniu.com/api/v6/image-process.html
         Camera.getPhoto(picOptions).then(function (imageURI) {
-          console.log("imageURI: " + imageURI);
+          alert("Camera.getPhoto() YES " + imageURI);
+          var imageURI = imageURI;
           Camera.toBase64Image(imageURI).then(function (result) {
-            console.log("convert base image ");
+            alert("Camera.toBase64Image() YES");
             var image64Data = result.imageData;
             alert(image64Data.length + '/n' + image64Data);
-            credit = window.localStorage['firstPhotoCrdit'];
-            latitude = 31.204603499999997;
-            longitude = 121.59734089999999;
-            //Camera.getLocationDescription(latitude, longitude).then(function (result2) {
-            //alert('getLocationDescription():' + result2);
-            location = "上海，杨浦，同济";
-            status = window.localStorage['photoStatus'];
-            //todo:task是个数组，要从于信达那里拿
-            //var me = new AVObjects.User();
-            //me.id = window.localStorage['uoid'];
-            //uploader = me;
-
-            AV.Cloud.run('savePhoto', {
-              fileName: (DateUtil.getNowFormatDate() + '_' + window.localStorage['username'] + ".png"),
-              image64Data: image64Data,
-              credit: parseInt(credit),
-              //imgFile: imgFile,
-              latitude: latitude.toString(),
-              longitude: longitude.toString(),
-              location: location,
-              status: parseInt(status),
-              taskId: choosedTask.id,
-              uploaderId: window.localStorage['uoid']
-
-            }, {
-              success: function (photoId) {
-                alert("Could savePhoto YES:" + photoId);
-
-                //
-                var currentQuests = new Array();
-                currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
-                var refreshedCurrentQuests = new Array();
-                for (var i=0; i<currentQuests.length; i++) { //遍历当前任务，找到对应任务，
-                  if (currentQuests[i].id == choosedTask.id) {
-                    currentQuests[i].numberOfUploadPhotos = parseInt(currentQuests[i].numberOfUploadPhotos) + 1;
-                  }
-                  refreshedCurrentQuests.push(currentQuests[i]);
-                }//for end.
-                window.localStorage['currentQuests'] = JSON.stringify(refreshedCurrentQuests);
-
-                //存入本地
-                var pic = {
-                  credit: credit,
-                  imageURI: imageURI,
-                  latitude: latitude,
-                  longitude: longitude,
-                  location: location,
-                  status: status,
+            var geoOptions = {
+              enableHighAccuracy: true,
+              timeout: 20000,
+              maximumAge: 0
+            };
+            Camera.getLocation(geoOptions).then(function (geoResult) {
+              alert("Camera.getLocation() YES");
+              var latitude = geoResult.latitude;
+              var longitude = geoResult.longitude;
+              Camera.getLocationDescription(latitude, longitude).then(function (desResult) {
+                alert('Camera.getLocationDescription() YES ' + desResult);
+                var credit = window.localStorage['firstPhotoCredit'];
+                var status = 0;
+                AV.Cloud.run('savePhoto', {
+                  fileName: (DateUtil.getNowFormatDate() + '_' + window.localStorage['username'] + ".png"),
+                  image64Data: image64Data,
+                  credit: parseInt(credit),
+                  latitude: latitude.toString(),
+                  longitude: longitude.toString(),
+                  location: desResult,
+                  status: parseInt(status),
                   taskId: choosedTask.id,
-                  uploaderId: window.localStorage['uoid'],
-                  id: photoId,
-                  createdAt: DateUtil.getNowFormatDate()
-                };
-                var pics = new Array();
-                pics = JSON.parse(window.localStorage['pics'] || '[]');
-                pics.unshift(pic);
-                window.localStorage['pics'] = JSON.stringify($scope.pics);
-                deferred.resolve(pic);
-              },
-              error: function (error) {
-                alert("Could savePhoto NO:" + error.message);
-                deferred.reject(error.message);
-              }
+                  uploaderId: window.localStorage['uoid']
+
+                }, {
+                  success: function (photoId) {
+                    alert("AV.Cloud.run('savePhoto') YES: " + photoId);
+                    //刷新 numberOfUploadPhotos
+                    var currentQuests = new Array();
+                    currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
+                    var refreshedCurrentQuests = new Array();
+                    for (var i=0; i<currentQuests.length; i++) { //遍历当前任务，找到对应任务，
+                      if (currentQuests[i].id == choosedTask.id) {
+                        currentQuests[i].numberOfUploadPhotos = parseInt(currentQuests[i].numberOfUploadPhotos) + 1;
+                      }
+                      refreshedCurrentQuests.push(currentQuests[i]);
+                    }//for end.
+                    window.localStorage['currentQuests'] = JSON.stringify(refreshedCurrentQuests);
+
+                    //存入本地
+                    var pic = {
+                      credit: credit,
+                      imageURI: imageURI,
+                      latitude: latitude,
+                      longitude: longitude,
+                      location: location,
+                      status: status,
+                      taskId: choosedTask.id,
+                      uploaderId: window.localStorage['uoid'],
+                      id: photoId,
+                      createdAt: DateUtil.getNowFormatDate()
+                    };
+                    var pics = new Array();
+                    pics = JSON.parse(window.localStorage['pics'] || '[]');
+                    pics.unshift(pic);
+                    window.localStorage['pics'] = JSON.stringify(pics);
+                    deferred.resolve(pic);
+                  },
+                  error: function (error) {
+                    alert("AV.Cloud.run('savePhoto') NO: " + error.message);
+                    deferred.reject(error.message);
+                  }
+                });
+              }, function (error) {
+                alert("Camera.getLocation() NO: " + error.messge);
+                console.log(error);
+              });
+
+            }, function (error) {
+               alert("Camera.getLocation NO: " + error.messge);
+               console.log(error);
             });
-          }, function (_error) {
-            alert("convert base64 NO");
-            console.log(_error);
+          }, function (error) {
+            alert("Camera.toBase64Imgage NO" + error.message);
+            console.log(error);
           });
         });
         return deferred.promise;
@@ -673,7 +738,7 @@ angular.module('starter.services', [])
     var uoid = window.localStorage['uoid'];
     this.$get = function ($q, AVObjects) {
       //刷新积分
-      service.refreshCredit = function () {
+      service.refreshMe = function () {
         var deferred = $q.defer();
         AVObjects.User.logIn(window.localStorage['username'], window.localStorage['password'], {
           success: function(me) {
@@ -706,7 +771,7 @@ angular.module('starter.services', [])
         return deferred.promise;
       };
       service.getGolds = function () {
-        var golds;
+        var golds = 0;
         var goldsLog = new Array();
         goldsLog = JSON.parse(window.localStorage['goldsLog'] || '[]');
         for (var i=0; i<goldsLog.length; i++) {
@@ -723,57 +788,299 @@ angular.module('starter.services', [])
   .provider('goldProvider', function () {
     var service = {};
     this.$get = function ($q, AVObjects, DateUtil) {
-      //刷新
-      service.checkQuestIsContinued = function () {
-        var deferred = $q.defer();
+      ///* 刷新进行中的任务的衣笔任务是不是连续 （现在不需要了）
+      // * s:myGold更新， goldLogs 更新，为0 则舍掉
+      // * f:
+      // */
+      //service.checkQuestIsContinued = function () {
+      //  var deferred = $q.defer();
+      //  var pics = new Array();
+      //  pics = JSON.parse(window.localStorage['pics'] || '[]');
+      //  var currentQuests = new Array();
+      //  currentQuests = JSON.parse(window.localStorage['pics'] || '[]');
+      //  var refreshedCurrentQuests = new Array();
+      //  var past = new Array();
+      //  currentQuests.forEach(function(currentQuest) {
+      //    if (currentQuest.isContinued == true) { //金币任务仍在继续
+      //      var count = 0;
+      //      pics.forEach(function (pic) { //遍历每个图片 统计该任务完成的天数
+      //        var isNew = true;
+      //        if (pic.taskId == currentQuest.id && (parseInt(pic.status) == 0 || parseInt(pic.status) == 1 )) {
+      //          for (i = 0; i < past.length; i++) {
+      //            if (past[i] == pic.createdAt) {
+      //              isNew = false;
+      //            }
+      //            if (isNew) { //表示同一天的没有统计过 是新的
+      //              count++;
+      //              past.push(pic.createdAt);
+      //            }
+      //          }
+      //        }
+      //      });
+      //      var todate = new Date();
+      //      var realCount =  DateUtil.getDateDiff(currentQuest.takeTime, DateUtil.getTodayEndFormatDate(date)); // 2..333取 3   20前2 3  20点 必须等于三\
+      //      var realCount = Math.ceil(realCount);
+      //
+      //      if ( parseInt(todate.getHours()) <= 20 ) {
+      //        if (realCount - count <=1 ) {
+      //        }
+      //      }else {
+      //        currentQuest.isContinued = false;
+      //      }
+      //    }else {
+      //      if (realCount = count){
+      //      }else {
+      //        currentQuest.isContinued = false;
+      //      }
+      //    }
+      //    refreshedCurrentQuests.push(currentQuest);
+      //    deferred.resolve(currentQuest);
+      //  });
+      //  window.localStorage['currentQuests'] = JSON.stringify(refreshedCurrentQuests);
+      //  return deferred.promise;
+      //};
+
+
+      /* 计算今日赚得的总积分
+       * s: 今日赚得总积分
+       * f:
+       */
+      service.getTodayEarnedCredit = function () {
         var pics = new Array();
         pics = JSON.parse(window.localStorage['pics'] || '[]');
-        var currentQuests = new Array();
-        currentQuests = JSON.parse(window.localStorage['pics'] || '[]');
-        var refreshedCurrentQuests = new Array();
-        var past = new Array();
-        currentQuests.forEach(function(currentQuest) {
-          if (currentQuest.isContinued = true) {
-            var count = 0;
-            pics.forEach(function (pic) { //遍历每个图片 统计改任务完成的天数
-              var isNew = true;
-              if (pic.taskId == currentQuest.id && (parseInt(pic.status) == 0 || parseInt(pic.status) == 1 )) {
-                for (i = 0; i < past.length; i++) {
-                  if (past[i] == pic.createdAt) {
-                    isNew = false;
-                  }
-                  if (isNew) { //表示同一天的没有统计过 是新的
-                    count++;
-                    past.push(pic.createdAt);
-                  }
-                }
-              }
-            });
-            var date = new Date();
-            var realCount =  DateUtil.getDateDiff(currentQuest.takeTime, DateUtil.getTodayEndFormatDate(date)); // 2..333取 3   20前2 3  20点 必须等于三\
-            var realCount = Math.ceil(realCount);
-
-            if ( parseInt(date.getHours()) <= 20 ) {
-              if (realCount - count <=1 ) {
-              }
-            }else {
-              currentQuest.isContinued = false;
-            }
-          }else {
-            if (realCount = count){
-            }else {
-              currentQuest.isContinued = false;
+        var todayEarnedCredit = 0;
+        for (var i=0; i < pics.length; i++) {
+          //今天的
+          if (pics[i].createdAt.substring(0,10) == DateUtil.getNowFormatDate().substring(0,10)){
+            //已经通过的
+            if (parseInt(pics[i].status) == 1 ) {
+              todayEarnedCredit = todayEarnedCredit + parseInt(pics[i].credit);
             }
           }
-          refreshedCurrentQuests.push(currentQuest);
-          deferred.resolve(currentQuest);
+        }
+        return todayEarnedCredit;
+      };
+      /* 发送赠送衣币请求
+      * s:myGold更新， goldLogs 更新，为0 则舍掉
+      * f:
+       */
+      service.uploadDonateRequest = function (donateParams) {
+        var deferred = $q.defer();
+        var donateRequest = new AVObjects.DonateRequest();
+        donateRequest.set("donateGold", donateParams.goldToDonate);
+        donateRequest.set("receiver", donateParams.accountToDonate);
+        donateRequest.set("goldOverDate", donateParams.goldLogOverDate);
+        donateRequest.set("status", 0);
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        donateRequest.set("donater", me);
+        donateRequest.save(null, {
+          success: function (myDonateRequest) {
+            //refresh myGold
+            var myGold = window.localStorage['myGold'];
+            myGold = parseInt(myGold) - parseInt(donateParams.goldToDonate);
+            window.localStorage['myGold'] = myGold;
+            //refresh goldLogs
+            var goldLogs = new Array();
+            var refreshedGoldLogs = new Array();
+            goldLogs = JSON.parse(window.localStorage['goldLogs'] || '[]');
+            goldLogs.forEach(function (goldLog) {
+              if (goldLog.id == donateParams.goldLogId) {
+                goldLog.goldCount = parseInt(goldLog.goldCount) - parseInt(donateParams.goldToDonate);
+              }
+              if (parseInt(goldLog.goldCount) > 0)
+                refreshedGoldLogs.push(goldLog);
+            });
+            window.localStorage['goldLogs'] = JSON.stringify(refreshedGoldLogs);
+            deferred.resolve(myDonateRequest);
+          },
+          error: function (myDonateRequest, error) {
+            alert("赠送衣笔失败: " + error.message);
+            deferred.reject(error.message);
+          }
         });
-        window.localStorage['currentQuests'] = JSON.stringify(refreshedCurrentQuests);
+        return deferred.promise;
+      };
+      /* 接收赠送衣币请求或者过期没有接收的请求
+       * s:myGold更新， goldLogs 更新，为0 则舍掉
+       * f:
+       */
+      service.refreshDonateRequest = function () {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.DonateRequest);
+        query.equalTo('receiver', window.localStorage['username']);
+        query.equalTo('status',0); //0:未领取 1:已经领取
+        var goldLogs = new Array();
+        goldLogs = JSON.parse(window.localStorage['goldLogs'] || '[]');
+        var myGold = new Array();
+        myGold = window.localStorage['myGold'];
+
+        var j = 0;
+        query.find({
+          success: function (results) {
+            results.forEach(function (result) {
+              var goldLog = {id:goldLogs.length, goldCount:result.get('donateGold'), overDate:result.get('goldOverDate')};
+              goldLogs.pus(goldLog);
+              myGold = parseInt(myGold) + result.get('donateGold');
+              j++;
+              if (j == results.length) {
+                window.localStorage['goldLogs'] = JSON.stringify(goldLogs);
+                window.localStorage['myGold'] = myGold;
+                deferred.resolve(results);
+              }
+            });
+          },
+          error: function (results,error) {
+            alert("取东西出错");
+            deferred.reject(error);
+          }
+        });
         return deferred.promise;
       };
 
       return service;
     };
+  })
+
+
+  .provider('utilProvider', function () {
+    var service = {};
+    this.$get = function ($q, AVObjects, DateUtil) {
+
+      service.getValueTale = function () {
+        var deferred = $q.defer();
+        var query = new AV.Query(AVObjects.ValueTable);
+        query.find({
+          success: function (results) {
+            deferred.resolve(results);
+          },
+          error: function (results, error) {
+            deferred.reject(error);
+          }
+        });
+        return deferred.promise;
+      };
+
+      return service;
+    }
+  })
+
+  .provider('addressProvider', function () {
+    var service = {};
+    this.$get = function ($q, AVObjects) {
+
+      //增
+      service.addAddress = function (data) {
+        var deferred = $q.defer();
+        var addressList = JSON.parse(window.localStorage['addressList'] || '[]');
+        var query = new AV.Query(AVObjects.UserData);
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.equalTo("user", me);
+        query.first({
+          success: function (result) {
+            var newAddress = {id:addressList.length, name:data.name, phone:data.phone, address:data.address};
+            result.addUnique('addressList',newAddress); //服务器
+            result.save(null, {
+              success: function (re) {
+                alert("新地址成功保存");
+                addressList.push(newAddress);
+                window.localStorage['addressList'] = JSON.stringify(addressList); //本地
+                deferred.resolve(re);
+              },
+              error: function (re,error) {
+                alert("新地址成功保存失败");
+                deferred.reject(error);
+              }
+            });
+          },
+          error: function (result, error) {
+            deferred.reject(error);
+          }
+        });
+        return deferred.promise;
+      };
+      //改
+      service.updateAddress = function (data) {
+        var deferred = $q.defer();
+        var addressList = new Array();
+        var addressList = JSON.parse(window.localStorage['addressList'] || '[]');
+        var refreshedAddressList = new Array();
+        var query = new AV.Query(AVObjects.UserData);
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.equalTo("user", me);
+        query.first({
+          success: function (result) {
+            for (var i=0; i< addressList.length; i++) {
+              if (addressList[i].id == data.id) {
+                addressList[i].name = data.name;
+                addressList[i].phone = data.phone;
+                addressList[i].address = data.address;
+              }
+              refreshedAddressList.push(addressList[i]);
+            }
+            result.set('addressList',refreshedAddressList); //服务器
+            result.save(null, {
+              success: function (re) {
+                alert("地址修改成功保存");
+                window.localStorage['addressList'] = JSON.stringify(refreshedAddressList); //本地
+                deferred.resolve(re);
+              },
+              error: function (re,error) {
+                alert("地址修改保存失败");
+                deferred.reject(error);
+              }
+            });
+          },
+          error: function (result, error) {
+            deferred.reject(error);
+          }
+        });
+        return deferred.promise;
+      };
+
+      return service;
+    }
+  })
+
+  .provider('feedbackProvider', function () {
+    var service = {};
+    this.$get = function ($q, AVObjects, DateUtil) {
+      //增
+      service.addFeedback = function (data) {
+        var deferred = $q.defer();
+        var feedbackList = JSON.parse(window.localStorage['feedbackList'] || '[]');
+        var query = new AV.Query(AVObjects.UserData);
+        var me = new AVObjects.User();
+        me.id = window.localStorage['uoid'];
+        query.equalTo("user", me);
+        query.first({
+          success: function (result) {
+            var newFeedback = {id:feedbackList.length, content:data.content, date:DateUtil.getNowFormatDate()};
+            result.addUnique('feedbackList',newFeedback); //服务器
+            result.save(null, {
+              success: function (re) {
+                alert("已经收到您的反馈！我们会尽快处理");
+                feedbackList.push(newFeedback);
+                window.localStorage['feedbackList'] = JSON.stringify(feedbackList); //本地
+                deferred.resolve(re);
+              },
+              error: function (re,error) {
+                alert("您的反馈因为网络原因提交失败");
+                deferred.reject(error);
+              }
+            });
+          },
+          error: function (result, error) {
+            deferred.reject(error);
+          }
+        });
+        return deferred.promise;
+      };
+
+      return service;
+    }
   })
 
 //.factory('Data', function(){

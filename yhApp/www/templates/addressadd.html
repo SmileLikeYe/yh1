@@ -9,13 +9,13 @@
     <form ng-submit="submitAddressAdd()">
       <div class="list">
         <label class="item item-input">
-          <input type="text" class="font-color address_info" placeholder="    请输入收货人姓名" required />
+          <input type="text" ng-model="addressModel.name" class="font-color address_info" placeholder="    请输入收货人姓名" required />
         </label>
         <label class="item item-input">
-          <input type="text" class="font-color address_info" placeholder="    请输入收货人手机号码" required />
+          <input type="number" ng-model="addressModel.phone"  class="font-color address_info" placeholder="    请输入收货人手机号码" required />
         </label>
         <label class="item item-input">
-          <input type="text" class="font-color address_info" placeholder="    请输入收货地址" required />
+          <input type="text" ng-model="addressModel.address" class="font-color address_info" placeholder="    请输入收货地址" required />
         </label>
         <label class="item">
           <button class="button button-block button-positive" type="submit">保存</button>

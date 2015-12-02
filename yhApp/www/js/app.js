@@ -2,9 +2,37 @@
 // App module
 var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 
-.run(function($ionicPlatform, $ionicLoading, $http) {
+.run(function($ionicPlatform, $ionicLoading, $http, $ionicHistory, $ionicPopup) {
   AV.initialize('0lG3kPhexRj622hDQyFbXmb2', 'zadd60s9Cp0bo1DxjcfYUacj');
   $ionicPlatform.ready(function() {
+    $ionicPlatform.registerBackButtonAction(function (e) {
+      e.preventDefault();
+      function showConfirm() {
+        var confirmPopup = $ionicPopup.confirm({
+          title: '<strong>退出应用?</strong>',
+          template: '你确定要退出应用吗?',
+          okText: '退出',
+          cancelText: '取消'
+        });
+        confirmPopup.then(function (res) {
+          if (res) {
+            ionic.Platform.exitApp();
+          }
+          else {
+            // Don't close
+          }
+        });
+      }
+      if (window.location.hash == '/homepage' ) {
+        console.log(window.location.hash);
+        showConfirm();
+      } else if ($ionicHistory.backView()) {
+        $ionicHistory.goBack();
+      } else {
+        showConfirm();
+      }
+      return false;
+    }, 101);
     // 移除键盘附加栏
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -13,10 +41,6 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
-    }
-    document.addEventListener("deviceready", onDeviceReady, false);
-    function onDeviceReady() {
-      //alert("navigator.geolocation works well");
     }
   });
 })
@@ -64,7 +88,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
       views: {
         'menuContent': {
           templateUrl: 'templates/addresspage.html',
-          controller: ''//TODO:Write controllers
+          controller: 'addressCtrl'
         }
       }
     })
@@ -90,11 +114,11 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
   })
 
   .state('app.photodetail',{
-      url: '/photo',
+      url: '/photo/:selectTask',
       views: {
         'menuContent':{
           templateUrl: 'templates/picdetail.html',
-          controller: 'picdetailCtrl'
+          controller: 'picdetailCtrl',
         }
       }
     })
@@ -155,7 +179,7 @@ var yhapp = angular.module('starter', ['ionic', 'starter.controllers', 'starter.
       views: {
         'menuContent': {
           templateUrl: 'templates/feedback.html',
-          controller: ''
+          controller: 'feedbackCtrl'
         }
       }
     });

@@ -9,20 +9,19 @@
     <form ng-submit="submitAddressModify()">
       <div class="list">
         <label class="item item-input">
-          <span class="font-color label">收货人</span>
-          <input type="text" class="font-color address_info" value="        王明" required />
+          <span class="font-color label">收货人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <input type="text" class="font-color address_info" ng-model="addressModel.name" required />
         </label>
         <label class="item item-input">
-          <span class="font-color label">手机号</span>
-          <input type="text" class="font-color address_info" value="        13654356847" required />
+          <span class="font-color label">手机号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <input type="number" class="font-color address_info" ng-model="addressModel.phone" required />
         </label>
         <label class="item item-input">
-          <span class="font-color label">收货地址</span>
-          <input type="text" class="font-color address_info" value="    上海市宝山区呼玛二村46号304室" required />
+          <span class="font-color label">收货地址&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <input type="text" class="font-color address_info" ng-model="addressModel.address" required />
         </label>
         <label class="item">
-          <button class="button button-set button-positive" type="submit">完成</button>
-          <button class="button button-set button-positive" type="button" ng-click="setDefault()">设为默认地址</button>
+          <button class="button button-block button-positive" type="submit">完成</button>
         </label>
       </div>
     </form>

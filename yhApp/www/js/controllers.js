@@ -1,6 +1,28 @@
 angular.module('starter.controllers', [])
 
-  .controller('AppCtrl', function ($scope, $http, $ionicModal, $ionicPopup,$state, $timeout, userProvider, questsFactory, creditProvider, photoProvider, DateUtil) {
+  .controller('AppCtrl', function ($scope, $http, $ionicModal, $ionicPopup,$state, $timeout, userProvider, questsFactory, creditProvider, photoProvider, DateUtil, goldProvider, utilProvider) {
+
+    $scope.takePhotoTiming = function () {
+      var secondsDiff = DateUtil.getDateSecondDiff($scope.todayTakePhotoLog.todayFirstTakePhotoTime,DateUtil.getNowFormatDate());
+      // 两个个小时之内
+      if (secondsDiff >= 7200 ) {
+        $scope.upperTextInPai = "赶紧拍第二张";
+        $scope.lowerTextInPai = " ";
+      } else {
+        $scope.upperTextInPai = "距离下次拍照";
+        var leftSecondsDiff = 7200 - secondsDiff;
+        var hours = parseInt(leftSecondsDiff/3600);
+        var minutes = parseInt((leftSecondsDiff - 3600*hours)/60);
+        if (minutes < 10) minutes = "0" + minutes;
+        var seconds = leftSecondsDiff - 3600*hours - 60*minutes;
+        if (seconds < 10) seconds = "0" + seconds;
+        $scope.lowerTextInPai = hours + "：" + minutes + "：" +seconds ;
+        $timeout(function () {
+            $scope.takePhotoTiming();
+          },
+          1000)
+      }
+    }
 
     $scope.doRefresh = function () {
       /*$http.get('/new-items')
@@ -12,26 +34,78 @@ angular.module('starter.controllers', [])
        $scope.$broadcast('scroll.refreshComplete');
        });*/
       if (window.localStorage['logged_in'] == "true") {
+        var today = new Date();
         //这里是因为登陆时做了初始化
+        $scope.loginData = {};
         $scope.loginData.username = window.localStorage['username'];
         $scope.loginData.logged_in = window.localStorage['logged_in'];
         $scope.loginData.password = window.localStorage['password'];
         $scope.loginData.nickName = window.localStorage['nickName'];
-        $scope.loginData.alipayAccount = window.localStorage['alipayAccount'];
+        $scope.loginData.alipayAccount = window. localStorage['alipayAccount'];
+        $scope.commomModel= {creditToCash: 1, authCode:"", accountToDonate:"", goldToDonate: 1};
         //第一次登陆，本地没有做初始化
-        if (window.localStorage['totalCreditToCash'] == undefined)
+        if (window.localStorage['totalCreditToCash'] == undefined || window.localStorage['totalCreditToCash'] == 'undefined' )
           window.localStorage['totalCreditToCash'] = 0;
         $scope.totalCreditToCash = window.localStorage['totalCreditToCash'];
-        if (window.localStorage['globalTaskLocalInfo'] == undefined)
+        if (window.localStorage['globalTaskLocalInfo'] == undefined || window.localStorage['globalTaskLocalInfo'] == 'undefined')
           window.localStorage['globalTaskLocalInfo'] = JSON.stringify({
             currentLevel: 1,
             lastLevelFinishedDate: "2000-11-11 11:11:11",
             finishedDays: 0,
-            notFinishedDays: 0
+            notFinishedDays: 0,
+            title: "任务一",
+            done: 0,
+            left: 100
           }); //单身狗永远未完成 '.'
         //$scope.globalTaskLocalInfo = window.localStorage['globalTaskLocalInfo'];
-        if (window.localStorage['finishedDaysLog'] == undefined)
+        if (window.localStorage['finishedDaysLog'] == undefined || window.localStorage['finishedDaysLog'] == 'undefined')
           window.localStorage['finishedDaysLog'] = '[]';
+        //纪录拍照时间
+        if (window.localStorage['todayTakePhotoLog'] == undefined || window.localStorage['todayTakePhotoLog'] == 'undefined')
+          window.localStorage['todayTakePhotoLog'] = JSON.stringify({
+            todayFirstTakePhotoTime: " ",
+            todaySecondTakePhotoTime: " "
+          });
+        $scope.todayTakePhotoLog = JSON.parse(window.localStorage['todayTakePhotoLog'] || '[]');
+        if ($scope.todayTakePhotoLog.todayFirstTakePhotoTime != " "){ //已经有数据：以前天的；今天第一张的
+          if (DateUtil.getFormatDate(today).substring(0,10) != $scope.todayTakePhotoLog.todayFirstTakePhotoTime.substring(0, 10)) { //是以前的就rest, 是今天第一章的就不用管
+            window.localStorage['todayTakePhotoLog'] = JSON.stringify({
+              todayFirstTakePhotoTime: " ",
+              todaySecondTakePhotoTime: " "
+            });
+            $scope.todayTakePhotoLog = JSON.parse(window.localStorage['todayTakePhotoLog'] || '[]');
+          }
+        }
+        //拍板块的显示文字
+        if (today.getHours()<0  || today.getHours() >24) {
+          $scope.upperTextInPai = "每日拍照时间";
+          $scope.lowerTextInPai = "6:00 - 20:00";
+        }else {
+          //今天没拍
+          if ($scope.todayTakePhotoLog.todayFirstTakePhotoTime == " ") {
+            $scope.upperTextInPai = "今天还没拍照";
+            $scope.lowerTextInPai = " ";
+            //今天已经拍了一张
+          } else if ($scope.todayTakePhotoLog.todaySecondTakePhotoTime == " ") {
+            $scope.takePhotoTiming();
+            //今天已经拍了两张
+          } else if ($scope.todayTakePhotoLog.todaySecondTakePhotoTime != " ") {
+            $scope.upperTextInPai = "今日成就达成";
+            $scope.lowerTextInPai = " ";
+          }
+        }
+
+        //刷新拍照分
+        utilProvider.getValueTale().then(function (results) {
+          results.forEach(function (result) {
+            if (result.get('name') == 'firstPhotoCredit'){
+              window.localStorage['firstPhotoCredit'] = result.get('value');
+            }
+            if (result.get('name') == 'secondPhotoCredit'){
+              window.localStorage['secondPhotoCredit'] = result.get('value');
+            }
+          });
+        });
 
         //refresh my quests
         $scope.hpQuests = [];
@@ -81,45 +155,45 @@ angular.module('starter.controllers', [])
         //
         //});
 
-        //refresh the my credit  这里先赋值是怕网络出问题
-        if (window.localStorage['myCredit'] == undefined)
-          window.localStorage['myCredit'] = 0;
-        $scope.myCredit = window.localStorage['myCredit']; //init in case net work is bad
-        //$scope.myCredit = window.localStorage['myCredit']; //init in case net work is bad
-        if (window.localStorage['totalCreditToCash'] == undefined)
-          window.localStorage['totalCreditToCash'] = 0;
-        $scope.totalCreditToCash = window.localStorage['totalCreditToCash']; //init in case net work is bad
-        creditProvider.refreshCredit().then(function (me) {
-          if (typeof(me) != 'undefined') { //bad result
+        //refresh  my credit  and gold
+        creditProvider.refreshMe().then(function (me) {
+          if (me) { //bad result
             $scope.myCredit = me.credit - me.totalCreditToCash;
             window.localStorage['myCredit'] = me.credit - me.totalCreditToCash;
             $scope.totalCreditToCash = me.totalCreditToCash;
             window.localStorage['totalCreditToCash'] = me.totalCreditToCash;
+            $scope.myGold = me.gold;
+            window.localStorage['myGold'] = $scope.myGold;
           }
         });
 
-        //refresh my photos.status
+        //refresh donateRequest
+        goldProvider.refreshDonateRequest().then(function (results) {
+          $scope.myGold = window.localStorage['myGold'];
+        });
+
+        //refresh my photos
         $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
         photoProvider.refreshPhotos().then(function (result) {
           //todo: 这里不管有没有正确result都会执行的话，前面的赋值显得毫无意义: update:如果请求不成功，不会执行下面
-          if (typeof(result) != undefined) { //bad result
+          if (result) { //bad result
             $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
+            $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
           }
         });
-        //refresh globalTaskLocalInfo 每天20：00后更新
-        $scope.pics = new Array();
         //refresh my golabalTaskInfo
         var finishedDaysLog = new Array();
-        var globalTaskLocalInfo = new Array();
         finishedDaysLog = JSON.parse(window.localStorage['finishedDaysLog'] || '[]');
-        globalTaskLocalInfo = JSON.parse(window.localStorage['globalTaskLocalInfo'] || '[]');
+        var globalTaskLocalInfo = JSON.parse(window.localStorage['globalTaskLocalInfo'] || '[]');
+        var passedDays = DateUtil.getDateDiff(globalTaskLocalInfo.lastLevelFinishedDate, DateUtil.getTodayEndFormatDate((today))); //从上次时间屏障点开始
         if (parseInt(globalTaskLocalInfo.currentLevel) == 1) {
           var finishiedDaysCount = 0;
           for (var i = 0; i < finishedDaysLog.length; i++) {
-            var today = new Date();
             var days = DateUtil.getDateDiff(finishedDaysLog[i], DateUtil.getTodayEndFormatDate((today)));
-            if (days < 12 && days >= 0) { //0 1 2 ... 11
-              finishiedDaysCount++;
+            if (days <passedDays) {
+              if (days < 15 && days >= 0) { //0 1 2 ... 11
+                finishiedDaysCount++;
+              }
             }
           } // for end
           if (finishiedDaysCount >= 10) {
@@ -133,16 +207,17 @@ angular.module('starter.controllers', [])
             globalTaskLocalInfo.finishedDays = finishiedDaysCount;
           }
         } else {
-          var today = new Date();
           var passedDays = DateUtil.getDateDiff(globalTaskLocalInfo.lastLevelFinishedDate, DateUtil.getTodayEndFormatDate((today))); //第一级任务结束，到今天过了多少天
           var finishiedDaysCount = 0;
           for (var i = 0; i < finishedDaysLog.length; i++) {
             var days = DateUtil.getDateDiff(globalTaskLocalInfo.lastLevelFinishedDate, finishedDaysLog[i]);
-            if (days < 12 && days >= 0) { //0 1 2 ... 11
-              finishiedDaysCount++;
+            if (days < maxDays) {
+              if (days < 15 && days >= 0) { //0 1 2 ... 11
+                finishiedDaysCount++;
+              }
             }
           } // for end
-          if (passedDays > 12) {
+          if (passedDays > 15) {
             if (finishiedDaysCount >= 10) {
               //完成了任务1
               globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
@@ -156,11 +231,11 @@ angular.module('starter.controllers', [])
             } else {
               //任务失败
               globalTaskLocalInfo.currentLevel = 1;
-              globalTaskLocalInfo.lastLevelFinishedDate = "1111-11-11 11:11:11";
+              //globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
               globalTaskLocalInfo.finishedDays = 0;
               globalTaskLocalInfo.notFinishedDays = 0;
             }
-          } else if (passedDays == 12) {
+          } else if (passedDays == 15) {
             if (today.getHours <= 20) {
               if (finishiedDaysCount >= 10) {
                 //完成了任务1
@@ -175,7 +250,7 @@ angular.module('starter.controllers', [])
               } else {
                 //刷新
                 globalTaskLocalInfo.finishedDays = finishiedDaysCount;
-                globalTaskLocalInfo.notFinishedDays = 12 - finishiedDaysCount;
+                globalTaskLocalInfo.notFinishedDays = 15 - finishiedDaysCount;
               }
             } else { // 20点后
               if (finishiedDaysCount >= 10) {
@@ -191,20 +266,54 @@ angular.module('starter.controllers', [])
               } else {
                 //任务失败
                 globalTaskLocalInfo.currentLevel = 1;
-                globalTaskLocalInfo.lastLevelFinishedDate = "1111-11-11 11:11:11";
+                //globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
                 globalTaskLocalInfo.finishedDays = 0;
                 globalTaskLocalInfo.notFinishedDays = 0;
               }
             }
-          } else {//不到12天 只是刷新
+          } else {//不到15天
             globalTaskLocalInfo.finishedDays = finishiedDaysCount;
-            globalTaskLocalInfo.notFinishedDays = 12 - finishiedDaysCount;
+            globalTaskLocalInfo.notFinishedDays = 15 - finishiedDaysCount;
+            if (finishiedDaysCount >= 10) {
+              //完成了任务1
+              globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
+              globalTaskLocalInfo.finishedDays = 0;
+              globalTaskLocalInfo.notFinishedDays = 0;
+              if (parseInt(globalTaskLocalInfo.currentLevel) == 2)
+                globalTaskLocalInfo.currentLevel = 3;
+              if (parseInt(globalTaskLocalInfo.currentLevel) == 3)
+                globalTaskLocalInfo.currentLevel = 1;
+
+            }else if (globalTaskLocalInfo.notFinishedDays > 5) {
+              //任务失败
+              globalTaskLocalInfo.currentLevel = 1;
+              //globalTaskLocalInfo.lastLevelFinishedDate = DateUtil.getTodayEndFormatDate((today));
+              globalTaskLocalInfo.finishedDays = 0;
+              globalTaskLocalInfo.notFinishedDays = 0;
+            }else {
+              //任务继续
+              globalTaskLocalInfo.finishedDays = finishiedDaysCount;
+              globalTaskLocalInfo.notFinishedDays = 15 - finishiedDaysCount;
+            }
           }
+        }
+        //
+        if (parseInt(globalTaskLocalInfo.currentLevel) == 1) {
+          globalTaskLocalInfo.title = "任务一";
+          globalTaskLocalInfo.done = DateUtil.getPercent(globalTaskLocalInfo.finishedDays, 15);
+          globalTaskLocalInfo.left = 100 - globalTaskLocalInfo.done;
+        } else if (parseInt(globalTaskLocalInfo.currentLevel) == 2) {
+          globalTaskLocalInfo.title = "任务二";
+          globalTaskLocalInfo.done = DateUtil.getPercent(globalTaskLocalInfo.finishedDays, 15);
+          globalTaskLocalInfo.left = 100 - globalTaskLocalInfo.done;
+        } else if (parseInt(globalTaskLocalInfo.currentLevel) == 3) {
+          globalTaskLocalInfo.title = "任务三";
+          globalTaskLocalInfo.done = DateUtil.getPercent(globalTaskLocalInfo.finishedDays, 15);
+          globalTaskLocalInfo.left = 100 - globalTaskLocalInfo.done;
         }
         window.localStorage['globalTaskLocalInfo'] = JSON.stringify(globalTaskLocalInfo);
         $scope.globalTaskLocalInfo = globalTaskLocalInfo;
       }
-
       $scope.$broadcast('scroll.refreshComplete');
     };
     /**************************************************************************************
@@ -214,26 +323,40 @@ angular.module('starter.controllers', [])
 
     //todo: 这里要把登陆的数据移到loginCtrl里面去，可问题是如果加了regCtrl捏，其实reg的数据应该是独立的。
     // $scope.#parent = loginCtrl.$scope
-    $scope.loginCtrlScope = "loginCtrl";
-    $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
-    $scope.regData = {};
-    $scope.TIMEOUT = 60;
-    $scope.packageHide = true;
-    $scope.commomModel= {creditToCash: 10, authCode:""};
-    $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]'); //init in case net work is bad
+    if ( window.localStorage['logged_in'] == "true") {
+      $scope.doRefresh();
+    }else {
+      $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
+      $scope.regData = {};
+      $scope.TIMEOUT = 60;
+      $scope.packageHide = true;
+      $scope.commomModel= {creditToCash: 10, authCode:"", accountToDonate:"", goldToDonate: 1};
+      $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]'); //init in case net work is bad
+
+      //要显示的
+      if (window.localStorage['myCredit'] == undefined || window.localStorage['myCredit'] == 'undefined')
+        window.localStorage['myCredit'] = 0;
+      $scope.myCredit = window.localStorage['myCredit']; //init in case net work is bad
+      if (window.localStorage['totalCreditToCash'] == undefined || window.localStorage['totalCreditToCash'] == 'undefined')
+        window.localStorage['totalCreditToCash'] = 0;
+      $scope.totalCreditToCash = window.localStorage['totalCreditToCash']; //init in case net work is bad
+      if (window.localStorage['myGold'] == undefined || window.localStorage['myGold'] == 'undefined')
+        window.localStorage['myGold'] = 0;
+      $scope.myCredit = window.localStorage['myGold']; //init in case net work is bad
+
+      if (window.localStorage['firstPhotoCredit'] == undefined || window.localStorage['firstPhotoCredit'] == 'undefined')
+        window.localStorage['firstPhotoCredit'] = 2;
+      if (window.localStorage['secondPhotoCredit'] == undefined || window.localStorage['secondPhotoCredit'] == 'undefined')
+        window.localStorage['secondPhotoCredit'] = 3;
 
 
-    // 本地
-    window.localStorage['firstPhotoCrdit'] = 4;
-    window.localStorage['secondePhotoCrdit'] = 6;
-    window.localStorage['photoStatus'] = 0;
-    window.localStorage['username'] = $scope.loginData.username;
-    window.localStorage['logged_in'] = $scope.loginData.logged_in;
-    window.localStorage['nickName'] = $scope.loginData.nickName;
-    //window.localStorage['username'] != '未登录' && window.localStorage['username'] != ''
-    $scope.doRefresh();
-
-
+      window.localStorage['photoStatus'] = 0;
+      window.localStorage['uoid'] = '0000';
+      window.localStorage['username'] = $scope.loginData.username;
+      window.localStorage['logged_in'] = $scope.loginData.logged_in;
+      window.localStorage['nickName'] = $scope.loginData.nickName;
+      //window.localStorage['username'] != '未登录' && window.localStorage['username'] != ''
+    }
     /**************************************************************************************
      * AppCtrl
      * Modals情景弹框
@@ -248,19 +371,32 @@ angular.module('starter.controllers', [])
     $scope.closeQuestNotification = function () {
       $scope.questNotificationModal.hide();
     };
-    $scope.showQuestNotification = function () {
-      if (window.localStorage['logged_in'] == true && $scope.currentQuests.length >= 2) {
-        alert("一个用户最多只能接受2个任务哦！");
-      }else {
-        questsFactory.getNewQuest().then(function (q) {
-          $scope.newQuest = q;
-          if ($scope.newQuest) {//抢到任务
-            $scope.questNotificationModal.show();
-          } else {
-            alert('现在没有可接受的任务，等会儿再来看看吧！');
-          }
-        });
+    $scope.checkIfShowQuestNotification = function () {
+      if (window.localStorage['logged_in'] == "true") {
+        if ($scope.currentQuests.length >= 2) {
+          alert("您所接的任务已经达到上限：2");
+        } else {
+          $scope.showQuestNotification();
+        }
+      } else {
+        $scope.showQuestNotification();
       }
+
+
+    };
+    $scope.showQuestNotification = function () {
+
+      questsFactory.getNewQuest().then(
+        function (q) {
+        $scope.newQuest = q;
+        if ($scope.newQuest) {//抢到任务
+          $scope.questNotificationModal.show();
+        }
+      },
+      function (error) {
+          alert(error);
+      });
+
     };
     $scope.goPurchase = function () {
       $scope.closeQuestNotification();
@@ -334,43 +470,30 @@ angular.module('starter.controllers', [])
       };
     });
 
-//创建编辑地址弹窗
-    $ionicModal.fromTemplateUrl('templates/addressmodify.html', {
-      scope: $scope
-    }).then(function (modal) {
-      $scope.addressModifyModal = modal;
-      $scope.closeAddressModify = function () {
-        $scope.addressModifyModal.hide();
-      };
-      $scope.showAddressModify = function () {
-        $scope.addressModifyModal.show();
-      };
-      $scope.submitAddressModify = function () {
-        //$scope.addressModifyModal.hide();
-      };
-      $scope.setDefault = function () {
-        $scope.showAddPopup();
-        console.log('confirm show');
-      };
-    });
-
-//创建新建地址弹窗
-    $ionicModal.fromTemplateUrl('templates/addressadd.html', {
-      scope: $scope
-    }).then(function (modal) {
-      $scope.addressAddModal = modal;
-      $scope.closeAddressAdd = function () {
-        $scope.addressAddModal.hide();
-      };
-      $scope.showAddressAdd = function () {
-        $scope.addressAddModal.show();
-      };
-      $scope.submitAddressAdd = function () {
-        $scope.addressAddModal.hide();
-      };
-    });
-
 //选择任务小弹窗
+    $scope.checkIfShowTaskPopup = function () {
+      var today = new Date();
+      if ($scope.currentQuests.length ==0) {
+        alert("还没有任务，赶快去接任务吧！");
+      } else if (today.getHours()<0  || today.getHours() >24) {
+        alert("只能在早上6点到晚上8点之间拍照哦");
+      } else {
+          //今天没拍
+        if ($scope.upperTextInPai == "今天还没拍照") {
+          $scope.showTaskPopup();
+          //今天已经拍了一张 但没过2小时
+        }else if ($scope.upperTextInPai == "距离下次拍照") {
+          alert("每天两次拍照要间隔两个小时哦！");
+          //今天已经拍了一张 过了2小时
+        }else if ($scope.upperTextInPai == "赶紧拍第二张") {
+          $scope.showTaskPopup();
+          //今天已经拍了两张
+        }else if ($scope.upperTextInPai == "今日成就达成") {
+          alert("今天已经拍完两张了，明天再来拍吧~");
+        }
+      }
+    };
+
     $scope.showTaskPopup = function () {
       var pop = $ionicPopup.show({
         templateUrl: 'templates/selectTask.html',
@@ -382,23 +505,6 @@ angular.module('starter.controllers', [])
       };
     };
 
-    $scope.showAddPopup = function () {
-      var confirmPopup = $ionicPopup.confirm({
-        title: '确认修改',
-        template: '确定要修改收货地址吗？',
-        scope: $scope
-      });
-      confirmPopup.then(function (res) {
-        $scope.confirmPopup = res;
-        console.log(res);
-        if (res) {
-          console.log('yes');
-        }
-        else {
-          console.log('no');
-        }
-      });
-    };
 
 //准备登录界面
     $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -499,7 +605,7 @@ angular.module('starter.controllers', [])
           window.localStorage['username'] = $scope.loginData.username;
           window.localStorage['password'] = $scope.loginData.password;
           //没有自定义nickName
-          if (data.nickName == undefined) {
+          if (data.nickName == undefined ) {
             window.localStorage['nickName'] = $scope.loginData.username;
             $scope.loginData.nickName = $scope.loginData.username;
           }else {
@@ -526,7 +632,7 @@ angular.module('starter.controllers', [])
     };
     $scope.doLogout = function () {
       //改变本地存储
-      window.localStorage['logged_in'] = false;
+      window.localStorage['logged_in'] = 'false';
       window.localStorage['username'] = '未登录';
       window.localStorage['uoid'] = '';
       $scope.loginData = {username: '未登录', logged_in: false, nickName: "未登录"};
@@ -537,8 +643,6 @@ angular.module('starter.controllers', [])
       $scope.myCredit = 0;
       window.location.href = '#/app/homepage';
       AV.User.logOut();
-
-
     };
 
 
@@ -560,8 +664,8 @@ angular.module('starter.controllers', [])
     $scope.showCashNotification = function () {
       //if
       //loginData.alipayAccount = window.localStorage['apliapyAccount'];
-      if ($scope.myCredit < 10) {
-        alert("您的积分不到5， 赶快去接任务，拍照吧！");
+      if ($scope.myCredit < 1) {
+        alert("您还没有积分，赶快去接任务，拍照吧！");
       }else {
         if ($scope.loginData.alipayAccount == "" ) {
           alert("快进入个人资料里填写自己的支付宝账号吧！");
@@ -587,6 +691,7 @@ angular.module('starter.controllers', [])
       $scope.user.set('password', $scope.regData.password);
       $scope.user.signUp(null, {
         success: function (user) {
+          userProvider.createUserData();
           alert("验证码已发送！");
         },
         error: function (user, error) {
@@ -603,84 +708,115 @@ angular.module('starter.controllers', [])
     };
     //发送兑换请求  credit - 减少
     $scope.sendCashRequest = function () {
-      //TODO:向服务器发送兑换请求
-      creditProvider.uploadCashRequest($scope.commomModel.creditToCash).then(function (result) {
-        alert("已经提交兑换申请，24小时内到账！");
-        $scope.myCredit = (parseInt($scope.myCredit) - parseInt($scope.commomModel.creditToCash)).toString();
-        window.localStorage['myCredit'] = $scope.myCredit;
-        $scope.totalCreditToCash = (parseInt($scope.totalCreditToCash ) + parseInt($scope.commomModel.creditToCash)).toString();
-        window.localStorage['totalCreditToCash'] = $scope.commomModel.creditToCash;
-        $scope.cashNotificationModal.hide();
-      });
+      if ($scope.commomModel.creditToCash<=0) {
+        alert("兑换金额必须大于0哦！");
+      }else if ($scope.commomModel.creditToCash > parseInt($scope.myCredit)) {
+        alert("兑换金额必须不能大于已有积分哦！");
+      }else {
+        //TODO:向服务器发送兑换请求
+        creditProvider.uploadCashRequest($scope.commomModel.creditToCash).then(function (result) {
+          alert("已经提交兑换申请，24小时内到账！");
+          $scope.myCredit = (parseInt($scope.myCredit) - parseInt($scope.commomModel.creditToCash)).toString();
+          window.localStorage['myCredit'] = $scope.myCredit;
+          $scope.totalCreditToCash = (parseInt($scope.totalCreditToCash) + parseInt($scope.commomModel.creditToCash)).toString();
+          window.localStorage['totalCreditToCash'] = $scope.commomModel.creditToCash;
+          $scope.cashNotificationModal.hide();
+        });
+      }
     };
   //点击拍照选择任务后
     $scope.takePhoto = function (taskId) {
+      var today = new Date();
       var Task = AV.Object.extend("Task");
       var query = new AV.Query(Task);
       query.get(taskId, {
-        success: function(task) {
+        success: function (task) {
           // 成功获得实例
           photoProvider.uploadPhoto(task).then(
-            function(pic){
+            function (pic) {
               $scope.pics = JSON.parse(window.localStorage['pics'] || '[]');
               $scope.currentQuests = JSON.parse(window.localStorage['currentQuests'] || '[]');
+              //今天的第一张 $scope.todayTakePhotoLogy登陆后已经保证不会出现以前的数据 能进到这里 说明也是这是拍的一张或者第二张
+              if ($scope.todayTakePhotoLog.todayFirstTakePhotoTime==" ") { //这是今天第一张（之前refresh已经保证了不会出现之前的数据）
+                $scope.todayTakePhotoLog.todayFirstTakePhotoTime = pic.createdAt;
+                //同一天的第二张
+              }else {
+                $scope.todayTakePhotoLog.todaySecondTakePhotoTime = pic.createdAt;
+              }
+              window.localStorage['todayTakePhotoLog'] = JSON.stringify($scope.todayTakePhotoLog);
               $scope.closeTaskPopup();
+              //refresh text in 拍模块
+              //拍板块的显示文字
+              if (today.getHours()<6  || today.getHours() >20) {
+                $scope.upperTextInPai = "每日拍照时间";
+                $scope.lowerTextInPai = "6:00 - 20:00";
+              }else {
+                //今天没拍
+                if ($scope.todayTakePhotoLog.todayFirstTakePhotoTime == " ") {
+                  $scope.upperTextInPai = "今天还没拍照";
+                  $scope.lowerTextInPai = " ";
+                  //今天已经拍了一张
+                } else if ($scope.todayTakePhotoLog.todaySecondTakePhotoTime == " ") {
+                  //todo: 两个小时的判断
+                  $scope.takePhotoTiming = function () {
+                    var secondsDiff = DateUtil.getDateSecondDiff(new Date($scope.todayTakePhotoLog.todayFirstTakePhotoTime), today);
+                    // 两个个小时之内
+                    if (secondsDiff >= 7200 ) {
+                      $scope.upperTextInPai = "赶紧拍第二张";
+                      $scope.lowerTextInPai = " ";
+                    } else {
+                      $scope.upperTextInPai = "距离下次拍照";
+                      var hours = parseInt(secondsDiff/3600);
+                      var minutes = parseInt((secondsDiff - 3600*hours)/60);
+                      if (minutes < 10) minutes = "0" + minutes;
+                      var seconds = secondsDiff - 3600*hours - 60*minutes;
+                      if (seconds < 10) seconds = "0" + seconds;
+                      $scope.lowerTextInPai = hours + "：" + minutes + "：" +seconds ;
+                      $timeout(function () {
+                          $scope.takePhotoTiming();
+                        },
+                        1000)
+                    }
+                  }
+                  //今天已经拍了两张
+                } else if ($scope.todayTakePhotoLog.todaySecondTakePhotoTime != " ") {
+                  $scope.upperTextInPai = "今日成就达成";
+                  $scope.lowerTextInPai = "明天再来！";
+                }
+              }
               alert("上传成功！");
-            }, function(error) {
+            }, function (error) {
               alert("上传照片失败:" + error.message);
             });
         },
-        error: function(error) {
+        error: function (error) {
           // 失败了.
           alert("任务不存在！");
         }
       });
       $scope.closeTaskPopup();
-    };
-
+    }
 
   })//AppCtrl 结束
 
 
 
 //2 图片管理-控制器
-  .controller('piclistCtrl', function ($scope, $state, $ionicHistory) {
+  .controller('piclistCtrl', function ($scope, $state, $ionicHistory, $stateParams) {
     $ionicHistory.currentHistoryId();
     //todo:这里用来干什么
     $scope.shouldShowDelete = false;
     $scope.shouldShowReorder = false;
     $scope.listCanSwipe = true;
-    $scope.showInfo = function ($scope) {
-      window.location.href = "#/app/picinfo";
-      console.log(window.location.href);
-    };
-    //$scope.gotoAlbum = function () {
-    //  //window.location.href = "#/app/picmanage";
-    //  //$state.go('app.picmanage');
-    //  //$ionicHistory.currentHistoryId();
-    //
-    //};
+    $scope.showPhoto = function (task) {
+      $state.go('app.photodetail',{'selectTask': JSON.stringify(task)}, {inherit:false});
+    }
 
   })
 
 //2 图片管理-控制器
-  .controller('picdetailCtrl', function ($scope, $state, $ionicHistory,$ionicViewService) {
-    $ionicHistory.currentHistoryId();
-    $scope.gotoAlbum = function () {
-      //window.location.href = "#/app/picmanage";
-      $state.go('app.picmanage');
-      $ionicHistory.currentHistoryId();
-
-
-    };
-    //$ionicViewService.nextViewOptions({
-    //  disableBack: true
-    //});
-
-//// Go back to home
-//    $location.path('/');
-
-
+  .controller('picdetailCtrl', function ($scope, $stateParams) {
+    $scope.selectTask = JSON.parse($stateParams.selectTask);
   })
 
 
@@ -696,11 +832,14 @@ angular.module('starter.controllers', [])
           if (parseInt(currentQuests[i].goldTaskStatus) == 1) {
             alert("恭喜你获得" + currentQuests[i].goldCount + "衣笔！赶快去积分管理查看吧！");
             currentQuests[i].goldTaskStatus = 2; //领取衣笔奖励后 改变衣笔任务状态
-            var goldsLog = new Array();
-            var goldsLog = JSON.parse(window.localStorage['goldsLog'] || '[]');
-            var gold = {goldCount:currentQuests[i].goldCount, overDate:DateUtil.getThreeMonthsLater(new Date())};
-            goldsLog.push(gold);
-            window.localStorage['goldsLog'] = JSON.stringify(goldsLog);
+            var goldLogs = new Array();//refresh goldLogs
+            var goldLogs = JSON.parse(window.localStorage['goldLogs'] || '[]');
+            var goldLog = {id:goldLogs.length, goldCount:currentQuests[i].goldCount, overDate:DateUtil.getThreeMonthsLater(new Date())};
+            goldLogs.push(goldLog);
+            window.localStorage['goldLogs'] = JSON.stringify(goldLogs);
+            $scope.myGold = window.localStorage['myGold'];
+            $scope.myGold = parseInt($scope.myGold) + parseInt(currentQuests[i].goldCount);
+            window.localStorage['myGold'] = $scope.myGold;
           } else if (parseInt(currentQuests[i].goldTaskStatus) == 2) {
             alert("你已经领取过奖励了哦~");
           }
@@ -754,6 +893,8 @@ angular.module('starter.controllers', [])
     };
     $scope.test = function() {
 
+
+
       //var device = $cordovaDevice.getDevice();
       //var d = goldProvider.getDevice();
 
@@ -769,15 +910,15 @@ angular.module('starter.controllers', [])
       //});
 
 
-      AV.Cloud.run('savePhoto', {fileName:"43.txt", image64Data:"adfdfdnflk"}, {
-        success: function(result) {
-          // result is 'Hello world!'
-          alert("YES:" + result);
-        },
-        error: function(error) {
-          alert("NO:" + error.message);
-        }
-      });
+      //AV.Cloud.run('savePhoto', {fileName:"43.txt", image64Data:"adfdfdnflk"}, {
+      //  success: function(result) {
+      //    // result is 'Hello world!'
+      //    alert("YES:" + result);
+      //  },
+      //  error: function(error) {
+      //    alert("NO:" + error.message);
+      //  }
+      //});
 
 
     };
@@ -858,15 +999,152 @@ angular.module('starter.controllers', [])
     };
   })
   //8
-  .controller('loginCtrl', function ($scope, userProvider, AVObjects) {
+  .controller('loginCtrl', function ($scope) {
     $scope.loginCtrl = "loginCtrl";
   })
   //9
-  .controller('creditCtrl', function ($scope, AVObjects, creditProvider) {
-    $scope.goldsLog = JSON.parse(window.localStorage['goldsLog'] || '[]');
-    $scope.golds = creditProvider.getGolds();
+  .controller('creditCtrl', function ($scope, AVObjects, creditProvider, $ionicModal, goldProvider) {
+    $scope.goldLogs = JSON.parse(window.localStorage['goldLogs'] || '[]');
+    //$scope.golds = creditProvider.getGolds();
+    $scope.todayEarnedCredit = goldProvider.getTodayEarnedCredit();
+
+    //创建衣笔赠送窗口
+    $ionicModal.fromTemplateUrl('templates/donateNotification.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.donateNotificationModal = modal;
+      //TODO:服务器获取当前积分
+    });
+    $scope.closeDonateNotification = function () {
+      $scope.donateNotificationModal.hide();
+    };
+    $scope.showDonateNotification = function (goldLogId) {
+      var goldLogs = new Array();//refresh goldLogs
+      var goldLogs = JSON.parse(window.localStorage['goldLogs'] || '[]');
+      for (var i =0; i <goldLogs.length; i++) {
+        if (goldLogs[i].id == goldLogId) {
+          $scope.maxGoldToDonate = goldLogs[i].goldCount;
+          $scope.goldLogOverDate = goldLogs[i].overDate;
+          $scope.goldLogId = goldLogs[i].id;
+          $scope.donateNotificationModal.show();
+          return;
+        }
+      }
+    };
+    $scope.sendDonateRequest = function () {
+      var donateParams = {
+        accountToDonate:$parent.commomModel.accountToDonate,
+        goldToDonate:$parent.commomModel.goldToDonate,
+        goldLogOverDate:$scope.goldOverDate,
+        goldLogId:$scope.goldLogId
+      };
+      goldProvider.uploadDonateRequest(donateParams).then(function (result) {
+        if (result) {
+
+        }
+      });
+    };
   })
 
+
+.controller('addressCtrl', function ($scope, $ionicModal, addressProvider, $ionicPopup) {
+    if (window.localStorage['addressList'] == undefined || window.localStorage['addressList'] == 'undefined' )
+      window.localStorage['addressList'] = JSON.stringify(new Array());
+    $scope.addressList = new Array();
+    $scope.addressList = JSON.parse(window.localStorage['addressList'] || '[]');
+    $scope.addressModel = {id:0, name:"", phone:"", address:""};
+
+
+    //创建新建地址弹窗
+    $ionicModal.fromTemplateUrl('templates/addressadd.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.addressAddModal = modal;
+      $scope.closeAddressAdd = function () {
+        $scope.addressAddModal.hide();
+      };
+      $scope.showAddressAdd = function () {
+        $scope.addressAddModal.show();
+      };
+      $scope.submitAddressAdd = function () {
+        addressProvider.addAddress($scope.addressModel).then(function (re) {
+          $scope.addressList = JSON.parse(window.localStorage['addressList'] || '[]'); //显示
+        })
+        $scope.addressAddModal.hide();
+      };
+    });
+
+    //创建编辑地址弹窗
+    $ionicModal.fromTemplateUrl('templates/addressmodify.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.addressModifyModal = modal;
+      $scope.closeAddressModify = function () {
+        $scope.addressModifyModal.hide();
+      };
+      $scope.showAddressModify = function (address) {
+        $scope.addressModel = {id:address.id, name:address.name, phone:address.phone, address:address.address};
+        $scope.addressModifyModal.show();
+      };
+      $scope.submitAddressModify = function () {
+        $scope.showAddPopup();
+      };
+
+      $scope.showAddPopup = function () {
+        var confirmPopup = $ionicPopup.confirm({
+          title: '确认修改',
+          template: '确定要修改收货地址吗？',
+          scope: $scope
+        });
+        confirmPopup.then(function (res) {
+          $scope.confirmPopup = res;
+          console.log(res);
+          if (res) {
+            addressProvider.updateAddress($scope.addressModel).then(function (re) {
+              $scope.addressList = JSON.parse(window.localStorage['addressList'] || '[]'); //显示
+              $scope.addressModifyModal.hide();
+            })
+            console.log('yes');
+          }
+          else {
+            console.log('no');
+          }
+        });
+      };
+
+    });
+  })
+
+  .controller('feedbackCtrl', function ($scope, feedbackProvider, $ionicPopup) {
+    if (window.localStorage['feedbackList'] == undefined || window.localStorage['feedbackList'] == 'undefined' )
+      window.localStorage['feedbackList'] = JSON.stringify(new Array());
+    $scope.feedbackList = new Array();
+    $scope.feedbackList = JSON.parse(window.localStorage['feedbackList'] || '[]');
+    $scope.feedbackModel = {id:0, content:""};
+
+    $scope.showAddPopup = function () {
+      var confirmPopup = $ionicPopup.confirm({
+        title: '确认提交',
+        template: '确定要提交你的意见吗？',
+        scope: $scope
+      });
+      confirmPopup.then(function (res) {
+        $scope.confirmPopup = res;
+        console.log(res);
+        if (res) {
+          feedbackProvider.addFeedback($scope.feedbackModel).then(function (re) {
+            $scope.feedbackList = JSON.parse(window.localStorage['feedbackList'] || '[]'); //显示
+            window.location.href = '#/app/homepage';
+          })
+          console.log('yes');
+        }
+        else {
+          console.log('no');
+        }
+      });
+    };
+
+  })
 
 
 

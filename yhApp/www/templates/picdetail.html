@@ -2,25 +2,25 @@
   <ion-content>
     <ion-list show-delete="shouldShowDelete" show-reorder="shouldShowReorder" can-swipe="listCanSwipe">
       <div class="title_bar">
-        <i ng-click="gotoAlbum()" class="fa fa-chevron-left fa-lg returntask font-color"></i>
+        <!--<i ng-click="gotoAlbum()" nav-clear menu-close class="fa fa-chevron-left fa-lg returntask font-color"></i>-->
         <i class="fa fa-user fa-lg portrait font-color"></i>
-        <span class="phone">我的相册</span>
-        <i ng-click="takePhoto()" class="fa fa-camera fa-lg takephoto font-color"></i>
+        <span class="phone" >我的相册</span>
+        <i ng-click="takePhoto(selectTask.id)" class="fa fa-camera fa-lg takephoto font-color"></i>
       </div>
       <div class="album_info">
         <span class="album_title">安踏拍照</span>
-        <p class="num">{{task.numberOfPassedPhotos}}/{{task.numberOfUploadPhotos}}张照片</p>
+        <p class="num">{{selectTask.numberOfPassedPhotos}}/{{selectTask.numberOfUploadPhotos}}张照片</p>
       </div>
-      <div ng-repeat="pic in $parent.pics" class="pic_contain">
+      <div ng-repeat="pic in $parent.$parent.pics" class="pic_contain">
         <span class="time font-color">{{pic.createdAt.substring(0, 10)}}</span>
         <span class="time font-color">{{pic.createdAt.substring(11)}}</span>
         <div class="slide_box">
               <div class="box">
-                <img ng-src="{{pic.imageURI}}" alt="网络不给力~" width="250" height=300">
+                <img class="box_image" ng-src="{{pic.imageURI}}" alt="网络不给力~" width="250" height=300">
               </div>
           <span ng-class="{'status_text earn_text': underway, 'status_text font-color': failure, 'status_text take_text': success}" on-reorder="reorderItem(pic, $fromIndex, $toIndex)">
             <i ng-class="{'fa fa-circle-o-notch fa-spin earn_text': underway, 'fa fa-remove font-color': failure, 'fa fa-check take_text': success}" ></i>
-            {{status}}
+            {{pic.status}}
           </span>
         </div>
         </div>

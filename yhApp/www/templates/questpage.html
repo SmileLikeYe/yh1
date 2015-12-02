@@ -8,12 +8,11 @@
                 <p class="status avail">进行中</p>
             </div>
             <div class="task_wraper wraper_process" ng-repeat="cquest in currentQuests track by $index">
-              <p class="avail_dark">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{cquest.title}}</p>
+              <p class="avail_dark" align="center">{{cquest.title}}</p>
                 <div class="task_process">
-                    <i ng-show="cqust.goldTaskIsFinished==0" ng-click="" class="avail gift fa fa-thumb-tack fa-2x inline"></i>
-                    <i ng-show="cqust.goldTaskIsFinished==1" ng-click="showGoldTaskBonus(cquestId)" class="avail gift fa fa-thumb-tack fa-2x inline"></i>
+                    <i ng-show="parseInt(cqust.goldTaskStatus)" ng-click="showGoldTaskBonus(cquest.id)" class="avail gift fa fa-thumb-tack fa-2x inline"></i>
                     <div class="load_bar inline">
-                        <span class="left_loadbar_p process_bar" style="width:({{cquest.goldTaskFinishedPercent}} + 0.01)%"></span>
+                        <span class="left_loadbar_p process_bar" style="width:{{cquest.goldTaskFinishedPercent}}%"></span>
                         <span class="right_loadbar process_bar" style="width:{{100 - cquest.goldTaskFinishedPercent}}%"></span>
                     </div>
                     <span class="avail inline">{{cquest.continueDays}}/{{cquest.goldRequiredDays}}</span>
@@ -23,7 +22,7 @@
                         <!--<li><p class="avail_dark">任务名称：{{cquest.title}}</p></li>-->
                         <li><p>截止时间：{{cquest.endTime}}</p></li>
                         <li><p>实时进度：<span class="quest">158/1000</span></p></li>
-                        <li><p>已获积分：<span class="quest">{{cquest.currentCredit}}</span></p></li>
+                        <li><p>已获积分：<span class="quest">{{cquest.earnedCredit}}</span></p></li>
                     </ul>
                 </div>
             </div>
@@ -40,7 +39,7 @@
                             </li>
                             <li><p>截止时间：{{quest.endTime}}</p></li>
                             <!--<li><p>任务要求：<span class="quest">{{quest.content}}</span></p></li>-->
-                            <li><p>获得积分：<span class="quest">{{quest.creditTotal}}</span></p></li>
+                            <li><p>获得积分：<span class="quest">{{quest.earnedCredit}}</span></p></li>
                         </ul>
                     </div>
                 </div>

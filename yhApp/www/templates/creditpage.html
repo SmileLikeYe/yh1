@@ -3,12 +3,12 @@
     <div class="first_contain credit_contain snatch_text">
       <i class="fa fa-money fa-3x credit_icon"></i>
       <p class="credit_detail_t">今日赚得</p>
-      <p class="credit_count">27</p>
+      <p class="credit_count">{{todayEarnedCredit}}</p>
     </div>
   <div ng-click="showCashNotification()" class="credit_contain">
     <i class="fa fa-database fa-3x avail credit_icon"></i>
     <p class="avail credit_detail">积分</p>
-    <p class="avail credit_count">{{$parent.myCredit}}</p>
+    <p class="avail credit_count">{{$parent.$parent.myCredit}}</p>
   </div>
     <div class="credit_contain earn_text">
       <span class="fa-stack fa-2x">
@@ -16,23 +16,23 @@
         <i class="fa fa-rmb fa-stack-1x fa-inverse credit_icon icon_margin"></i>
       </span>
       <p class="credit_detail">衣币</p>
-      <p class="credit_count">{{golds}}</p>
+      <p class="credit_count">{{$parent.$parent.myGold}}</p>
       <div ng-click="showList=!showList" class="list_detail">
         <span class="earn_text">详情</span>
         <i ng-class="{true: 'fa fa-chevron-up earn_text', false: 'fa fa-chevron-down earn_text'}[showList]"></i>
       </div>
     </div>
-    <div ng-show="showList" class="credit_list earn_text"  >
+    <div ng-show="showList" class="credit_list earn_text"  ng-repeat="goldLog in goldLogs">
       <p class="font-color">衣币详情列表</p>
-      <div class="list_contain">
+      <div class="list_contain" ng-click="showDonateNotification()">
         <div class="list_yellow">
           <span class="fa-stack fa-lg list_icon">
             <i class="fa fa-circle fa-stack-2x font-color"></i>
             <i class="fa fa-rmb fa-stack-1x fa-inverse"></i>
           </span>
-          <p class="list_count white">22<span class="list_unit white">衣币</span></p>
+          <p class="list_count white">{{goldLog.goldCount}}<span class="list_unit white">衣币</span></p>
           <div class="list_grey">
-            <span class="list_time font-color">过期时间：2015-11-27 23:23:23</span>
+            <span class="list_time font-color">过期时间：{{goldLog.overDate}}</span>
           </div>
         </div>
       </div>
